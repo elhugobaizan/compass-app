@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import { useBreakpoint } from "@/utils/utils";
 import type { VencimientosHoy } from "@/utils/utils";
 import MobileLayout from "./MobileLayout";
@@ -33,7 +32,7 @@ export default function AppLayout({
 
   if (isMobile) {
     return (
-      <View style={containerStyle}>
+      <div style={containerStyle}>
         <MobileLayout
           vencimientosHoy={vencimientosHoy}
           isVisible={isVisible}
@@ -43,12 +42,12 @@ export default function AppLayout({
         >
           {children}
         </MobileLayout>
-      </View>
+      </div>
     );
   }
 
   return (
-    <View style={containerStyle}>
+    <div style={containerStyle}>
       <WebLayout
         vencimientosHoy={vencimientosHoy}
         isVisible={isVisible}
@@ -58,6 +57,6 @@ export default function AppLayout({
       >
         {children}
       </WebLayout>
-    </View>
+    </div>
   );
 }
