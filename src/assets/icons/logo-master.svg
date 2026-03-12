@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+
+  <circle cx="512" cy="512" r="440" fill="#0F172A"/>
+
+  <polygon points="512,200 620,512 512,440 404,512"
+           fill="#0E7490"
+           transform="rotate(35 512 512)"/>
+
+  <polygon points="512,824 566,512 512,580 458,512"
+           fill="#FFFFFF"
+           transform="rotate(35 512 512)"/>
+
+</svg>
