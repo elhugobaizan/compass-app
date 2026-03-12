@@ -17,11 +17,11 @@ export function useHomeData() {
 
 
   const totalBancos = useMemo(
-    () => [], //bancos?.state?.bancos?.reduce((acc, b) => acc + b.Efectivo, 0) ?? 0,
+    () => 0, //bancos?.state?.bancos?.reduce((acc, b) => acc + b.Efectivo, 0) ?? 0,
     [] //[bancos.state.bancos]
   );
   const totalCriptos = useMemo(
-    () => [], //criptos?.state?.criptos?.reduce((acc, c) => acc + ((c.Cantidad ?? 0) * (c.Hoy ?? 0)), 0) ?? 0,
+    () => 0, //criptos?.state?.criptos?.reduce((acc, c) => acc + ((c.Cantidad ?? 0) * (c.Hoy ?? 0)), 0) ?? 0,
     [] //[criptos.state.criptos]
   );
 
