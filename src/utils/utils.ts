@@ -1,13 +1,3 @@
-import { Impuesto } from '@/types/impuestos';
-import { PlazosFijo } from '@/types/bancos';
-
-
-export type VencimientosHoy = {
-  impuestos: Impuesto[];
-  plazos: PlazosFijo[];
-  total: number;
-};
-
 export function MoneyToNumber(money: string) {
   return Number(money.replaceAll(/\$/, '').replaceAll(/\./, '').trim().replace(',', '.'))
 }

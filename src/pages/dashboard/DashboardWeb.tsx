@@ -1,12 +1,16 @@
 import { JSX } from "react";
 import Card from "@/components/ui/Card"
-// import AccountCard from "@/components/finance/AccountCard";
+import AccountCard from "@/components/finance/AccountCard";
 import SectionBlock from "@/components/ui/SectionBlock";
 import PanelCard from "@/components/ui/PanelCard";
 import EmptyState from "@/components/ui/EmptyState";
 import Button from "@/components/ui/Button";
+import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 
 export default function DashboardWeb(): JSX.Element {
+
+  const { data: accounts, isLoading, isError } = useAccountsQuery();
+
   return (
     <div className="space-y-6">
       <SectionBlock 
@@ -36,38 +40,43 @@ export default function DashboardWeb(): JSX.Element {
         subtitle="Wallets, bancos y brokers"
         action={<Button disabled>Ver todas</Button>}
       >
+        {isLoading && <p className="text-sm text-gray-500">Cargando cuentas...</p>}
+
+        {isError && (
+          <EmptyState
+            title="No pudimos cargar las cuentas"
+            description="Revisá el backend o la conexión e intentá de nuevo."
+          />
+        )}
         <EmptyState
           title="No tenés cuentas cargadas"
           description="Creá tu primera cuenta para empezar a ver saldos, liquidez e inversiones."
           action={<Button>Crear cuenta</Button>}
         />
-        <div className="grid grid-cols-3 gap-6">
-{/*           <AccountCard 
-              name="Lemon Wallet" 
-              institution="Lemon"
-              currency="ARS"
-              accountType="WALLET"
-              accountGroup="LIQUID"
-              balance="$123.456"
-              isPaymentMethod          
-            />
-          <AccountCard 
-            name="ICBC Caja USD"
-            institution="ICBC"
-            currency="USD"
-            accountType="BANK"
-            accountGroup="LIQUID"
-            balance="USD 1.200"    
+
+        {!isLoading && !isError && accounts?.length === 0 && (
+          <EmptyState
+            title="No tenés cuentas cargadas"
+            description="Cuando agregues cuentas, las vas a ver acá."
           />
-          <AccountCard 
-            name="Lemon Crypto"
-            institution="Lemon"
-            currency="MULTI"
-            accountType="BROKER"
-            accountGroup="INVESTMENT"
-            balance="$456.789"       
-          /> */}
-        </div>
+        )}
+
+        {!isLoading && !isError && !!accounts?.length && (
+          <div className="grid grid-cols-3 gap-6">
+            {accounts.map((account) => (
+              <AccountCard
+                key={account.id}
+                name={account.name}
+                institution={account.institution}
+                currency={account.currency}
+                accountType={account.account_type}
+                accountGroup={String(account.account_group_id)}
+                balance={account.opening_balance ?? "-"}
+                isPaymentMethod={account.is_payment_method}
+              />
+            ))}
+          </div>
+        )}
       </SectionBlock>
 
       <SectionBlock
