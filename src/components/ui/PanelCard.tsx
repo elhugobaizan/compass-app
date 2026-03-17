@@ -28,7 +28,7 @@ export default function PanelCard({
             )}
 
             {subtitle && (
-              <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+              <p className="mt-1 mb-2 text-sm text-gray-500">{subtitle}</p>
             )}
           </div>
 

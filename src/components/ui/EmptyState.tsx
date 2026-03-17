@@ -5,17 +5,31 @@ type EmptyStateProps = {
   readonly description?: string;
   readonly action?: ReactNode;
   readonly className?: string;
+  readonly variant?: string;
 };
+
+function getBorderColor(variant: string)  {
+  if(variant == "warning") return "border-yellow-500";
+  if(variant == "error") return "border-red-500";
+  return "border-gray-300";
+}
+
+function getBackgroundColor(variant: string)  {
+  if(variant == "warning") return "bg-yellow-50";
+  if(variant == "error") return "bg-red-50";
+  return "bg-gray-50";
+}
 
 export default function EmptyState({
   title,
   description,
   action,
   className = "",
+  variant = "info",
 }: EmptyStateProps): JSX.Element {
   return (
     <div
-      className={`flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center ${className}`}
+      className={`flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed ${getBorderColor(variant)} ${getBackgroundColor(variant)} px-6 py-8 text-center ${className}`}
     >
       <h3 className="text-base font-semibold text-gray-900">{title}</h3>
 

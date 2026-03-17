@@ -1,5 +1,5 @@
 // src/services/api.ts
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://compass-io-js.vercel.app";
 
 type RequestOptions = RequestInit & {
   query?: Record<string, string | number | boolean | undefined | null>;

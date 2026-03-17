@@ -3,37 +3,26 @@ import Card from "../ui/Card";
 
 type KPICardProps = {
   readonly label: string;
-  readonly value: string | number;
-  readonly subvalue?: string;
-  readonly align?: "left" | "center" | "right";
+  readonly value?: string | number | null;
+  readonly isLoading?: boolean;
 };
 
 export default function KPICard({
   label,
   value,
-  subvalue,
-  align = "left",
+  isLoading = false,
 }: KPICardProps): JSX.Element {
-  const alignment =
-    align === "center"
-      ? "items-center text-center"
-      : (align === "right"
-      ? "items-end text-right"
-      : "items-start text-left");
-
   return (
     <Card>
-      <div className={`flex flex-col ${alignment}`}>
+      <div className="flex flex-col items-start">
         <span className="text-sm text-gray-500">{label}</span>
 
-        <span className="mt-1 text-2xl font-bold">
-          {value}
-        </span>
-
-        {subvalue && (
-          <span className="mt-1 text-xs text-gray-400">
-            {subvalue}
-          </span>
+        {isLoading ? (
+          <span className="mt-2 text-gray-400">Cargando...</span>
+        ) : value !== null && value !== undefined ? (
+          <span className="mt-2 text-2xl font-bold">{value}</span>
+        ) : (
+          <span className="mt-2 text-gray-400">—</span>
         )}
       </div>
     </Card>
