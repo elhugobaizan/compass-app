@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 
 type LayoutWebProps = {
-  children: ReactNode;
+  readonly children: ReactNode;
 };
 
 export default function LayoutWeb({ children }: LayoutWebProps): JSX.Element {

@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 
 type LayoutMobileProps = {
-  children: ReactNode;
+  readonly children: ReactNode;
 };
 
 export default function LayoutMobile({

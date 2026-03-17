@@ -1,31 +1,27 @@
-import { View, Text } from 'react-native';
-import { useHeaderStyles } from '../pages/Styles/styles';
-import { Button } from 'antd';
-import { useBreakpoint } from '../utils';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigation } from '../types';
+import type { ReactNode, JSX } from "react";
 
-export function PageHeader({ children, title, subtitle }: { children: React.ReactNode; title: string; subtitle: string }) {
-  const header = useHeaderStyles();
-  const device = useBreakpoint();
-  const navigation = useNavigation<StackNavigation>();
+type PageHeaderProps = {
+  readonly title: string;
+  readonly description?: string;
+  readonly action?: ReactNode;
+};
+
+export default function PageHeader({
+  title,
+  description,
+  action,
+}: PageHeaderProps): JSX.Element {
   return (
-    <View style={header.container}>
-      <View style={header.left}>
-        {/* Aquí podrías agregar un botón de "volver" si quieres */}
-        {!device.isMobile && (<View>
-          <Button type='text' onClick={() => navigation.navigate("ObjetivosStack", { screen: "Viajes" } as const)}>
-            Volver
-          </Button>
-        </View>)}
-        <View>
-          <Text style={header.title}>{title}</Text>
-          <Text style={header.subtitle}>{subtitle}</Text>
-        </View>
-      </View>
-      <View style={header.actions}>
-        {children}
-      </View>
-    </View>
-  )
+    <div className="flex flex-col gap-4 border-b border-gray-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+
+        {description && (
+          <p className="mt-1 text-sm text-gray-500">{description}</p>
+        )}
+      </div>
+
+      {action && <div className="shrink-0">{action}</div>}
+    </div>
+  );
 }

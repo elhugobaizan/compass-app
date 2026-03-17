@@ -1,49 +1,80 @@
+import { JSX } from "react";
+import KPICard from "@/components/finance/KPICard";
+import AccountCard from "@/components/finance/AccountCard";
+import SectionBlock from "@/components/ui/SectionBlock";
+import PanelCard from "@/components/ui/PanelCard";
+import EmptyState from "@/components/ui/EmptyState";
+
 export default function DashboardMobile(): JSX.Element {
   return (
     <div className="space-y-4">
-      <section className="grid grid-cols-1 gap-4">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Patrimonio Neto</p>
-          <p className="mt-2 text-xl font-bold">$1.234.567</p>
+      <SectionBlock
+        title="Actividad"
+        subtitle="Gráficos y movimientos recientes"
+      >
+        <div className="grid grid-cols-1 gap-4">
+          <KPICard label="Patrimonio Neto" value="$1.234.567" />
+          <KPICard label="Liquidez" value="$123.456" />
+          <KPICard label="Deuda" value="$12.345" />
         </div>
+      </SectionBlock>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Liquidez</p>
-          <p className="mt-2 text-xl font-bold">$123.456</p>
+      <SectionBlock title="Cuentas">
+        <div className="space-y-4">
+          <AccountCard 
+            name="Lemon Wallet" 
+            institution="Lemon"
+            currency="ARS"
+            accountType="WALLET"
+            accountGroup="LIQUID"
+            balance="$123.456"
+            isPaymentMethod          
+          />
+          <AccountCard 
+            name="Lemon Wallet" 
+            institution="Lemon"
+            currency="ARS"
+            accountType="WALLET"
+            accountGroup="LIQUID"
+            balance="$123.456"
+            isPaymentMethod          
+          />
+          <AccountCard 
+            name="Lemon Wallet" 
+            institution="Lemon"
+            currency="ARS"
+            accountType="WALLET"
+            accountGroup="LIQUID"
+            balance="$123.456"
+            isPaymentMethod          
+          />
         </div>
+      </SectionBlock>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Deuda</p>
-          <p className="mt-2 text-xl font-bold">$12.345</p>
+      <SectionBlock title="Actividad">
+        <div className="space-y-4">
+          <PanelCard
+            title="Evolución mensual"
+            subtitle="Patrimonio y liquidez"
+            className="h-48"
+          >
+            <EmptyState
+              title="Todavía no hay movimientos"
+              description="Cuando registres tus primeras transacciones, vas a ver el resumen acá."
+            />
+          </PanelCard>
+          <PanelCard
+            title="Últimos movimientos"
+            subtitle="Resumen reciente"
+            className="h-48"
+          >
+            <EmptyState
+              title="Todavía no hay movimientos"
+              description="Cuando registres tus primeras transacciones, vas a ver el resumen acá."
+            />
+          </PanelCard>
         </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Wallet ARS</h3>
-          <p className="mt-2 text-sm text-gray-600">Monto: $123.456</p>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Banco USD</h3>
-          <p className="mt-2 text-sm text-gray-600">Monto: USD 1.200</p>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Cripto</h3>
-          <p className="mt-2 text-sm text-gray-600">BTC: 0.123</p>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <span className="text-sm text-gray-400">Gráfico</span>
-        </div>
-
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <span className="text-sm text-gray-400">Timeline</span>
-        </div>
-      </section>
+      </SectionBlock>
     </div>
   );
 }

@@ -1,49 +1,103 @@
+import { JSX } from "react";
+import Card from "@/components/ui/Card"
+// import AccountCard from "@/components/finance/AccountCard";
+import SectionBlock from "@/components/ui/SectionBlock";
+import PanelCard from "@/components/ui/PanelCard";
+import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
+
 export default function DashboardWeb(): JSX.Element {
   return (
     <div className="space-y-6">
-      <section className="grid grid-cols-3 gap-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Patrimonio Neto</p>
-          <p className="mt-2 text-2xl font-bold">$1.234.567</p>
-        </div>
+      <SectionBlock 
+        title="Resumen"
+        subtitle="Vista general de tu situación financiera"
+      >
+        <div className="grid grid-cols-3 gap-6">
+          <Card>
+            <p className="text-sm text-gray-500">Patrimonio Neto</p>
+            <p className="mt-2 text-2xl font-bold">$1.234.567</p>
+          </Card>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Liquidez</p>
-          <p className="mt-2 text-2xl font-bold">$123.456</p>
-        </div>
+          <Card>
+            <p className="text-sm text-gray-500">Liquidez</p>
+            <p className="mt-2 text-2xl font-bold">$123.456</p>
+          </Card>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <p className="text-sm text-gray-500">Deuda</p>
-          <p className="mt-2 text-2xl font-bold">$12.345</p>
+          <Card>
+            <p className="text-sm text-gray-500">Deuda</p>
+            <p className="mt-2 text-2xl font-bold">$12.345</p>
+          </Card>
         </div>
-      </section>
+      </SectionBlock>
 
-      <section className="grid grid-cols-3 gap-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Wallet ARS</h3>
-          <p className="mt-2 text-sm text-gray-600">Monto: $123.456</p>
+      <SectionBlock
+        title="Cuentas"
+        subtitle="Wallets, bancos y brokers"
+        action={<Button disabled>Ver todas</Button>}
+      >
+        <EmptyState
+          title="No tenés cuentas cargadas"
+          description="Creá tu primera cuenta para empezar a ver saldos, liquidez e inversiones."
+          action={<Button>Crear cuenta</Button>}
+        />
+        <div className="grid grid-cols-3 gap-6">
+{/*           <AccountCard 
+              name="Lemon Wallet" 
+              institution="Lemon"
+              currency="ARS"
+              accountType="WALLET"
+              accountGroup="LIQUID"
+              balance="$123.456"
+              isPaymentMethod          
+            />
+          <AccountCard 
+            name="ICBC Caja USD"
+            institution="ICBC"
+            currency="USD"
+            accountType="BANK"
+            accountGroup="LIQUID"
+            balance="USD 1.200"    
+          />
+          <AccountCard 
+            name="Lemon Crypto"
+            institution="Lemon"
+            currency="MULTI"
+            accountType="BROKER"
+            accountGroup="INVESTMENT"
+            balance="$456.789"       
+          /> */}
         </div>
+      </SectionBlock>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Banco USD</h3>
-          <p className="mt-2 text-sm text-gray-600">Monto: USD 1.200</p>
-        </div>
+      <SectionBlock
+        title="Actividad"
+        subtitle="Gráficos y movimientos recientes"
+      >
+        <div className="grid grid-cols-2 gap-6">
+          <PanelCard
+            title="Evolución mensual"
+            subtitle="Patrimonio, liquidez e inversión"
+            className="h-64"
+          >
+            <EmptyState
+              title="Todavía no hay movimientos"
+              description="Cuando registres tus primeras transacciones, vas a ver el resumen acá."
+            />
+          </PanelCard>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="font-semibold">Cripto</h3>
-          <p className="mt-2 text-sm text-gray-600">BTC: 0.123</p>
+          <PanelCard
+            title="Últimos movimientos"
+            subtitle="Timeline resumido"
+            className="h-64"
+          >
+            <EmptyState
+              title="Todavía no hay movimientos"
+              description="Cuando registres tus primeras transacciones, vas a ver el resumen acá."
+            />
+          </PanelCard>
         </div>
-      </section>
-
-      <section className="grid grid-cols-2 gap-6">
-        <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <span className="text-sm text-gray-400">Gráfico</span>
-        </div>
-
-        <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
-          <span className="text-sm text-gray-400">Timeline</span>
-        </div>
-      </section>
+      </SectionBlock>
     </div>
   );
 }

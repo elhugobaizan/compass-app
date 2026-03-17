@@ -290,7 +290,7 @@ export function useInstallPrompt(): InstallPromptState {
   }, []);
 
   useEffect(() => {
-    //if (Platform.OS !== 'web' || typeof globalThis === 'undefined' || !globalThis.addEventListener) return;
+    if (typeof globalThis === 'undefined' || !globalThis.addEventListener) return;
     const handler = (e: Event) => {
       e.preventDefault();
       const ev = e as BeforeInstallPromptEvent;
@@ -347,8 +347,8 @@ export interface BeforeInstallPromptEvent extends Event {
 }
 
 export function getApiUrl() {
-  //const envUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/';
-  let apiUrl = "" //envUrl.trim();
+  const envUrl = process.env.API_URL || 'http://localhost:3000/';
+  let apiUrl = envUrl.trim();
 
   // Ensure URL ends with /
   if (!apiUrl.endsWith('/')) {
@@ -387,7 +387,7 @@ export function getApiUrl() {
 // hooks/useBreakpoint.ts
 
 export function useBreakpoint() {
-  const { width, height } = { width: 1100, height: 500 };
+  const { width, height } = { width: window.innerWidth, height: window.innerHeight };
 
   const isPortrait = height > width;
   const isMobile = isPortrait && width < 768;
