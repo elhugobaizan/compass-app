@@ -4,22 +4,38 @@ import path from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      injectRegister: 'auto',
-      devOptions: {
-        enabled: true
-      }
-    }),
-    tailwindcss()
-  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src")
     }
-  }
+  },  
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      manifest: {
+        name: 'Compass',
+        short_name: 'Compass',
+        theme_color: '#0F172A',
+        background_color: '#0F172A',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          {
+            src: '/assets/icons/web-app-manifest-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/assets/icons/web-app-manifest-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
+  ],
 })
