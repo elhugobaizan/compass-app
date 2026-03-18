@@ -9,7 +9,7 @@ type AccountCardProps = {
   readonly currency: string;
   readonly accountType: string;
   readonly accountGroup?: string;
-  readonly balance?: number;
+  readonly balance?: number | string;
   readonly isPaymentMethod?: boolean;
 };
 
@@ -48,7 +48,7 @@ export default function AccountCard({
 
       {balance !== undefined && balance !== null && (
         <div className="border-t border-gray-100 pt-3">
-          <StatRow label="Saldo" value={formatCurrency(balance)} />
+          <StatRow label="Saldo" value={typeof balance === "number" ? formatCurrency(balance) : balance} />
         </div>
       )}
     </Card>
