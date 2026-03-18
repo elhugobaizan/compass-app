@@ -1,10 +1,22 @@
 import type { Account } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
+import type { Snapshot } from "@/services/snapshots";
 import { ACCOUNT_GROUPS } from "./accountGroups";
 import { toNumber } from "./numbers";
 import { isSameMonth, isPreviousMonth } from "./date";
+import { getPreviousNetWorthFromSnapshots } from "./snapshots";
+import { TRANSACTION_TYPES } from "./transactionTypes";
 
-export type SummaryKPIs = {
+type TrendDirection = "up" | "down" | "neutral";
+type TrendSentiment = "positive" | "negative" | "neutral";
+
+type Trend = {
+  value: string;
+  direction: TrendDirection;
+  sentiment: TrendSentiment;
+};
+
+type SummaryKPIs = {
   netWorth: number;
   liquidity: number;
   debt: number;
@@ -12,66 +24,16 @@ export type SummaryKPIs = {
   monthlyIncome: number;
   monthlyExpenses: number;
   trends: {
-    income: Trend | undefined,
-    expenses: Trend | undefined,
-  }
-};
-
-type MonthlyComparison = {
-  current: number;
-  previous: number;
-};
-
-type Trend = {
-  value: string;
-  direction: "up" | "down" | "neutral";
-};
-
-export function calculateSummaryKPIs(
-  accounts: Account[] = [],
-  transactions: Transaction[] = []
-): SummaryKPIs {
-  const base = {
-    netWorth: 0,
-    liquidity: 0,
-    debt: 0,
-    investments: 0,
-    monthlyIncome: 0,
-    monthlyExpenses: 0,
-    trends: {
-      income: undefined as Trend | undefined,
-      expenses: undefined as Trend | undefined,
-    }
+    netWorth?: Trend;
+    income?: Trend;
+    expenses?: Trend;
   };
-
-  const withAccounts = accounts.reduce((acc, account) => {
-    const balance = toNumber(account.opening_balance);
-
-    acc.netWorth += balance;
-
-    if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) acc.liquidity += balance;
-    if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) acc.investments += balance;
-    if (account.account_group.name === ACCOUNT_GROUPS.DEBT) acc.debt += balance;
-
-    return acc;
-  }, base);
-
-  const income = calculateMonthlyAmounts(transactions, "INGRESO");
-  const expenses = calculateMonthlyAmounts(transactions, "GASTO");
-
-  withAccounts.monthlyExpenses = expenses.current;
-  withAccounts.monthlyIncome =income.current;
-
-  withAccounts.trends.income = calculateTrend(income.current, income.previous);
-  withAccounts.trends.expenses = calculateTrend(expenses.current, expenses.previous);
-  
-  return withAccounts;
-}
+};
 
 function calculateMonthlyAmounts(
   transactions: Transaction[],
   type: string
-): MonthlyComparison {
+) {
   const now = new Date();
 
   return transactions.reduce(
@@ -94,28 +56,103 @@ function calculateMonthlyAmounts(
   );
 }
 
-function calculateTrend(current: number, previous: number): Trend | undefined {
+function calculateTrend(
+  current: number,
+  previous: number,
+  goodWhen: "up" | "down"
+): Trend | undefined {
   if (!previous) return undefined;
 
   const change = (current - previous) / previous;
   const percentage = Math.abs(change * 100).toFixed(0);
 
-  if (change > 0) {
-    return {
-      value: `+${percentage}% vs mes anterior`,
-      direction: "up",
-    };
+  let direction: TrendDirection = "neutral";
+
+  if (change > 0) direction = "up";
+  if (change < 0) direction = "down";
+
+  let sentiment: TrendSentiment = "neutral";
+
+  if (direction !== "neutral") {
+    sentiment = direction === goodWhen ? "positive" : "negative";
   }
 
-  if (change < 0) {
-    return {
-      value: `-${percentage}% vs mes anterior`,
-      direction: "down",
-    };
-  }
+  const prefix = direction === "up" ? "+" : direction === "down" ? "-" : "";
 
   return {
-    value: "0% vs mes anterior",
-    direction: "neutral",
+    value:
+      direction === "neutral"
+        ? "0% vs mes anterior"
+        : `${prefix}${percentage}% vs mes anterior`,
+    direction,
+    sentiment,
   };
+}
+
+export function calculateSummaryKPIs(
+  accounts: Account[] = [],
+  transactions: Transaction[] = [],
+  snapshots: Snapshot[] = []
+): SummaryKPIs {
+  const base: SummaryKPIs = {
+    netWorth: 0,
+    liquidity: 0,
+    debt: 0,
+    investments: 0,
+    monthlyIncome: 0,
+    monthlyExpenses: 0,
+    trends: {
+      netWorth: undefined,
+      income: undefined,
+      expenses: undefined,
+    },
+  };
+
+  const withAccounts = accounts.reduce((acc, account) => {
+    const balance = toNumber(account.opening_balance);
+
+    acc.netWorth += balance;
+
+    if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
+      acc.liquidity += balance;
+    }
+
+    if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
+      acc.investments += balance;
+    }
+
+    if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
+      acc.debt += balance;
+    }
+
+    return acc;
+  }, base);
+
+  const income = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.INGRESO);
+  const expenses = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.GASTO);
+
+  withAccounts.monthlyIncome = income.current;
+  withAccounts.monthlyExpenses = expenses.current;
+
+  withAccounts.trends.income = calculateTrend(
+    income.current,
+    income.previous,
+    "up"
+  );
+
+  withAccounts.trends.expenses = calculateTrend(
+    expenses.current,
+    expenses.previous,
+    "down"
+  );
+
+  const previousNetWorth = getPreviousNetWorthFromSnapshots(snapshots);
+
+  withAccounts.trends.netWorth = calculateTrend(
+    withAccounts.netWorth,
+    previousNetWorth,
+    "up"
+  );
+
+  return withAccounts;
 }

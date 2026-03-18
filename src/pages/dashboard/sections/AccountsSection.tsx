@@ -4,11 +4,14 @@ import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import AccountCard from "@/components/finance/AccountCard";
 import type { Account } from "@/types/account";
+import type { Transaction } from "@/types/transaction";
 import { accountGroupLabels } from "@/utils/accountGroups";
+import { getMostUsedAccounts } from "@/utils/accounts";
 
 type AccountsSectionProps = {
   readonly isMobile: boolean;
   readonly accounts?: Account[];
+  readonly transactions?: Transaction[];
   readonly isLoading: boolean;
   readonly isError: boolean;
 };
@@ -16,9 +19,16 @@ type AccountsSectionProps = {
 export default function AccountsSection({
   isMobile,
   accounts,
+  transactions,
   isLoading,
   isError,
 }: AccountsSectionProps): JSX.Element {
+  const visibleAccounts = getMostUsedAccounts(
+    accounts ?? [],
+    transactions ?? [],
+    3
+  );
+
   return (
     <SectionBlock
       title="Cuentas"
@@ -42,9 +52,9 @@ export default function AccountsSection({
         />
       )}
 
-      {!isLoading && !isError && !!accounts?.length && (
-        <div className={isMobile ? "space-y-4" : "grid grid-cols-3 gap-6"}>
-          {accounts.map((account) => (
+      {!isLoading && !isError && visibleAccounts.length > 0 && (
+        <div className={isMobile ? "space-y-4" : "grid grid-cols-2 xl:grid-cols-3 gap-6"}>
+          {visibleAccounts.map((account) => (
             <AccountCard
               key={account.id}
               name={account.name}

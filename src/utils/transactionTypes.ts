@@ -1,12 +1,15 @@
-export const transactionTypeLabels: Record<string, string> = {
-  "Gasto": "GASTO",
-  "Ingreso": "INGRESO",
-  "Tx_ent": "TRANSFERENCIA_ENTRADA",
-  "Tx_sal": "TRANSFERENCIA_SALIDA",
-  "Ajuste": "AJUSTE"
-};
+export const TRANSACTION_TYPES = {
+  GASTO: "GASTO",
+  INGRESO: "INGRESO",
+  TRANSFERENCIA_ENTRADA: "TRANSFERENCIA_ENTRADA",
+  TRANSFERENCIA_SALIDA: "TRANSFERENCIA_SALIDA",
+  AJUSTE: "AJUSTE"
+} as const;
 
-export function getTransactionTypeLabel(typeId?: number): string | undefined {
-  if (!typeId) return undefined;
-  return transactionTypeLabels[typeId];
-}
+export const transactionTypeLabels: Record<string, string> = {
+  [TRANSACTION_TYPES.AJUSTE]: "AJUSTE",
+  [TRANSACTION_TYPES.GASTO]: "GASTO",
+  [TRANSACTION_TYPES.INGRESO]: "INGRESO",
+  [TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA]: "TRANSFERENCIA_ENTRADA",
+  [TRANSACTION_TYPES.TRANSFERENCIA_SALIDA]: "TRANSFERENCIA_SALIDA"
+};

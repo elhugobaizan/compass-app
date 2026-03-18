@@ -3,28 +3,25 @@ import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import Card from "../ui/Card";
 
 type Tone = "neutral" | "positive" | "negative" | "info";
-type TrendDirection = "up" | "down" | "neutral" | undefined;
+type TrendDirection = "up" | "down" | "neutral";
+type TrendSentiment = "positive" | "negative" | "neutral";
 
 type KPICardProps = {
-  readonly label: string;
-  readonly value?: string | number | null;
-  readonly isLoading?: boolean;
-  readonly subvalue?: string;
-  readonly align?: "left" | "center" | "right";
-  readonly size?: "default" | "featured";
-  readonly tone?: Tone;
-  readonly trend?: {
-    value?: string | undefined;
-    direction?: TrendDirection;
-    sentiment?: "positive" | "negative" | "neutral";
+  label: string;
+  value?: string | number | null;
+  isLoading?: boolean;
+  subvalue?: string;
+  align?: "left" | "center" | "right";
+  size?: "default" | "featured";
+  tone?: Tone;
+  trend?: {
+    value: string;
+    direction: TrendDirection;
+    sentiment?: TrendSentiment;
   };
 };
 
-function getToneStyles(tone: Tone, value: string | number | null | undefined) {
-  if (value === null) return {
-    value: "text-gray-900",
-    accent: "bg-white border-gray-200",
-  }
+function getToneStyles(tone: Tone) {
   switch (tone) {
     case "positive":
       return {
@@ -52,39 +49,25 @@ function getToneStyles(tone: Tone, value: string | number | null | undefined) {
   }
 }
 
-function getTrendStyles(direction: TrendDirection, sentiment: "positive" | "negative" | "neutral" = "neutral") {
+function getTrendIcon(direction: TrendDirection): JSX.Element {
   switch (direction) {
     case "up":
-      if (sentiment === "negative") {
-        return {
-          text: "text-red-600",
-          icon: <ArrowUpRight className="h-3.5 w-3.5" />,
-        };
-      }
-
-      return {
-        text: "text-green-600",
-        icon: <ArrowUpRight className="h-3.5 w-3.5" />,
-      };
-
+      return <ArrowUpRight className="h-3.5 w-3.5" />;
     case "down":
-      if (sentiment === "positive") {
-        return {
-          text: "text-green-600",
-          icon: <ArrowDownRight className="h-3.5 w-3.5" />,
-        };
-      }
-
-      return {
-        text: "text-red-600",
-        icon: <ArrowDownRight className="h-3.5 w-3.5" />,
-      };
-
+      return <ArrowDownRight className="h-3.5 w-3.5" />;
     default:
-      return {
-        text: "text-gray-400",
-        icon: <Minus className="h-3.5 w-3.5" />,
-      };
+      return <Minus className="h-3.5 w-3.5" />;
+  }
+}
+
+function getTrendColor(sentiment: TrendSentiment = "neutral"): string {
+  switch (sentiment) {
+    case "positive":
+      return "text-green-600";
+    case "negative":
+      return "text-red-600";
+    default:
+      return "text-gray-400";
   }
 }
 
@@ -102,14 +85,14 @@ export default function KPICard({
     align === "center"
       ? "items-center text-center"
       : align === "right"
-        ? "items-end text-right"
-        : "items-start text-left";
+      ? "items-end text-right"
+      : "items-start text-left";
 
-  const { value: valueColor, accent } = getToneStyles(tone, value);
+  const { value: valueColor, accent } = getToneStyles(tone);
 
   const valueClass =
     size === "featured"
-      ? `mt-2 text-3xl font-bold md:text-4xl ${valueColor}`
+      ? `mt-2 text-3xl font-bold md:text-3xl ${valueColor}`
       : `mt-2 text-2xl font-bold ${valueColor}`;
 
   const labelClass =
@@ -117,7 +100,7 @@ export default function KPICard({
       ? "text-sm font-medium text-gray-600"
       : "text-sm text-gray-500";
 
-  const trendStyles = trend ? getTrendStyles(trend.direction, trend.sentiment) : null;
+  const trendColor = trend ? getTrendColor(trend.sentiment) : "";
 
   return (
     <Card className={`h-full border ${accent}`}>
@@ -132,12 +115,12 @@ export default function KPICard({
           <span className="mt-2 text-2xl font-bold text-gray-300">—</span>
         )}
 
-        {trend && trendStyles && (
+        {trend && (
           <div
-            className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${trendStyles.text}`}
+            className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${trendColor}`}
           >
-            {value !== null && trendStyles.icon}
-            <span>{value !== null && trend.value}</span>
+            {getTrendIcon(trend.direction)}
+            <span>{trend.value}</span>
           </div>
         )}
 
