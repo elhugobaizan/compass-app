@@ -8,7 +8,7 @@ export type CreateTransactionInput = {
   date: string;
   account_id: string;
   category_id?: string;
-  type_id: number;
+  type_id: string;
   location?: string;
 };
 

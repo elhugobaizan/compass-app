@@ -5,14 +5,14 @@ import type { Category } from "@/types/category";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 
 type TransactionFormProps = {
-  readonly accounts: Account[];
-  readonly categories: Category[];
-  readonly onSuccess?: () => void;
+  accounts: Account[];
+  categories: Category[];
+  onSuccess?: () => void;
 };
 
 const TRANSACTION_TYPES = [
-  { id: 1, label: "Gasto" },
-  { id: 2, label: "Ingreso" },
+  { id: "1", label: "Gasto" },
+  { id: "2", label: "Ingreso" },
 ];
 
 function todayDate(): string {
@@ -29,18 +29,22 @@ export default function TransactionForm({
   const [amount, setAmount] = useState("");
   const [concept, setConcept] = useState("");
   const [date, setDate] = useState(todayDate());
-  const [typeId, setTypeId] = useState(1);
+  const [typeId, setTypeId] = useState("1");
   const [accountId, setAccountId] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [location, setLocation] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const filteredCategories = useMemo(() => {
-    const type = typeId === 1 ? "EXPENSE" : "INCOME";
+    const type = typeId === "1" ? "EXPENSE" : "INCOME";
     return categories.filter((category) => category.type === type);
   }, [categories, typeId]);
 
+  const parsedAmount = Number(amount);
+
   const isValid =
-    Number(amount) > 0 &&
+    Number.isFinite(parsedAmount) &&
+    parsedAmount > 0 &&
     accountId.trim().length > 0 &&
     date.trim().length > 0;
 
@@ -48,29 +52,42 @@ export default function TransactionForm({
     event.preventDefault();
     if (!isValid) return;
 
-    await mutateAsync({
-      amount: Number(amount),
-      concept: concept || undefined,
-      date,
-      account_id: accountId,
-      category_id: categoryId || undefined,
-      type_id: typeId,
-      location: location || undefined,
-    });
+    try {
+      setSubmitError(null);
 
-    setAmount("");
-    setConcept("");
-    setDate(todayDate());
-    setTypeId(1);
-    setAccountId("");
-    setCategoryId("");
-    setLocation("");
+      await mutateAsync({
+        amount: parsedAmount,
+        concept: concept.trim() || undefined,
+        date,
+        account_id: accountId,
+        category_id: categoryId || undefined,
+        type_id: typeId,
+        location: location.trim() || undefined,
+      });
 
-    onSuccess?.();
+      setAmount("");
+      setConcept("");
+      setDate(todayDate());
+      setTypeId("1");
+      setAccountId("");
+      setCategoryId("");
+      setLocation("");
+
+      onSuccess?.();
+    } catch (error) {
+      console.log(error);
+      setSubmitError("No pudimos guardar el movimiento.");
+    }
   }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
+      {submitError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {submitError}
+        </div>
+      )}
+
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">
           Monto
@@ -94,7 +111,7 @@ export default function TransactionForm({
         <select
           value={typeId}
           onChange={(e) => {
-            setTypeId(Number(e.target.value));
+            setTypeId(e.target.value);
             setCategoryId("");
           }}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"
