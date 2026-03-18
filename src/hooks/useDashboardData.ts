@@ -20,7 +20,7 @@ export function useDashboardData() {
     hasTransactions,
     hasFinancialData,
     summary
-  } = useDashboardSummary();
+  } = useDashboardSummary(accounts, transactions);
 
   return {
     accounts,

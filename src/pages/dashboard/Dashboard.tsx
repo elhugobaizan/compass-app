@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 import LayoutMobile from "../../layouts/LayoutMobile";
 import LayoutWeb from "../../layouts/LayoutWeb";
-import {useBreakpoint} from "../../utils/utils";
+import { useBreakpoint } from "../../utils/utils";
 import { useDashboardData } from '@/hooks/useDashboardData';
 import SummarySection from './sections/SummarySection';
 import AccountsSection from './sections/AccountsSection';
@@ -12,35 +12,36 @@ export default function Dashboard(): JSX.Element {
 
   const {
     accounts, transactions, summary,
-    hasAccounts, hasFinancialData,
+    hasAccounts, hasFinancialData, hasTransactions,
     isLoadingAccounts, isLoadingTransactions,
     isErrorAccounts, isErrorTransactions
   } = useDashboardData();
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
-      <SummarySection 
+      <SummarySection
         isMobile={isMobile}
         isLoading={isLoadingAccounts}
         hasFinancialData={hasFinancialData}
         hasAccounts={hasAccounts}
+        hasTransactions={hasTransactions}
         summary={summary}
       />
 
-      <AccountsSection  
+      <AccountsSection
         isMobile={isMobile}
         accounts={accounts}
         isLoading={isLoadingAccounts}
         isError={isErrorAccounts}
       />
 
-      <ActivitySection 
+      <ActivitySection
         isMobile={isMobile}
         transactions={transactions}
         isLoading={isLoadingTransactions}
         isError={isErrorTransactions}
       />
-    </div>    
+    </div>
   );
 
   return isMobile ? (

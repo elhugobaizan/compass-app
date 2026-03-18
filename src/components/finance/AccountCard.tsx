@@ -1,6 +1,7 @@
 import { JSX } from "react";
 import Card from "../ui/Card";
 import StatRow from "../ui/StatRow";
+import { formatCurrency } from "@/utils/formatters";
 
 type AccountCardProps = {
   readonly name: string;
@@ -8,7 +9,7 @@ type AccountCardProps = {
   readonly currency: string;
   readonly accountType: string;
   readonly accountGroup?: string;
-  readonly balance?: string | number;
+  readonly balance?: number;
   readonly isPaymentMethod?: boolean;
 };
 
@@ -47,7 +48,7 @@ export default function AccountCard({
 
       {balance !== undefined && balance !== null && (
         <div className="border-t border-gray-100 pt-3">
-          <StatRow label="Saldo" value={balance} />
+          <StatRow label="Saldo" value={formatCurrency(balance)} />
         </div>
       )}
     </Card>

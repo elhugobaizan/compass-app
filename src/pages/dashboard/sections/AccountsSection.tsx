@@ -1,4 +1,4 @@
-import { JSX } from"react";
+import { JSX } from "react";
 import SectionBlock from "@/components/ui/SectionBlock";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
@@ -51,7 +51,7 @@ export default function AccountsSection({
               institution={account.institution}
               currency={account.currency}
               accountType={account.account_type}
-              accountGroup={accountGroupLabels[account.account_group_id] ?? "UNKNOWN"}
+              accountGroup={accountGroupLabels[account.account_group.name] ?? "UNKNOWN"}
               balance={account.opening_balance ?? "-"}
               isPaymentMethod={account.is_payment_method}
             />

@@ -3,7 +3,8 @@ export type Account = {
   id: string;
   name: string;
   account_type: string;
-  account_group_id: number;
+  account_group_id: string;
+  account_group: AccountGroup;
   currency: string;
   institution?: string | null;
   identifier?: string | null;
@@ -18,3 +19,8 @@ export type Account = {
   updated_at?: string | null;
   deleted_at?: string | null;
 };
+
+export type AccountGroup = {
+  id: number;
+  name: string;
+}

@@ -1,5 +1,5 @@
 // src/services/api.ts
-const API_BASE_URL = "https://compass-io-js.vercel.app";
+const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_URL || "http://localhost:3000";
 
 type RequestOptions = RequestInit & {
   query?: Record<string, string | number | boolean | undefined | null>;

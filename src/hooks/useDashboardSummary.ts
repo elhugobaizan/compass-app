@@ -12,6 +12,8 @@ type DashboardSummary = {
     liquidity: number;
     debt: number;
     investments: number;
+    monthlyIncome: number;
+    monthlyExpenses: number;
   };
 }
 
