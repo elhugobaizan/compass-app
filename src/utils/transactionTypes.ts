@@ -1,7 +1,9 @@
-export const transactionTypeLabels: Record<number, string> = {
-  1: "EXPENSE",
-  2: "INCOME",
-  3: "TRANSFER",
+export const transactionTypeLabels: Record<string, string> = {
+  "Gasto": "GASTO",
+  "Ingreso": "INGRESO",
+  "Tx_ent": "TRANSFERENCIA_ENTRADA",
+  "Tx_sal": "TRANSFERENCIA_SALIDA",
+  "Ajuste": "AJUSTE"
 };
 
 export function getTransactionTypeLabel(typeId?: number): string | undefined {

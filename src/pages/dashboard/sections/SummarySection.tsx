@@ -2,6 +2,7 @@ import { JSX } from "react";
 import SectionBlock from "@/components/ui/SectionBlock";
 import KPICard from "@/components/finance/KPICard";
 import { formatCurrency } from "@/utils/formatters";
+import { SummaryKPIs } from "@/utils/kpis";
 
 type SummarySectionProps = {
   readonly isMobile: boolean;
@@ -9,14 +10,7 @@ type SummarySectionProps = {
   readonly hasFinancialData: boolean;
   readonly hasAccounts: boolean;
   readonly hasTransactions: boolean;
-  readonly summary: {
-    netWorth: number;
-    liquidity: number;
-    debt: number;
-    investments: number;
-    monthlyIncome: number;
-    monthlyExpenses: number;
-  };
+  readonly summary: SummaryKPIs;
 };
 
 export default function SummarySection({
@@ -50,7 +44,6 @@ export default function SummarySection({
           isLoading={isLoading}
           size="featured"
           tone="neutral"
-          trend={{ value: "+5% vs mes anterior", direction: "up", sentiment: "positive" }}
         />
         <KPICard
           label="Liquidez"
@@ -71,7 +64,7 @@ export default function SummarySection({
           value={monthlyExpenses}
           isLoading={isLoading}
           tone="negative"
-          trend={{ value: "+8% vs mes anterior", direction: "up", sentiment: "negative" }}
+          trend={{...summary.trends.expenses, sentiment: 'negative'}}
         />
       </div>
     </SectionBlock>

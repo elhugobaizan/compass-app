@@ -3,24 +3,28 @@ import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import Card from "../ui/Card";
 
 type Tone = "neutral" | "positive" | "negative" | "info";
-type TrendDirection = "up" | "down" | "neutral";
+type TrendDirection = "up" | "down" | "neutral" | undefined;
 
 type KPICardProps = {
-  label: string;
-  value?: string | number | null;
-  isLoading?: boolean;
-  subvalue?: string;
-  align?: "left" | "center" | "right";
-  size?: "default" | "featured";
-  tone?: Tone;
-  trend?: {
-    value: string;
-    direction: TrendDirection;
+  readonly label: string;
+  readonly value?: string | number | null;
+  readonly isLoading?: boolean;
+  readonly subvalue?: string;
+  readonly align?: "left" | "center" | "right";
+  readonly size?: "default" | "featured";
+  readonly tone?: Tone;
+  readonly trend?: {
+    value?: string | undefined;
+    direction?: TrendDirection;
     sentiment?: "positive" | "negative" | "neutral";
   };
 };
 
-function getToneStyles(tone: Tone) {
+function getToneStyles(tone: Tone, value: string | number | null | undefined) {
+  if (value === null) return {
+    value: "text-gray-900",
+    accent: "bg-white border-gray-200",
+  }
   switch (tone) {
     case "positive":
       return {
@@ -101,7 +105,7 @@ export default function KPICard({
         ? "items-end text-right"
         : "items-start text-left";
 
-  const { value: valueColor, accent } = getToneStyles(tone);
+  const { value: valueColor, accent } = getToneStyles(tone, value);
 
   const valueClass =
     size === "featured"
@@ -132,8 +136,8 @@ export default function KPICard({
           <div
             className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${trendStyles.text}`}
           >
-            {trendStyles.icon}
-            <span>{trend.value}</span>
+            {value !== null && trendStyles.icon}
+            <span>{value !== null && trend.value}</span>
           </div>
         )}
 
