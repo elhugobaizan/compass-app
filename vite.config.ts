@@ -14,8 +14,12 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      includeAssets: ['favicon.ico', 'apple-touch-icon,png', 'logo-master.svg'],
       registerType: 'autoUpdate',
       injectRegister: 'auto',
+      devOptions: {
+        enabled: true
+      },
       manifest: {
         name: 'Compass',
         short_name: 'Compass',
