@@ -1,3 +1,5 @@
+import { Account } from "./account";
+
 // src/types/transaction.ts
 export type Transaction = {
   id: string;
@@ -5,6 +7,7 @@ export type Transaction = {
   date: string;
   amount: number;
   account_id: string;
+  account: Account;
   category_id?: string | null;
   category?: TransactionCategory | null;
   type_id: string | null;
