@@ -58,7 +58,7 @@ export default function TransactionForm({
       await mutateAsync({
         amount: parsedAmount,
         concept: concept.trim() || undefined,
-        date,
+        date: date + "T00:00:00.000Z",
         account_id: accountId,
         category_id: categoryId || undefined,
         type_id: typeId,
