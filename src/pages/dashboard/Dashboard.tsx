@@ -6,6 +6,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
 import CreateAssetSheet from "@/components/finance/CreateAssetSheet";
+import CreateAccountSheet from "@/components/finance/CreateAccountSheet";
 
 import SummarySection from "./sections/SummarySection";
 import AccountsSection from "./sections/AccountsSection";
@@ -36,6 +37,7 @@ export default function Dashboard(): JSX.Element {
 
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
+  const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
 
   const isLoadingSummary =
     isLoadingAccounts || isLoadingTransactions || isLoadingSnapshots;
@@ -43,6 +45,10 @@ export default function Dashboard(): JSX.Element {
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="secondary" onClick={() => setIsCreateAccountOpen(true)}>
+          + Cuenta
+        </Button>
+        
         <Button variant="secondary" onClick={() => setIsCreateAssetOpen(true)}>
           + Asset
         </Button>
@@ -94,6 +100,11 @@ export default function Dashboard(): JSX.Element {
         isLoadingAccounts={isLoadingAccounts}
         isErrorAccounts={isErrorAccounts}
       />
+
+      <CreateAccountSheet
+        open={isCreateAccountOpen}
+        onClose={() => setIsCreateAccountOpen(false)}
+      />      
     </div>
   );
 
