@@ -5,9 +5,9 @@ import type { Category } from "@/types/category";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 
 type TransactionFormProps = {
-  accounts: Account[];
-  categories: Category[];
-  onSuccess?: () => void;
+  readonly accounts: Account[];
+  readonly categories: Category[];
+  readonly onSuccess?: () => void;
 };
 
 const TRANSACTION_TYPES = [
@@ -89,11 +89,12 @@ export default function TransactionForm({
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="amount" className="mb-1 block text-sm font-medium text-gray-700">
           Monto
         </label>
         <input
           type="number"
+          name="amount"
           inputMode="decimal"
           step="0.01"
           min="0"
@@ -105,10 +106,11 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="type" className="mb-1 block text-sm font-medium text-gray-700">
           Tipo
         </label>
         <select
+          name="type"
           value={typeId}
           onChange={(e) => {
             setTypeId(e.target.value);
@@ -125,10 +127,11 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="account" className="mb-1 block text-sm font-medium text-gray-700">
           Cuenta
         </label>
         <select
+          name="account"
           value={accountId}
           onChange={(e) => setAccountId(e.target.value)}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"
@@ -143,11 +146,12 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="mb-1 block text-sm font-medium text-gray-700">
           Categoría
         </label>
         <select
           value={categoryId}
+          name="category"
           onChange={(e) => setCategoryId(e.target.value)}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"
         >
@@ -161,11 +165,12 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="concept" className="mb-1 block text-sm font-medium text-gray-700">
           Concepto
         </label>
         <input
           type="text"
+          name="concept"
           value={concept}
           onChange={(e) => setConcept(e.target.value)}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"
@@ -174,11 +179,12 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">
           Fecha
         </label>
         <input
           type="date"
+          name="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"
@@ -186,11 +192,12 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="location" className="mb-1 block text-sm font-medium text-gray-700">
           Ubicación
         </label>
         <input
           type="text"
+          name="location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           className="w-full rounded-lg border border-gray-200 px-3 py-2"

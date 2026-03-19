@@ -5,6 +5,7 @@ import { useBreakpoint } from "@/utils/utils";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
+import CreateAssetSheet from "@/components/finance/CreateAssetSheet";
 
 import SummarySection from "./sections/SummarySection";
 import AccountsSection from "./sections/AccountsSection";
@@ -31,18 +32,24 @@ export default function Dashboard(): JSX.Element {
     isLoading: isLoadingCategories,
     isError: isErrorCategories
   } = useCategoriesQuery();
+  
 
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
+  const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
 
   const isLoadingSummary =
     isLoadingAccounts || isLoadingTransactions || isLoadingSnapshots;
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
-      <div className="flex justify-end">
-        <Button
-          onClick={() => setIsCreateTransactionOpen(true)}
-        >+ Movimiento</Button>
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="secondary" onClick={() => setIsCreateAssetOpen(true)}>
+          + Asset
+        </Button>
+
+        <Button onClick={() => setIsCreateTransactionOpen(true)}>
+          + Movimiento
+        </Button>
       </div>
 
       <SummarySection
@@ -69,16 +76,24 @@ export default function Dashboard(): JSX.Element {
         isError={isErrorTransactions}
       />
 
-    <CreateTransactionSheet
-      open={isCreateTransactionOpen}
-      onClose={() => setIsCreateTransactionOpen(false)}
-      accounts={accounts}
-      categories={categories}
-      isLoadingAccounts={isLoadingAccounts}
-      isLoadingCategories={isLoadingCategories}
-      isErrorAccounts={isErrorAccounts}
-      isErrorCategories={isErrorCategories}
-    />
+      <CreateTransactionSheet
+        open={isCreateTransactionOpen}
+        onClose={() => setIsCreateTransactionOpen(false)}
+        accounts={accounts}
+        categories={categories}
+        isLoadingAccounts={isLoadingAccounts}
+        isLoadingCategories={isLoadingCategories}
+        isErrorAccounts={isErrorAccounts}
+        isErrorCategories={isErrorCategories}
+      />
+
+      <CreateAssetSheet
+        open={isCreateAssetOpen}
+        onClose={() => setIsCreateAssetOpen(false)}
+        accounts={accounts}
+        isLoadingAccounts={isLoadingAccounts}
+        isErrorAccounts={isErrorAccounts}
+      />
     </div>
   );
 
