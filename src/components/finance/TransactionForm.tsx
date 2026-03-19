@@ -11,8 +11,8 @@ type TransactionFormProps = {
 };
 
 const TRANSACTION_TYPES = [
-  { id: "1", label: "Gasto" },
-  { id: "2", label: "Ingreso" },
+  { id: "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d", label: "Gasto" },
+  { id: "e0c36d0a-85ef-4fb6-a1f6-9480a17ed68f", label: "Ingreso" },
 ];
 
 function todayDate(): string {
@@ -29,14 +29,14 @@ export default function TransactionForm({
   const [amount, setAmount] = useState("");
   const [concept, setConcept] = useState("");
   const [date, setDate] = useState(todayDate());
-  const [typeId, setTypeId] = useState("1");
+  const [typeId, setTypeId] = useState("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
   const [accountId, setAccountId] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [location, setLocation] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const filteredCategories = useMemo(() => {
-    const type = typeId === "1" ? "EXPENSE" : "INCOME";
+    const type = typeId === "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d" ? "EXPENSE" : "INCOME";
     return categories.filter((category) => category.type === type);
   }, [categories, typeId]);
 
@@ -68,7 +68,7 @@ export default function TransactionForm({
       setAmount("");
       setConcept("");
       setDate(todayDate());
-      setTypeId("1");
+      setTypeId("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
       setAccountId("");
       setCategoryId("");
       setLocation("");
@@ -96,7 +96,7 @@ export default function TransactionForm({
           type="number"
           name="amount"
           inputMode="decimal"
-          step="0.01"
+          step="0.1"
           min="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
