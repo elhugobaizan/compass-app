@@ -9,6 +9,8 @@ import { useBreakpoint } from "@/utils/utils";
 import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
+import { useDeleteTransaction } from "@/hooks/mutations/useDeleteTransaction";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import { transactionTypeLabels } from "@/utils/transactionTypes";
 import type { Transaction } from "@/types/transaction";
@@ -24,6 +26,7 @@ function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete]  = useState<Transaction | null>(null);
 
   const {
     data: transactions,
@@ -43,10 +46,19 @@ export default function TransactionsPage(): JSX.Element {
     isError: isErrorCategories,
   } = useCategoriesQuery();
 
+  const { mutateAsync: deleteTransaction, isPending: isDeleting }  = useDeleteTransaction();
+
   const sortedTransactions = useMemo(
     () => sortTransactionsDesc(transactions ?? []),
     [transactions]
   );
+
+  async function handleConfirmDelete() {
+    if (!transactionToDelete) return;
+  
+    await deleteTransaction(transactionToDelete.id);
+    setTransactionToDelete(null);
+  }
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
@@ -101,6 +113,7 @@ export default function TransactionsPage(): JSX.Element {
                 typeLabel={transactionTypeLabels[transaction.type.name]}
                 categoryLabel={transaction.category?.name}
                 location={transaction.location}
+                onDelete={() => setTransactionToDelete(transaction)}
               />
             ))}
           </div>
@@ -115,6 +128,16 @@ export default function TransactionsPage(): JSX.Element {
         isLoadingCategories={isLoadingCategories}
         isErrorAccounts={isErrorAccounts}
         isErrorCategories={isErrorCategories}
+      />
+
+      <ConfirmDialog
+        open={!!transactionToDelete}
+        title="Eliminar movimiento"
+        description="Esta acción quitará el movimiento del listado y actualizará el resumen."
+        confirmText="Eliminar"
+        isLoading={isDeleting}
+        onClose={() => setTransactionToDelete(null)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

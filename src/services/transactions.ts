@@ -24,3 +24,9 @@ export function createTransaction(
     body: JSON.stringify(data),
   });
 }
+
+export function deleteTransaction(id: string): Promise<{ success?: boolean }> {
+  return apiFetch<{ success?: boolean }>(`/transactions/${id}`, {
+    method: "DELETE",
+  });
+}

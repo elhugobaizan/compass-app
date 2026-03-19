@@ -1,14 +1,16 @@
 import { JSX } from "react";
-import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight } from "lucide-react";
+import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight, Trash2 } from "lucide-react";
 import { formatRelativeDate } from "@/utils/formatters";
+import Button from "../ui/Button";
 
 type TransactionRowProps = {
-  concept?: string | null;
-  amount: string | number;
-  date: string;
-  typeLabel?: string;
-  categoryLabel?: string;
-  location?: string | null;
+  readonly concept?: string | null;
+  readonly amount: string | number;
+  readonly date: string;
+  readonly typeLabel?: string;
+  readonly categoryLabel?: string;
+  readonly location?: string | null;
+  readonly onDelete?: () => void;
 };
 
 function getAmountClass(typeLabel?: string): string {
@@ -68,6 +70,7 @@ export default function TransactionRow({
   typeLabel,
   categoryLabel,
   location,
+  onDelete,
 }: TransactionRowProps): JSX.Element {
   return (
     <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-100 bg-white px-4 py-3">
@@ -114,6 +117,17 @@ export default function TransactionRow({
           {formatDisplayAmount(amount, typeLabel)}
         </p>
       </div>
+
+      {onDelete && (
+        <Button
+          type="button"
+          onClick={onDelete}
+          className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600"
+          aria-label="Eliminar movimiento"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }
