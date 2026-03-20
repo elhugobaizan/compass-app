@@ -6,9 +6,11 @@ import TransactionRow from "@/components/finance/TransactionRow";
 import type { Transaction } from "@/types/transaction";
 import { getRecentTransactions } from "@/utils/transactions";
 import Button from "@/components/ui/Button";
-import CategoryBreakdownList from "@/components/finance/CategoryBreakdownList";
 import { useNavigate } from "react-router-dom";
 import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
+import { useMonthlyIncomeExpense } from "@/hooks/useMonthlyIncomeExpense";
+import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart";
+import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
 
 type ActivitySectionProps = {
   readonly isMobile: boolean;
@@ -28,13 +30,40 @@ export default function ActivitySection({
   const navigate = useNavigate();
   const expenseBreakdown = useExpenseBreakdown(transactions);
   const topExpenseBreakdown = expenseBreakdown.slice(0, 5);
+  const monthlyData = useMonthlyIncomeExpense(transactions);
 
   return (
     <SectionBlock
       title="Actividad"
       subtitle={isMobile ? undefined : "Gráficos y movimientos recientes"}
     >
-      <div className={isMobile ? "space-y-4" : "grid grid-cols-2 gap-6"}>
+      <div className={isMobile ? "space-y-4" : "grid grid-cols-3 gap-6"}>
+        <PanelCard
+          title="Ingresos vs  Gastos"
+          subtitle="Ultimos meses"
+          className="h-64"
+        >
+          {isLoading && (
+            <p className="text-sm text-gray-500">Cargando gráfico...</p>
+          )}
+          {isError && (
+            <EmptyState 
+              title=""
+              description=""
+              variant="error"
+            />
+          )}
+          {!isLoading && !isError && monthlyData.length === 0 && (
+            <EmptyState 
+              title=""
+              description=""
+            />
+          )}
+          {!isLoading && !isError && monthlyData.length > 0 && (
+            <IncomeExpenseChart items={monthlyData} />
+          )}
+        </PanelCard>
+
         <PanelCard
           title="Gastos por categoría"
           subtitle="Mes actual"
@@ -61,7 +90,7 @@ export default function ActivitySection({
 
           {!isLoading && !isError && topExpenseBreakdown.length > 0 && (
             <div className="h-full overflow-y-auto pr-1">
-              <CategoryBreakdownList items={topExpenseBreakdown} />
+              <CategoryBreakdownChart items={topExpenseBreakdown} />
             </div>
           )}
         </PanelCard>

@@ -1,5 +1,6 @@
 import type { Transaction } from "@/types/transaction";
 import { toNumber } from "@/utils/numbers";
+import { TRANSACTION_TYPES } from "./transactionTypes";
 
 export function getRecentTransactions(
   transactions: Transaction[],
@@ -36,7 +37,7 @@ export function getMonthlyExpenseBreakdownByCategory(
 ): CategoryBreakdownItem[] {
   const expenses = transactions.filter(
     (transaction) =>
-      transaction.type_id === "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d" &&
+      transaction.type.name === TRANSACTION_TYPES.GASTO &&
       isCurrentMonth(transaction.date)
   );
 
@@ -74,4 +75,62 @@ export function getMonthlyExpenseBreakdownByCategory(
       percentage: grandTotal > 0 ? (item.total / grandTotal) * 100 : 0,
     }))
     .sort((a, b) => b.total - a.total);
+}
+
+type MonthlySummaryItem = {
+  month: string;
+  income: number;
+  expense: number;
+};
+
+function getMonthKey(dateString: string): string {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}-${date.getMonth()}`;
+}
+
+function formatMonthLabel(key: string): string {
+  const [year, month] = key.split("-");
+  const date = new Date(Number(year), Number(month));
+
+  return date.toLocaleDateString("es-AR", {
+    month: "short",
+  });
+}
+
+export function getMonthlyIncomeExpense(
+  transactions: Transaction[] = [],
+  limit = 6
+): MonthlySummaryItem[] {
+  const map = transactions.reduce<Record<string, MonthlySummaryItem>>(
+    (acc, tx) => {
+      const key = getMonthKey(tx.date);
+
+      if (!acc[key]) {
+        acc[key] = {
+          month: key,
+          income: 0,
+          expense: 0,
+        };
+      }
+
+      const amount = toNumber(tx.amount);
+
+      if (tx.type.name === TRANSACTION_TYPES.GASTO) {
+        acc[key].expense += amount;
+      } else if (tx.type.name === TRANSACTION_TYPES.INGRESO) {
+        acc[key].income += amount;
+      }
+
+      return acc;
+    },
+    {}
+  );
+
+  return Object.values(map)
+    .sort((a, b) => (a.month > b.month ? 1 : -1))
+    .slice(-limit)
+    .map((item) => ({
+      ...item,
+      month: formatMonthLabel(item.month),
+    }));
 }

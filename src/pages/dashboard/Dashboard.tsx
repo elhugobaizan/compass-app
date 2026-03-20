@@ -67,19 +67,19 @@ export default function Dashboard(): JSX.Element {
         summary={summary}
       />
 
+      <ActivitySection
+        isMobile={isMobile}
+        transactions={transactions}
+        isLoading={isLoadingTransactions}
+        isError={isErrorTransactions}
+      />
+
       <AccountsSection
         isMobile={isMobile}
         accounts={accounts}
         transactions={transactions}
         isLoading={isLoadingAccounts}
         isError={isErrorAccounts}
-      />
-
-      <ActivitySection
-        isMobile={isMobile}
-        transactions={transactions}
-        isLoading={isLoadingTransactions}
-        isError={isErrorTransactions}
       />
 
       <CreateTransactionSheet
