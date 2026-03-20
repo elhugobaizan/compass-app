@@ -6,8 +6,17 @@ import {
   ACCOUNT_TYPE_OPTIONS,
   CURRENCY_OPTIONS,
 } from "@/types/accountGroup";
+import { Account } from "@/types/account";
+import { useUpdateAccount } from "@/hooks/mutations/useUpdateAccount";
+
+type AccountFormValues = Pick<Account,
+  'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method'
+>;
 
 type AccountFormProps = {
+  readonly mode?: "create" | "edit";
+  readonly accountId?: string;
+  readonly initialValues?: AccountFormValues
   readonly onSuccess?: () => void;
 };
 
@@ -15,8 +24,7 @@ function todayDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function formatErrorMessage(input: unknown): string {
-  console.log(typeof input);
+function formatErrorMessage(input: unknown, mode: "create" | "edit"): string {
   if (typeof input !== "string") {
     return String("No pudimos guardar la cuenta.");
   }
@@ -32,7 +40,7 @@ function formatErrorMessage(input: unknown): string {
     if (match?.[1]) {
       return match[1].trim();
     } else {
-      return "No pudimos guardar la cuenta.";
+      return mode === "edit" ? "No pudimos actualizar la cuenta." : "No pudimos guardar la cuenta.";
     }
   }
 
@@ -40,22 +48,28 @@ function formatErrorMessage(input: unknown): string {
 }
 
 export default function AccountForm({
+  mode = "create",
+  accountId,
+  initialValues,
   onSuccess,
 }: AccountFormProps): JSX.Element {
-  const { mutateAsync, isPending } = useCreateAccount();
+  const { mutateAsync: createMutate, isPending: isCreating } = useCreateAccount();
+  const { mutateAsync: updateMutate, isPending: isUpdating } = useUpdateAccount();
 
-  const [name, setName] = useState("");
-  const [accountType, setAccountType] = useState("WALLET");
-  const [accountGroupId, setAccountGroupId] = useState("");
-  const [currency, setCurrency] = useState("ARS");
-  const [institution, setInstitution] = useState("");
-  const [openingBalance, setOpeningBalance] = useState("");
-  const [openingDate, setOpeningDate] = useState(todayDate());
-  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
+  const isPending = isCreating || isUpdating;
+
+  const [name, setName] = useState(initialValues?.name || "");
+  const [accountType, setAccountType] = useState(initialValues?.account_type || "WALLET");
+  const [accountGroupId, setAccountGroupId] = useState(initialValues?.account_group_id || "");
+  const [currency, setCurrency] = useState(initialValues?.currency || "ARS");
+  const [institution, setInstitution] = useState(initialValues?.institution || "");
+  const [openingBalance, setOpeningBalance] = useState(initialValues?.opening_balance || 0);
+  const [openingDate, setOpeningDate] = useState(initialValues?.opening_date || todayDate());
+  const [isPaymentMethod, setIsPaymentMethod] = useState(initialValues?.is_payment_method || false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const parsedOpeningBalance =
-    openingBalance.trim() === "" ? undefined : Number(openingBalance);
+    openingBalance === 0 ? undefined : Number(openingBalance);
 
   const isValid =
     name.trim().length > 0 &&
@@ -67,36 +81,46 @@ export default function AccountForm({
     event.preventDefault();
     if (!isValid) return;
 
+    const payload = {
+      name: name.trim(),
+      account_type: accountType,
+      account_group_id: accountGroupId,
+      currency,
+      institution: institution.trim() || undefined,
+      opening_balance:
+        parsedOpeningBalance !== undefined &&
+          Number.isFinite(parsedOpeningBalance)
+          ? parsedOpeningBalance
+          : undefined,
+      opening_date: openingDate + "T00:00:00.000Z",
+      is_payment_method: isPaymentMethod,
+    };
+
     try {
       setSubmitError(null);
 
-      await mutateAsync({
-        name: name.trim(),
-        account_type: accountType,
-        account_group_id: accountGroupId,
-        currency,
-        institution: institution.trim() || undefined,
-        opening_balance:
-          parsedOpeningBalance !== undefined &&
-          Number.isFinite(parsedOpeningBalance)
-            ? parsedOpeningBalance
-            : undefined,
-        opening_date: openingDate || undefined,
-        is_payment_method: isPaymentMethod,
-      });
+      if (mode === "edit") {
+        if (!accountId) {
+          setSubmitError("El accountId es requerido en modo edición.");
+          return;
+        }
+        await updateMutate({ id: accountId, data: payload });
+      } else {
+        await createMutate(payload);
 
-      setName("");
-      setAccountType("WALLET");
-      setAccountGroupId("");
-      setCurrency("ARS");
-      setInstitution("");
-      setOpeningBalance("");
-      setOpeningDate(todayDate());
-      setIsPaymentMethod(false);
+        setName("");
+        setAccountType("WALLET");
+        setAccountGroupId("");
+        setCurrency("ARS");
+        setInstitution("");
+        setOpeningBalance(0);
+        setOpeningDate(todayDate());
+        setIsPaymentMethod(false);
+      }
 
       onSuccess?.();
     } catch (error) {
-      const message = formatErrorMessage(error);
+      const message = formatErrorMessage(error, mode);
 
       setSubmitError(message);
     }
@@ -200,7 +224,7 @@ export default function AccountForm({
             inputMode="decimal"
             step="0.01"
             value={openingBalance}
-            onChange={(e) => setOpeningBalance(e.target.value)}
+            onChange={(e) => setOpeningBalance(Number(e.target.value))}
             className="w-full rounded-lg border border-gray-200 px-3 py-2"
             placeholder="0"
           />
@@ -208,10 +232,11 @@ export default function AccountForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">
           Fecha inicial
         </label>
         <input
+          name="date"
           type="date"
           value={openingDate}
           onChange={(e) => setOpeningDate(e.target.value)}

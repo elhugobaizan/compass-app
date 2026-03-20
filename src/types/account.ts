@@ -9,7 +9,7 @@ export type Account = {
   institution?: string | null;
   identifier?: string | null;
   alias?: string | null;
-  opening_balance?: string | null;
+  opening_balance?: number | null;
   opening_date?: string | null;
   interest_rate?: string | null;
   is_payment_method: boolean;

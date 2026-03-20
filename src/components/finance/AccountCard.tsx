@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, ReactNode } from "react";
 import Card from "../ui/Card";
 import StatRow from "../ui/StatRow";
 import { formatCurrency } from "@/utils/formatters";
@@ -11,6 +11,7 @@ type AccountCardProps = {
   readonly accountGroup?: string;
   readonly balance?: number | string;
   readonly isPaymentMethod?: boolean;
+  readonly action?: ReactNode;
 };
 
 export default function AccountCard({
@@ -21,6 +22,7 @@ export default function AccountCard({
   accountGroup,
   balance,
   isPaymentMethod = false,
+  action,
 }: AccountCardProps): JSX.Element {
   return (
     <Card className="space-y-3">
@@ -51,6 +53,7 @@ export default function AccountCard({
           <StatRow label="Saldo" value={typeof balance === "number" ? formatCurrency(balance) : balance} />
         </div>
       )}
+      {action && <div className="shrink-0">{action}</div>}
     </Card>
   );
 }
