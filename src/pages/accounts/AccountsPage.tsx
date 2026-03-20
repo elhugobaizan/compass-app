@@ -42,6 +42,7 @@ export default function AccountsPage(): JSX.Element {
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     data: accounts,
@@ -59,7 +60,17 @@ export default function AccountsPage(): JSX.Element {
   async function handleConfirmDelete() {
     if (!accountToDelete) return;
 
-    await deleteAccount(accountToDelete.id);
+    try {
+      setSubmitError(null);
+
+      await deleteAccount(accountToDelete.id);
+    } catch (error) {
+      if(error instanceof Error) {
+        setSubmitError(JSON.parse(error.message));
+      } else {
+        setSubmitError("Error inesperado.");
+      }
+    }
     setAccountToDelete(null);
   }
 
@@ -78,6 +89,12 @@ export default function AccountsPage(): JSX.Element {
           </Button>
         }
       />
+
+      {submitError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {submitError}
+        </div>
+      )}
 
       {isLoading && (
         <p className="text-sm text-gray-500">Cargando cuentas...</p>
