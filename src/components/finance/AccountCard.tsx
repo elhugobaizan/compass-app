@@ -11,6 +11,7 @@ type AccountCardProps = {
   readonly accountGroup?: string;
   readonly balance?: number | string;
   readonly isPaymentMethod?: boolean;
+  readonly isMobile?: boolean;
   readonly action?: ReactNode;
 };
 
@@ -22,6 +23,7 @@ export default function AccountCard({
   accountGroup,
   balance,
   isPaymentMethod = false,
+  isMobile,
   action,
 }: AccountCardProps): JSX.Element {
   return (
@@ -32,7 +34,7 @@ export default function AccountCard({
             {name}
           </h3>
 
-          {institution && (
+          {!isMobile && institution && (
             <p className="mt-1 text-sm text-gray-500">{institution}</p>
           )}
         </div>
@@ -42,18 +44,18 @@ export default function AccountCard({
         </span>
       </div>
 
-      <div className="space-y-2">
+      {!isMobile && (<div className="space-y-2">
         <StatRow label="Tipo" value={accountType} muted />
         {accountGroup && <StatRow label="Grupo" value={accountGroup} muted />}
         {isPaymentMethod && <StatRow label="Uso" value="Método de pago" muted />}
-      </div>
+      </div>)}
 
       {balance !== undefined && balance !== null && (
         <div className="border-t border-gray-100 pt-3">
           <StatRow label="Saldo" value={typeof balance === "number" ? formatCurrency(balance) : balance} />
         </div>
       )}
-      {action && <div className="shrink-0">{action}</div>}
+      {!isMobile && action && <div className="shrink-0">{action}</div>}
     </Card>
   );
 }

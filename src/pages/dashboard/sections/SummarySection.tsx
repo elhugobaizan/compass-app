@@ -16,6 +16,7 @@ type SummarySectionProps = {
     investments: number;
     monthlyIncome: number;
     monthlyExpenses: number;
+    monthlySavings: number;
     trends: {
       netWorth?: {
         value: string;
@@ -26,6 +27,10 @@ type SummarySectionProps = {
         direction: "up" | "down" | "neutral";
       };
       expenses?: {
+        value: string;
+        direction: "up" | "down" | "neutral";
+      };
+      savings?: {
         value: string;
         direction: "up" | "down" | "neutral";
       };
@@ -46,8 +51,8 @@ export default function SummarySection({
   const expensesValue = hasTransactions
     ? formatCurrency(summary.monthlyExpenses)
     : null;
-  const incomeValue = hasTransactions
-    ? formatCurrency(summary.monthlyIncome)
+  const savingsValue = hasTransactions
+    ? formatCurrency(summary.monthlySavings)
     : null;
 
   return (
@@ -78,21 +83,22 @@ export default function SummarySection({
           tone="positive"
         />
 
-        <KPICard
+        <KPICard 
+          label="Ahorros del mes"
+          value={savingsValue}
+          isLoading={isLoading}
+          tone={summary.monthlySavings > 0 ? "positive" : "negative"}
+          trend={summary.trends.savings}
+        />
+
+        {!isMobile && <KPICard
           label="Gastos del mes"
           value={expensesValue}
           isLoading={isLoading}
           tone="negative"
           trend={summary.trends.expenses}
-        />
+        />}
 
-        <KPICard
-          label="Ingresos del mes"
-          value={incomeValue}
-          isLoading={isLoading}
-          tone="positive"
-          trend={summary.trends.income}
-        />
       </div>
     </SectionBlock>
   );

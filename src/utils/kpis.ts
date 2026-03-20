@@ -23,10 +23,12 @@ type SummaryKPIs = {
   investments: number;
   monthlyIncome: number;
   monthlyExpenses: number;
+  monthlySavings: number;
   trends: {
     netWorth?: Trend;
     income?: Trend;
     expenses?: Trend;
+    savings?: Trend;
   };
 };
 
@@ -101,10 +103,12 @@ export function calculateSummaryKPIs(
     investments: 0,
     monthlyIncome: 0,
     monthlyExpenses: 0,
+    monthlySavings: 0,
     trends: {
       netWorth: undefined,
       income: undefined,
       expenses: undefined,
+      savings: undefined,
     },
   };
 
@@ -133,6 +137,7 @@ export function calculateSummaryKPIs(
 
   withAccounts.monthlyIncome = income.current;
   withAccounts.monthlyExpenses = expenses.current;
+  withAccounts.monthlySavings = income.current - expenses.current;
 
   withAccounts.trends.income = calculateTrend(
     income.current,
@@ -154,5 +159,13 @@ export function calculateSummaryKPIs(
     "up"
   );
 
+  const previousSavings = income.previous - expenses.previous;
+
+  withAccounts.trends.savings = calculateTrend(
+    withAccounts.monthlySavings,
+    previousSavings,
+    "up"
+  );
+  
   return withAccounts;
 }

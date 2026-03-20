@@ -7,6 +7,7 @@ import type { Account } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
 import { accountGroupLabels } from "@/utils/accountGroups";
 import { getMostUsedAccounts } from "@/utils/accounts";
+import { formatCurrency } from "@/utils/formatters";
 
 type AccountsSectionProps = {
   readonly isMobile: boolean;
@@ -33,7 +34,7 @@ export default function AccountsSection({
     <SectionBlock
       title="Cuentas"
       subtitle={isMobile ? undefined : "Wallets, bancos y brokers"}
-      action={<Button disabled>Ver todas</Button>}
+      action={!isMobile && <Button disabled>Ver todas</Button>}
     >
       {isLoading && <p className="text-sm text-gray-500">Cargando cuentas...</p>}
 
@@ -58,11 +59,12 @@ export default function AccountsSection({
             <AccountCard
               key={account.id}
               name={account.name}
+              isMobile={isMobile}
               institution={account.institution}
               currency={account.currency}
               accountType={account.account_type}
               accountGroup={accountGroupLabels[account.account_group.name] ?? "UNKNOWN"}
-              balance={account.opening_balance ?? "-"}
+              balance={(account.opening_balance && formatCurrency(account.opening_balance)) ?? "-"}
               isPaymentMethod={account.is_payment_method}
             />
           ))}

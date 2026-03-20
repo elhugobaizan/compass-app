@@ -38,7 +38,7 @@ export default function ActivitySection({
       subtitle={isMobile ? undefined : "Gráficos y movimientos recientes"}
     >
       <div className={isMobile ? "space-y-4" : "grid grid-cols-3 gap-6"}>
-        <PanelCard
+        {!isMobile && (<PanelCard
           title="Ingresos vs  Gastos"
           subtitle="Ultimos meses"
           className="h-64"
@@ -62,9 +62,9 @@ export default function ActivitySection({
           {!isLoading && !isError && monthlyData.length > 0 && (
             <IncomeExpenseChart items={monthlyData} />
           )}
-        </PanelCard>
+        </PanelCard>)}
 
-        <PanelCard
+        {!isMobile && (<PanelCard
           title="Gastos por categoría"
           subtitle="Mes actual"
           className="h-64"
@@ -93,7 +93,7 @@ export default function ActivitySection({
               <CategoryBreakdownChart items={topExpenseBreakdown} />
             </div>
           )}
-        </PanelCard>
+        </PanelCard>)}
 
         <PanelCard
           title="Últimos movimientos"

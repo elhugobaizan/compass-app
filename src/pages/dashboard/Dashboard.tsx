@@ -45,13 +45,17 @@ export default function Dashboard(): JSX.Element {
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <div className="flex flex-wrap justify-end gap-2">
-        <Button variant="secondary" onClick={() => setIsCreateAccountOpen(true)}>
-          + Cuenta
-        </Button>
-        
-        <Button variant="secondary" onClick={() => setIsCreateAssetOpen(true)}>
-          + Asset
-        </Button>
+        {!isMobile && (
+          <>
+            <Button variant="secondary" onClick={() => setIsCreateAccountOpen(true)}>
+              + Cuenta
+            </Button>
+            
+            <Button variant="secondary" onClick={() => setIsCreateAssetOpen(true)}>
+              + Asset
+            </Button>
+          </>
+        )}
 
         <Button onClick={() => setIsCreateTransactionOpen(true)}>
           + Movimiento
