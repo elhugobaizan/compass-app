@@ -6,7 +6,9 @@ import TransactionRow from "@/components/finance/TransactionRow";
 import type { Transaction } from "@/types/transaction";
 import { getRecentTransactions } from "@/utils/transactions";
 import Button from "@/components/ui/Button";
+import CategoryBreakdownList from "@/components/finance/CategoryBreakdownList";
 import { useNavigate } from "react-router-dom";
+import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
 
 type ActivitySectionProps = {
   readonly isMobile: boolean;
@@ -24,6 +26,8 @@ export default function ActivitySection({
   const recentTransactions = getRecentTransactions(transactions || [], 3);
   const hasTransactions = !!recentTransactions?.length;
   const navigate = useNavigate();
+  const expenseBreakdown = useExpenseBreakdown(transactions);
+  const topExpenseBreakdown = expenseBreakdown.slice(0, 5);
 
   return (
     <SectionBlock
@@ -32,14 +36,34 @@ export default function ActivitySection({
     >
       <div className={isMobile ? "space-y-4" : "grid grid-cols-2 gap-6"}>
         <PanelCard
-          title="Evolución mensual"
-          subtitle="Patrimonio, liquidez e inversión"
+          title="Gastos por categoría"
+          subtitle="Mes actual"
           className="h-64"
         >
-          <EmptyState
-            title="Todavía no hay movimientos"
-            description="Cuando registres movimientos y saldos, vas a ver la evolución acá."
-          />
+          {isLoading && (
+            <p className="text-sm text-gray-500">Cargando breakdown...</p>
+          )}
+
+          {isError && (
+            <EmptyState
+              title="No pudimos calcular el breakdown"
+              description="Revisá la conexión o el backend e intentá de nuevo."
+              variant="error"
+            />
+          )}
+
+          {!isLoading && !isError && topExpenseBreakdown.length === 0 && (
+            <EmptyState 
+              title="Todavía no hay gastos categorizados"
+              description="Cuando registres gastos, vas a ver el breakdown acá."
+            />
+          )}
+
+          {!isLoading && !isError && topExpenseBreakdown.length > 0 && (
+            <div className="h-full overflow-y-auto pr-1">
+              <CategoryBreakdownList items={topExpenseBreakdown} />
+            </div>
+          )}
         </PanelCard>
 
         <PanelCard
