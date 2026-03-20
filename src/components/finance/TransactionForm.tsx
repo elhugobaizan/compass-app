@@ -4,16 +4,11 @@ import type { Account } from "@/types/account";
 import type { Category } from "@/types/category";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 import { useUpdateTransaction } from "@/hooks/mutations/useUpdateTransaction";
+import { Transaction } from "@/types/transaction";
 
-type TransactionFormValues = {
-  concept?: string;
-  amount: number;
-  date: string;
-  account_id: string;
-  category_id?: string;
-  type_id: string;
-  location?: string;
-};
+
+type TransactionFormValues = Pick<Transaction,
+  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location'>;
 
 type TransactionFormProps = {
   readonly accounts: Account[];
@@ -106,7 +101,7 @@ export default function TransactionForm({
       onSuccess?.();
     } catch (error) {
       const message = error instanceof Error ? error.message :
-        mode === "edit" ? "Error al actualizar el movimiento." : "Error al crear el movimiento.";
+        mode === "edit" ? "No pudimos actualizar el movimiento." : "No pudimos guardar el movimiento.";
       console.log(error);
       setSubmitError(message);
     }

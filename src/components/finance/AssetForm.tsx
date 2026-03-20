@@ -2,9 +2,17 @@ import { useMemo, useState, JSX } from "react";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import { useCreateAsset } from "@/hooks/mutations/useCreateAsset";
+import { Asset } from "@/types/asset";
+import { useUpdateAsset } from "@/hooks/mutations/useUpdateAsset";
+
+type AssetFormValues = Pick<Asset,
+  'name' | 'symbol' | 'asset_type' | 'quantity' | 'price' | 'capital' | 'interest' | 'start_date' | 'maturity' | 'account_id'>;
 
 type AssetFormProps = {
   readonly accounts: Account[];
+  readonly mode?: "create" | "edit";
+  readonly assetId?: string;
+  readonly initialValues?: AssetFormValues;
   readonly onSuccess?: () => void;
 };
 
@@ -17,20 +25,26 @@ const ASSET_TYPES = [
 
 export default function AssetForm({
   accounts,
+  mode = "create",
+  assetId,
+  initialValues,
   onSuccess,
 }: AssetFormProps): JSX.Element {
-  const { mutateAsync, isPending } = useCreateAsset();
+  const { mutateAsync: createMutate, isPending: isCreating } = useCreateAsset();
+  const { mutateAsync: updateMutate, isPending: isUpdating } = useUpdateAsset();
 
-  const [accountId, setAccountId] = useState("");
-  const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [assetType, setAssetType] = useState("CRYPTO");
-  const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
-  const [capital, setCapital] = useState("");
-  const [interest, setInterest] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [maturity, setMaturity] = useState("");
+  const isPending = isCreating || isUpdating;
+
+  const [accountId, setAccountId] = useState(initialValues?.account_id || "");
+  const [name, setName] = useState(initialValues?.name || "");
+  const [symbol, setSymbol] = useState(initialValues?.symbol || "");
+  const [assetType, setAssetType] = useState(initialValues?.asset_type || "CRYPTO");
+  const [quantity, setQuantity] = useState(initialValues?.quantity?.toString() || "");
+  const [price, setPrice] = useState(initialValues?.price?.toString() || "");
+  const [capital, setCapital] = useState(initialValues?.capital?.toString() || "");
+  const [interest, setInterest] = useState(initialValues?.interest?.toString() || "");
+  const [startDate, setStartDate] = useState(initialValues?.start_date || "");
+  const [maturity, setMaturity] = useState(initialValues?.maturity || "");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isMarketAsset = useMemo(
@@ -46,39 +60,47 @@ export default function AssetForm({
     event.preventDefault();
     if (!isValid) return;
 
+    const payload = {
+      account_id: accountId,
+      name: name.trim(),
+      symbol: symbol.trim() || undefined,
+      asset_type: assetType,
+      quantity: quantity ? Number(quantity) : undefined,
+      price: price ? Number(price) : undefined,
+      capital: capital ? Number(capital) : undefined,
+      interest: interest ? Number(interest) : undefined,
+      start_date: startDate || undefined,
+      maturity: maturity || undefined,
+    };
+
     try {
       setSubmitError(null);
 
-      await mutateAsync({
-        account_id: accountId,
-        name: name.trim(),
-        symbol: symbol.trim() || undefined,
-        asset_type: assetType,
-        quantity: quantity ? Number(quantity) : undefined,
-        price: price ? Number(price) : undefined,
-        capital: capital ? Number(capital) : undefined,
-        interest: interest ? Number(interest) : undefined,
-        start_date: startDate || undefined,
-        maturity: maturity || undefined,
-      });
+      if (mode === "edit") {
+        if (!assetId) {
+          setSubmitError("El assetId es requerido en modo edición.");
+          return;
+        }
+        await updateMutate({ id: assetId, data: payload });
+      } else {
+        await createMutate(payload);
 
-      setAccountId("");
-      setName("");
-      setSymbol("");
-      setAssetType("CRYPTO");
-      setQuantity("");
-      setPrice("");
-      setCapital("");
-      setInterest("");
-      setStartDate("");
-      setMaturity("");
+        setAccountId("");
+        setName("");
+        setSymbol("");
+        setAssetType("CRYPTO");
+        setQuantity("");
+        setPrice("");
+        setCapital("");
+        setInterest("");
+        setStartDate("");
+        setMaturity("");
+      }
 
       onSuccess?.();
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "No pudimos guardar el asset.";
+      const message = error instanceof Error ? error.message :
+        mode === "edit" ? "No pudimos actualizar el activo." : "No pudimos guardar el activo.";
 
       setSubmitError(message);
     }

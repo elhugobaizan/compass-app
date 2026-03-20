@@ -120,7 +120,7 @@ export default function TransactionRow({
         </p>
       </div>
 
-      <div>
+      <div className="flex items-center gap-1">
         {onEdit && (
           <Button
             type="button"

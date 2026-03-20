@@ -1,10 +1,14 @@
 import { JSX } from "react";
 import type { Asset } from "@/types/asset";
 import { formatCurrency } from "@/utils/formatters";
+import Button from "../ui/Button";
+import { Pencil, Trash2 } from "lucide-react";
 
 type AssetRowProps = {
   readonly asset: Asset;
   readonly accountName?: string;
+  readonly onEdit?: () => void;
+  readonly onDelete?: () => void;
 };
 
 function toNumber(value: string | number | null | undefined): number {
@@ -40,6 +44,8 @@ function getAssetMeta(asset: Asset): string {
 export default function AssetRow({
   asset,
   accountName,
+  onEdit,
+  onDelete,
 }: AssetRowProps): JSX.Element {
   const assetValue = getAssetValue(asset);
 
@@ -83,6 +89,30 @@ export default function AssetRow({
         ) : (
           <p className="text-sm text-gray-400">—</p>
         )}
+      </div>
+
+      <div className="flex items-center gap-1">
+        {onEdit && (
+          <Button
+            type="button"
+            onClick={onEdit}
+            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+            aria-label="Editar movimiento"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        )}
+        {onDelete && (
+          <Button
+            type="button"
+            onClick={onDelete}
+            className="ml-2 rounded-md p-1.5 text-red-400 hover:bg-red-100 hover:text-red-700"
+            aria-label="Eliminar activo"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
+
       </div>
     </div>
   );

@@ -2,35 +2,15 @@
 import { apiFetch } from "./api";
 import type { Transaction } from "@/types/transaction";
 
-export type CreateTransactionInput = {
-  concept?: string;
-  amount: number;
-  date: string;
-  account_id: string;
-  category_id?: string;
-  type_id: string;
-  location?: string;
-};
+type TransactionInput = Pick<Transaction,
+  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location'>;
+// Despues deberia ser Omit<Transaction, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
-export type UpdateTransactionInput = {
-  concept?: string;
-  amount: number;
-  date: string;
-  account_id: string;
-  category_id?: string;
-  type_id: string;
-  location?: string;
-};
+export type CreateTransactionInput = TransactionInput;
 
-type UpdateTransactionPayload = {
-  concept?: string;
-  amount: string;
-  date: string;
-  account_id: string;
-  category_id?: string;
-  type_id: string;
-  location?: string;
-};
+export type UpdateTransactionInput = TransactionInput
+
+type UpdateTransactionPayload = TransactionInput
 
 export function getTransactions(): Promise<Transaction[]> {
   return apiFetch<Transaction[]>("/transactions");
@@ -56,7 +36,7 @@ function mapUpdateTransactionInput(
 ): UpdateTransactionPayload {
   return {
     concept: input.concept,
-    amount: String(input.amount),
+    amount: input.amount,
     date: input.date,
     account_id: input.account_id,
     category_id: input.category_id,

@@ -13,6 +13,9 @@ import type { Asset } from "@/types/asset";
 import type { Account } from "@/types/account";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
+import EditAssetSheet from "@/components/finance/EditAssetSheet";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { useDeleteAsset } from "@/hooks/mutations/useDeleteAsset";
 
 function sortAssets(assets: Asset[] = []): Asset[] {
   return [...assets].sort((a, b) => a.name.localeCompare(b.name));
@@ -28,6 +31,8 @@ function buildAccountMap(accounts: Account[] = []): Record<string, string> {
 export default function AssetsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
+  const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
+  const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
 
   const {
     data: assets,
@@ -41,8 +46,17 @@ export default function AssetsPage(): JSX.Element {
     isError: isErrorAccounts,
   } = useAccountsQuery();
 
+  const { mutateAsync: deleteAsset, isPending: isDeleting } = useDeleteAsset();
+
   const sortedAssets = useMemo(() => sortAssets(assets ?? []), [assets]);
   const accountMap = useMemo(() => buildAccountMap(accounts ?? []), [accounts]);
+
+  async function handleConfirmDelete() {
+    if (!assetToDelete) return;
+
+    await deleteAsset(assetToDelete.id);
+    setAssetToDelete(null);
+  }
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
@@ -87,6 +101,8 @@ export default function AssetsPage(): JSX.Element {
               key={asset.id}
               asset={asset}
               accountName={accountMap[asset.account_id]}
+              onEdit={() => setAssetToEdit(asset)}
+              onDelete={() => setAssetToDelete(asset)}
             />
           ))}
         </div>
@@ -98,6 +114,25 @@ export default function AssetsPage(): JSX.Element {
         accounts={accounts}
         isLoadingAccounts={isLoadingAccounts}
         isErrorAccounts={isErrorAccounts}
+      />
+
+      <EditAssetSheet
+        open={!!assetToEdit}
+        onClose={() => setAssetToEdit(null)}
+        asset={assetToEdit}
+        accounts={accounts}
+        isLoadingAccounts={isLoadingAccounts}
+        isErrorAccounts={isErrorAccounts}
+      />
+
+      <ConfirmDialog
+        open={!!assetToDelete}
+        title="Eliminar activo"
+        description="Esta acción quitará el activo del listado y actualizará el resumen."
+        confirmText="Eliminar"
+        isLoading={isDeleting}
+        onClose={() => setAssetToDelete(null)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );
