@@ -3,10 +3,24 @@ import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import type { Category } from "@/types/category";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
+import { useUpdateTransaction } from "@/hooks/mutations/useUpdateTransaction";
+
+type TransactionFormValues = {
+  concept?: string;
+  amount: number;
+  date: string;
+  account_id: string;
+  category_id?: string;
+  type_id: string;
+  location?: string;
+};
 
 type TransactionFormProps = {
   readonly accounts: Account[];
   readonly categories: Category[];
+  readonly mode?: "create" | "edit";
+  readonly transactionId?: string;
+  readonly initialValues?: TransactionFormValues;
   readonly onSuccess?: () => void;
 };
 
@@ -22,17 +36,23 @@ function todayDate(): string {
 export default function TransactionForm({
   accounts,
   categories,
+  mode = "create",
+  transactionId,
+  initialValues,
   onSuccess,
 }: TransactionFormProps): JSX.Element {
-  const { mutateAsync, isPending } = useCreateTransaction();
+  const { mutateAsync: createMutate, isPending: isCreating } = useCreateTransaction();
+  const { mutateAsync: updateMutate, isPending: isUpdating } = useUpdateTransaction();
 
-  const [amount, setAmount] = useState("");
-  const [concept, setConcept] = useState("");
-  const [date, setDate] = useState(todayDate());
-  const [typeId, setTypeId] = useState("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
-  const [accountId, setAccountId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [location, setLocation] = useState("");
+  const isPending = isCreating || isUpdating;
+
+  const [amount, setAmount] = useState(initialValues?.amount.toString() ?? "");
+  const [concept, setConcept] = useState(initialValues?.concept ?? "");
+  const [date, setDate] = useState(initialValues?.date ?? todayDate());
+  const [typeId, setTypeId] = useState(initialValues?.type_id ?? "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
+  const [accountId, setAccountId] = useState(initialValues?.account_id ?? "");
+  const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? "");
+  const [location, setLocation] = useState(initialValues?.location ?? "");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const filteredCategories = useMemo(() => {
@@ -52,31 +72,43 @@ export default function TransactionForm({
     event.preventDefault();
     if (!isValid) return;
 
+    const payload = {
+      amount: parsedAmount,
+      concept: concept.trim() || undefined,
+      date: date + "T00:00:00.000Z",
+      account_id: accountId,
+      category_id: categoryId || undefined,
+      type_id: typeId,
+      location: location.trim() || undefined,
+    };
+
     try {
       setSubmitError(null);
 
-      await mutateAsync({
-        amount: parsedAmount,
-        concept: concept.trim() || undefined,
-        date: date + "T00:00:00.000Z",
-        account_id: accountId,
-        category_id: categoryId || undefined,
-        type_id: typeId,
-        location: location.trim() || undefined,
-      });
+      if (mode === "edit") {
+        if (!transactionId) {
+          throw new Error("El transactionId es requerido en modo edición.");
+        }
 
-      setAmount("");
-      setConcept("");
-      setDate(todayDate());
-      setTypeId("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
-      setAccountId("");
-      setCategoryId("");
-      setLocation("");
+        await updateMutate({ id: transactionId, data: payload });
+      } else {
+        await createMutate(payload);
+
+        setAmount("");
+        setConcept("");
+        setDate(todayDate());
+        setTypeId("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
+        setAccountId("");
+        setCategoryId("");
+        setLocation("");
+      }
 
       onSuccess?.();
     } catch (error) {
+      const message = error instanceof Error ? error.message :
+        mode === "edit" ? "Error al actualizar el movimiento." : "Error al crear el movimiento.";
       console.log(error);
-      setSubmitError("No pudimos guardar el movimiento.");
+      setSubmitError(message);
     }
   }
 

@@ -16,6 +16,7 @@ import { transactionTypeLabels } from "@/utils/transactionTypes";
 import type { Transaction } from "@/types/transaction";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
+import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
 
 function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
   return [...transactions].sort(
@@ -26,7 +27,8 @@ function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
-  const [transactionToDelete, setTransactionToDelete]  = useState<Transaction | null>(null);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
 
   const {
     data: transactions,
@@ -46,7 +48,7 @@ export default function TransactionsPage(): JSX.Element {
     isError: isErrorCategories,
   } = useCategoriesQuery();
 
-  const { mutateAsync: deleteTransaction, isPending: isDeleting }  = useDeleteTransaction();
+  const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
   const sortedTransactions = useMemo(
     () => sortTransactionsDesc(transactions ?? []),
@@ -55,7 +57,7 @@ export default function TransactionsPage(): JSX.Element {
 
   async function handleConfirmDelete() {
     if (!transactionToDelete) return;
-  
+
     await deleteTransaction(transactionToDelete.id);
     setTransactionToDelete(null);
   }
@@ -114,6 +116,7 @@ export default function TransactionsPage(): JSX.Element {
                 categoryLabel={transaction.category?.name}
                 location={transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
+                onEdit={() => setTransactionToEdit(transaction)}
               />
             ))}
           </div>
@@ -122,6 +125,18 @@ export default function TransactionsPage(): JSX.Element {
       <CreateTransactionSheet
         open={isCreateTransactionOpen}
         onClose={() => setIsCreateTransactionOpen(false)}
+        accounts={accounts}
+        categories={categories}
+        isLoadingAccounts={isLoadingAccounts}
+        isLoadingCategories={isLoadingCategories}
+        isErrorAccounts={isErrorAccounts}
+        isErrorCategories={isErrorCategories}
+      />
+
+      <EditTransactionSheet
+        open={!!transactionToEdit}
+        onClose={() => setTransactionToEdit(null)}
+        transaction={transactionToEdit}
         accounts={accounts}
         categories={categories}
         isLoadingAccounts={isLoadingAccounts}
@@ -146,5 +161,5 @@ export default function TransactionsPage(): JSX.Element {
     <LayoutMobile>{content}</LayoutMobile>
   ) : (
     <LayoutWeb>{content}</LayoutWeb>
-  ); 
+  );
 }
