@@ -19,6 +19,7 @@ export default function Dashboard(): JSX.Element {
     accounts,
     transactions,
     summary,
+    snapshots,
     hasAccounts,
     hasTransactions,
     hasFinancialData,
@@ -27,6 +28,7 @@ export default function Dashboard(): JSX.Element {
     isLoadingSnapshots,
     isErrorAccounts,
     isErrorTransactions,
+    isErrorSnapshots,
   } = useDashboardData();
   const {
     data: categories,
@@ -76,6 +78,9 @@ export default function Dashboard(): JSX.Element {
         transactions={transactions}
         isLoading={isLoadingTransactions}
         isError={isErrorTransactions}
+        snapshots={snapshots}
+        isLoadingSnapshots={isLoadingSnapshots}
+        isErrorSnapshots={isErrorSnapshots}
       />
 
       <AccountsSection

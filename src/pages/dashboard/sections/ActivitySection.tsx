@@ -11,12 +11,17 @@ import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
 import { useMonthlyIncomeExpense } from "@/hooks/useMonthlyIncomeExpense";
 import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart";
 import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
+import { useNetWorthHistory } from "@/hooks/useNetWorthHistory";
+import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
 
 type ActivitySectionProps = {
   readonly isMobile: boolean;
   readonly transactions?: Transaction[];
   readonly isLoading: boolean;
   readonly isError: boolean;
+  readonly snapshots?: Snapshot[];
+  readonly isLoadingSnapshots: boolean;
+  readonly isErrorSnapshots: boolean;
 };
 
 export default function ActivitySection({
@@ -24,6 +29,9 @@ export default function ActivitySection({
   transactions,
   isLoading,
   isError,
+  snapshots,
+  isLoadingSnapshots,
+  isErrorSnapshots
 }: ActivitySectionProps): JSX.Element {
   const recentTransactions = getRecentTransactions(transactions || [], 3);
   const hasTransactions = !!recentTransactions?.length;
@@ -31,6 +39,7 @@ export default function ActivitySection({
   const expenseBreakdown = useExpenseBreakdown(transactions);
   const topExpenseBreakdown = expenseBreakdown.slice(0, 5);
   const monthlyData = useMonthlyIncomeExpense(transactions);
+  const netWorthHistory = useNetWorthHistory(snapshots);
 
   return (
     <SectionBlock
@@ -38,6 +47,35 @@ export default function ActivitySection({
       subtitle={isMobile ? undefined : "Gráficos y movimientos recientes"}
     >
       <div className={isMobile ? "space-y-4" : "grid grid-cols-3 gap-6"}>
+        <PanelCard
+          title="Evolución del patrimonio"
+          subtitle="Últimos meses"
+          className="h-64"
+        >
+          {isLoadingSnapshots && (
+            <p className="text-sm text-gray-500">Cargando evolución...</p>
+          )}
+
+          {isErrorSnapshots && (
+            <EmptyState
+              title="No pudimos cargar la evolución"
+              description="Revisá la conexión o el backend."
+              variant="error"
+            />
+          )}
+
+          {!isLoadingSnapshots && !isErrorSnapshots && netWorthHistory.length === 0 && (
+            <EmptyState
+              title="Todavía no hay snapshots"
+              description="Cuando tengas historial guardado, vas a ver la evolución acá."
+            />
+          )}
+
+          {!isLoadingSnapshots && !isErrorSnapshots && netWorthHistory.length > 0 && (
+            <NetWorthHistoryChart items={netWorthHistory} />
+          )}
+        </PanelCard>
+
         {!isMobile && (<PanelCard
           title="Ingresos vs  Gastos"
           subtitle="Ultimos meses"
@@ -64,7 +102,7 @@ export default function ActivitySection({
           )}
         </PanelCard>)}
 
-        {!isMobile && (<PanelCard
+{/*         {!isMobile && (<PanelCard
           title="Gastos por categoría"
           subtitle="Mes actual"
           className="h-64"
@@ -93,7 +131,7 @@ export default function ActivitySection({
               <CategoryBreakdownChart items={topExpenseBreakdown} />
             </div>
           )}
-        </PanelCard>)}
+        </PanelCard>)} */}
 
         <PanelCard
           title="Últimos movimientos"
