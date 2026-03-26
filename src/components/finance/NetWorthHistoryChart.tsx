@@ -15,12 +15,12 @@ type NetWorthHistoryItem = {
 };
 
 type NetWorthHistoryChartProps = {
-  items: NetWorthHistoryItem[];
+  readonly items: NetWorthHistoryItem[];
 };
 
 type TooltipProps = {
-  active?: boolean;
-  payload?: Array<{
+  readonly active?: boolean;
+  readonly payload?: Array<{
     value: number;
     payload: NetWorthHistoryItem;
   }>;

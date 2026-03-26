@@ -3,6 +3,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import TransactionsPage from "@/pages/transactions/TransactionsPage";
 import AssetsPage from "@/pages/assets/AssetsPage";
 import AccountsPage from "@/pages/accounts/AccountsPage";
+import AnalyticsPage from "@/pages/analytics/AnalyticsPage";
 
 export default function AppRoutes() {
   return (
@@ -11,6 +12,7 @@ export default function AppRoutes() {
       <Route path="/transactions" element={<TransactionsPage />} />
       <Route path="/assets" element={<AssetsPage />} />
       <Route path="/accounts" element={<AccountsPage />} />
+      <Route path="/analytics" element={<AnalyticsPage />} />
     </Routes>
   );
 }

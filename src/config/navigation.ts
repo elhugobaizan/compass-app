@@ -36,4 +36,10 @@ export const navigationItems: AppRouteItem[] = [
     label: "Ajustes",
     icon: "",
   },
+  {
+    id: "analytics",
+    route: "/analytics",
+    label: "Analítica",
+    icon: ""
+  },
 ];

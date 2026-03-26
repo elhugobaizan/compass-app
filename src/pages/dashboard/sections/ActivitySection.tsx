@@ -47,7 +47,7 @@ export default function ActivitySection({
       title="Actividad"
       subtitle={isMobile ? undefined : "Gráficos y movimientos recientes"}
     >
-      <div className={isMobile ? "space-y-4" : "grid grid-cols-3 gap-6"}>
+      <div className={isMobile ? "space-y-4" : "grid grid-cols-2 xl:grid-cols-3 gap-6"}>
         <PanelCard
           title="Evolución del patrimonio"
           subtitle="Últimos meses"

@@ -8,6 +8,7 @@ import type { Transaction } from "@/types/transaction";
 import { accountGroupLabels } from "@/utils/accountGroups";
 import { getMostUsedAccounts } from "@/utils/accounts";
 import { formatCurrency } from "@/utils/formatters";
+import { useNavigate } from "react-router-dom";
 
 type AccountsSectionProps = {
   readonly isMobile: boolean;
@@ -30,11 +31,13 @@ export default function AccountsSection({
     3
   );
 
+  const navigate = useNavigate();
+  
   return (
     <SectionBlock
       title="Cuentas"
       subtitle={isMobile ? undefined : "Wallets, bancos y brokers"}
-      action={!isMobile && <Button disabled>Ver todas</Button>}
+      action={!isMobile && <Button onClick={() => navigate("/accounts")}>Ver todas</Button>}
     >
       {isLoading && <p className="text-sm text-gray-500">Cargando cuentas...</p>}
 

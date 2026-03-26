@@ -21,7 +21,7 @@ type Trend = {
   sentiment: TrendSentiment;
 };
 
-type SummaryKPIs = {
+export type SummaryKPIs = {
   netWorth: number;
   liquidity: number;
   debt: number;
