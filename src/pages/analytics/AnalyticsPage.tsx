@@ -7,7 +7,7 @@ import type { AnalyticsPeriod } from "@/types/analytics";
 import AnalyticsFilters from "@/components/analytics/AnalyticsFilters";
 import { useFilteredTransactions } from "@/hooks/useFilteredTransactions";
 import { useFilteredSnapshots } from "@/hooks/useFilteredSnapshots";
-
+import { useAnalyticsSummary } from "@/hooks/useAnalyticsSummary";
 import AnalyticsSummarySection from "./sections/AnalyticsSummarySection";
 import AnalyticsChartsSection from "./sections/AnalyticsChartsSection";
 import AnalyticsInsightsSection from "./sections/AnalyticsInsightsSection";
@@ -19,9 +19,11 @@ export default function AnalyticsPage(): JSX.Element {
   const [period, setPeriod] = useState<AnalyticsPeriod>("6m");
 
   const {
+    accounts,
     transactions,
     snapshots,
-    summary,
+    assets,
+    settings,
     hasAccounts,
     hasTransactions,
     hasFinancialData,
@@ -36,6 +38,15 @@ export default function AnalyticsPage(): JSX.Element {
 
   const filteredTransactions = useFilteredTransactions(transactions, period);
   const filteredSnapshots = useFilteredSnapshots(snapshots, period);
+
+  const analyticsSummary = useAnalyticsSummary({
+    accounts,
+    transactions,
+    snapshots,
+    assets,
+    settings,
+    period
+  })
 
   const isLoadingSummary =
     isLoadingAccounts ||
@@ -63,7 +74,7 @@ export default function AnalyticsPage(): JSX.Element {
         hasFinancialData={hasFinancialData}
         hasAccounts={hasAccounts}
         hasTransactions={hasTransactions}
-        summary={summary}
+        summary={analyticsSummary}
       />
 
       <AnalyticsChartsSection
@@ -79,7 +90,7 @@ export default function AnalyticsPage(): JSX.Element {
       <AnalyticsInsightsSection
         isMobile={isMobile}
         transactions={filteredTransactions}
-        summary={summary}
+        summary={analyticsSummary}
         isLoading={isLoadingTransactions}
         isError={isErrorTransactions}
       />
