@@ -1,13 +1,16 @@
 import type { Account } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
 import type { Snapshot } from "@/services/snapshots";
+import type { Asset } from "@/types/asset";
+import type { Setting } from "@/types/settings";
+
 import { ACCOUNT_GROUPS } from "./accountGroups";
 import { toNumber } from "./numbers";
 import { isSameMonth, isPreviousMonth } from "./date";
 import { getPreviousNetWorthFromSnapshots } from "./snapshots";
 import { TRANSACTION_TYPES } from "./transactionTypes";
-import { Asset } from "@/types/asset";
 import { getTotalAssetsValue } from "./assets";
+import { getNetWorthExtrasFromSettings } from "./settings";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -97,7 +100,8 @@ export function calculateSummaryKPIs(
   accounts: Account[] = [],
   transactions: Transaction[] = [],
   snapshots: Snapshot[] = [],
-  assets: Asset[] = []
+  assets: Asset[] = [],
+  settings: Setting[] = []
 ): SummaryKPIs {
   const base: SummaryKPIs = {
     netWorth: 0,
@@ -124,9 +128,9 @@ export function calculateSummaryKPIs(
       acc.liquidity += balance;
     }
     
-    if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
+/*     if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
       acc.investments += balance;
-    }
+    } */
     
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
       acc.debt += balance;
@@ -135,8 +139,10 @@ export function calculateSummaryKPIs(
     return acc;
   }, base);
   const totalAssetsValue = getTotalAssetsValue(assets);
-  withAccounts.netWorth += totalAssetsValue;
+  const netWorthExtras = getNetWorthExtrasFromSettings(settings);
+
   withAccounts.investments += totalAssetsValue;
+  withAccounts.netWorth += totalAssetsValue + netWorthExtras;
   
   const income = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.INGRESO);
   const expenses = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.GASTO);

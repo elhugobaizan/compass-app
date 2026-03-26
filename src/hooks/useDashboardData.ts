@@ -1,10 +1,17 @@
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useSnapshotsQuery } from "@/hooks/queries/useSnapshotsQuery";
-import { useDashboardSummary } from "@/hooks/useDashboardSummary";
 import { useAssetsQuery } from "./queries/useAssetsQuery";
+import { useSettingsQuery } from "./queries/useSettingsQuery";
+import { useDashboardSummary } from "@/hooks/useDashboardSummary";
 
 export function useDashboardData() {
+
+  const {
+    data: settings,
+    isLoading: isLoadingSettings,
+    isError: isErrorSettings,
+  } = useSettingsQuery();
 
   const {
     data: assets,
@@ -35,7 +42,7 @@ export function useDashboardData() {
     hasTransactions,
     hasFinancialData,
     summary,
-  } = useDashboardSummary(accounts, transactions, snapshots, assets);
+  } = useDashboardSummary(accounts, transactions, snapshots, assets, settings);
 
   return {
     accounts,
@@ -43,6 +50,7 @@ export function useDashboardData() {
     snapshots,
     summary,
     assets,
+    settings,
 
     hasAccounts,
     hasTransactions,
@@ -52,10 +60,12 @@ export function useDashboardData() {
     isLoadingTransactions,
     isLoadingSnapshots,
     isLoadingAssets,
+    isLoadingSettings,
 
     isErrorAccounts,
     isErrorTransactions,
     isErrorSnapshots,
     isErrorAssets,
+    isErrorSettings,
   };
 }

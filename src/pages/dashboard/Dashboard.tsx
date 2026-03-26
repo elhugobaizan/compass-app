@@ -27,6 +27,8 @@ export default function Dashboard(): JSX.Element {
     isLoadingAccounts,
     isLoadingTransactions,
     isLoadingSnapshots,
+    isLoadingAssets,
+    isLoadingSettings,
     isErrorAccounts,
     isErrorTransactions,
     isErrorSnapshots,
@@ -44,7 +46,11 @@ export default function Dashboard(): JSX.Element {
   const [isCreateTransferOpen, setIsCreateTransferOpen] = useState(false);
 
   const isLoadingSummary =
-    isLoadingAccounts || isLoadingTransactions || isLoadingSnapshots;
+    isLoadingAccounts || 
+    isLoadingTransactions || 
+    isLoadingSnapshots ||
+    isLoadingAssets ||
+    isLoadingSettings;
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
