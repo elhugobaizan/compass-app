@@ -12,6 +12,7 @@ import SummarySection from "./sections/SummarySection";
 import AccountsSection from "./sections/AccountsSection";
 import ActivitySection from "./sections/ActivitySection";
 import Button from "@/components/ui/Button";
+import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
 
 export default function Dashboard(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -40,6 +41,7 @@ export default function Dashboard(): JSX.Element {
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
+  const [isCreateTransferOpen, setIsCreateTransferOpen] = useState(false);
 
   const isLoadingSummary =
     isLoadingAccounts || isLoadingTransactions || isLoadingSnapshots;
@@ -58,6 +60,10 @@ export default function Dashboard(): JSX.Element {
             </Button>
           </>
         )}
+
+        <Button onClick={() => setIsCreateTransferOpen(true)}>
+          + Transferencia
+        </Button>
 
         <Button onClick={() => setIsCreateTransactionOpen(true)}>
           + Movimiento
@@ -113,7 +119,12 @@ export default function Dashboard(): JSX.Element {
       <CreateAccountSheet
         open={isCreateAccountOpen}
         onClose={() => setIsCreateAccountOpen(false)}
-      />      
+      />
+
+      <CreateTransferSheet 
+        open={isCreateTransferOpen}
+        onClose={() => setIsCreateTransferOpen(false)}
+      />
     </div>
   );
 
