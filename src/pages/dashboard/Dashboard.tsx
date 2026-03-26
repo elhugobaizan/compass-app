@@ -124,6 +124,9 @@ export default function Dashboard(): JSX.Element {
       <CreateTransferSheet 
         open={isCreateTransferOpen}
         onClose={() => setIsCreateTransferOpen(false)}
+        accounts={accounts}
+        isErrorAccounts={isErrorAccounts}
+        isLoadingAccounts={isLoadingAccounts}
       />
     </div>
   );

@@ -17,6 +17,7 @@ import type { Transaction } from "@/types/transaction";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
 import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
+import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
 
 function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
   return [...transactions].sort(
@@ -27,6 +28,7 @@ function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
+  const [isCreateTransferOpen, setIsCreateTransferOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
 
@@ -70,9 +72,14 @@ export default function TransactionsPage(): JSX.Element {
           isMobile ? undefined : "Consultá y cargá ingresos, gastos y movimientos"
         }
         action={
-          <Button onClick={() => setIsCreateTransactionOpen(true)}>
-            + Movimiento
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setIsCreateTransactionOpen(true)}>
+              + Movimiento
+            </Button>
+            <Button onClick={() => setIsCreateTransferOpen(true)}>
+              + Transferencia
+            </Button>
+          </div>
         }
       />
 
@@ -143,6 +150,14 @@ export default function TransactionsPage(): JSX.Element {
         isLoadingCategories={isLoadingCategories}
         isErrorAccounts={isErrorAccounts}
         isErrorCategories={isErrorCategories}
+      />
+
+      <CreateTransferSheet 
+        open={isCreateTransferOpen}
+        onClose={() => setIsCreateTransferOpen(false)}
+        accounts={accounts}
+        isLoadingAccounts={isLoadingAccounts}
+        isErrorAccounts={isErrorAccounts}
       />
 
       <ConfirmDialog

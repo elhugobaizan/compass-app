@@ -13,6 +13,7 @@ import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart"
 import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
 import { useNetWorthHistory } from "@/hooks/useNetWorthHistory";
 import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
+import { Snapshot } from "@/services/snapshots";
 
 type ActivitySectionProps = {
   readonly isMobile: boolean;

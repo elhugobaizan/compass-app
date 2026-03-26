@@ -37,7 +37,7 @@ function formatMonthLabel(year: number, month: number): string {
 export function getNetWorthHistory(
   snapshots: Snapshot[] = [],
   limit = 6
-): NetWorthHistoryItem {
+): NetWorthHistoryItem[] {
   return [...snapshots]
     .sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year;
