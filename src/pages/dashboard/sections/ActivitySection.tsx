@@ -7,7 +7,7 @@ import type { Transaction } from "@/types/transaction";
 import { getRecentTransactions } from "@/utils/transactions";
 import Button from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
+// import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
 import { useMonthlyIncomeExpense } from "@/hooks/useMonthlyIncomeExpense";
 // import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart";
 import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
