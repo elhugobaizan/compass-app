@@ -2,6 +2,7 @@ import { JSX } from "react";
 import { ArrowDownLeft, ArrowRightLeft, ArrowUpRight, Trash2, Pencil } from "lucide-react";
 import { formatRelativeDate } from "@/utils/formatters";
 import Button from "../ui/Button";
+import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
 
 type TransactionRowProps = {
   readonly concept?: string | null;
@@ -53,11 +54,11 @@ function formatDisplayAmount(
 }
 
 function getTypeIcon(typeLabel?: string): JSX.Element {
-  if (typeLabel === "INCOME") {
+  if (typeLabel === TRANSACTION_TYPES.INGRESO) {
     return <ArrowDownLeft className="h-4 w-4 text-green-600" />;
   }
 
-  if (typeLabel === "TRANSFER") {
+  if (typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA || typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA) {
     return <ArrowRightLeft className="h-4 w-4 text-blue-600" />;
   }
 
@@ -78,7 +79,9 @@ export default function TransactionRow({
     <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-100 bg-white px-4 py-3">
       <div className="flex min-w-0 flex-1 items-start gap-3">
         <div className="mt-0.5 shrink-0">
-          {getTypeIcon(typeLabel)}
+          <div className={`flex h-8 w-8 items-center justify-center rounded-full ${getTypeBadgeClass(typeLabel)}`}>
+            {getTypeIcon(typeLabel)}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1">

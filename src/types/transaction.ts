@@ -7,16 +7,17 @@ export type Transaction = {
   date: string;
   amount: number;
   account_id: string;
-  account: Account;
   category_id?: string | null;
-  category?: TransactionCategory | null;
   type_id: string | null;
-  type: TransactionType;
   transfer_group?: string | null;
   location?: string | null;
   created_at: string;
   updated_at?: string | null;
   deleted_at?: string | null;
+  
+  account: Account;
+  category?: TransactionCategory | null;
+  type: TransactionType;
 };
 
 export type TransactionType = {

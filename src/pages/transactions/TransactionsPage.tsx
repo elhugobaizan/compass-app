@@ -2,28 +2,25 @@ import { JSX, useMemo, useState } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
-import TransactionRow from "@/components/finance/TransactionRow";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
+import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
+import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
+import TransactionRow from "@/components/finance/TransactionRow";
+import TransferRow from "@/components/finance/TransferRow";
 
 import { useBreakpoint } from "@/utils/utils";
+import { transactionTypeLabels } from "@/utils/transactionTypes";
+import { buildTransactionListItems } from "@/utils/transactionList";
 import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
 import { useDeleteTransaction } from "@/hooks/mutations/useDeleteTransaction";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
-import { transactionTypeLabels } from "@/utils/transactionTypes";
 import type { Transaction } from "@/types/transaction";
+
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
-import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
-import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
-
-function sortTransactionsDesc(transactions: Transaction[] = []): Transaction[] {
-  return [...transactions].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-}
 
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -52,8 +49,8 @@ export default function TransactionsPage(): JSX.Element {
 
   const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
-  const sortedTransactions = useMemo(
-    () => sortTransactionsDesc(transactions ?? []),
+  const transactionListItems = useMemo(
+    () => buildTransactionListItems(transactions ?? []),
     [transactions]
   );
 
@@ -67,7 +64,7 @@ export default function TransactionsPage(): JSX.Element {
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <PageHeader
-        title="Movimientos"
+        title=""
         description={
           isMobile ? undefined : "Consultá y cargá ingresos, gastos y movimientos"
         }
@@ -97,7 +94,7 @@ export default function TransactionsPage(): JSX.Element {
 
       {!isLoadingTransactions &&
         !isErrorTransactions &&
-        sortedTransactions.length === 0 && (
+        transactionListItems.length === 0 && (
           <EmptyState
             title="Todavía no hay movimientos"
             description="Creá tu primer movimiento para empezar a poblar la app."
@@ -111,10 +108,19 @@ export default function TransactionsPage(): JSX.Element {
 
       {!isLoadingTransactions &&
         !isErrorTransactions &&
-        sortedTransactions.length > 0 && (
+        transactionListItems.length > 0 && (
           <div className="space-y-3">
-            {sortedTransactions.map((transaction) => (
-              <TransactionRow
+            {transactionListItems.map((item) => {
+              if(item.kind  === "transfer") {
+                return (<TransferRow 
+                  key={item.transfer_group}
+                  item={item}
+                />);
+              }
+
+              const transaction = item.transaction;
+
+              return (<TransactionRow
                 key={transaction.id}
                 amount={transaction.amount}
                 date={transaction.date}
@@ -124,8 +130,8 @@ export default function TransactionsPage(): JSX.Element {
                 location={transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
-              />
-            ))}
+              />)
+            })}
           </div>
         )}
 

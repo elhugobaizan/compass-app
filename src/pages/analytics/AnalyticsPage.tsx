@@ -15,10 +15,10 @@ import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
 import { useSearchParams } from "react-router-dom";
 
-const VALID_PERIODS: AnalyticsPeriod[] = ["3m", "6m", "12m", "ytd"];
+const VALID_PERIODS: Set<AnalyticsPeriod> = new Set(["3m", "6m", "12m", "ytd"]);
 
 function getSafePeriod(value: string | null): AnalyticsPeriod {
-  if (value && VALID_PERIODS.includes(value as AnalyticsPeriod)) {
+  if (value && VALID_PERIODS.has(value as AnalyticsPeriod)) {
     return value as AnalyticsPeriod;
   }
 
