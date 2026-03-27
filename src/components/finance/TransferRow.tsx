@@ -2,6 +2,7 @@ import { JSX } from "react";
 import { ArrowRightLeft, Pencil, Trash2 } from "lucide-react";
 import type { TransactionListItem } from "@/types/transactionList";
 import { formatCurrency, formatDate } from "@/utils/formatters";
+import Button from "../ui/Button";
 
 type TransferItem = Extract<TransactionListItem, { kind: "transfer" }>;
 
@@ -67,25 +68,24 @@ export default function TransferRow({
         {(onEdit || onDelete) && (
           <div className="flex items-center gap-1">
             {onEdit && (
-              <button
-                type="button"
-                className="rounded-lg p-2 text-gray-500 hover:bg-white hover:text-gray-700"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => onEdit(item)}
                 aria-label="Editar transferencia"
               >
-                <Pencil className="h-4 w-4" />
-              </button>
+                <Pencil className="mr-1 h-3.5 w-3.5" />
+              </Button>
             )}
 
             {onDelete && (
-              <button
-                type="button"
-                className="rounded-lg p-2 text-gray-500 hover:bg-white hover:text-red-600"
+              <Button
+                variant="danger-ghost"
                 onClick={() => onDelete(item)}
                 aria-label="Eliminar transferencia"
               >
-                <Trash2 className="h-4 w-4" />
-              </button>
+                <Trash2 className="mr-1 h-3.5 w-3.5" />
+              </Button>
             )}
           </div>
         )}

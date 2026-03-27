@@ -2,7 +2,7 @@ import { JSX } from "react";
 import SectionBlock from "@/components/ui/SectionBlock";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
-import AccountCard from "@/components/finance/AccountCard";
+import AccountCard from "@/components/finance/accounts/AccountCard";
 import type { Account, AccountType } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
 import { getMostUsedAccounts } from "@/utils/accounts";

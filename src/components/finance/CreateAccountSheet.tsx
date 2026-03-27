@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import Modal from "@/components/ui/Modal";
-import AccountForm from "@/components/finance/AccountForm";
+import AccountForm from "@/components/finance/accounts/AccountForm";
 
 type CreateAccountSheetProps = {
   readonly open: boolean;

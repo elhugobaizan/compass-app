@@ -2,7 +2,7 @@ import { JSX } from "react";
 import Modal from "@/components/ui/Modal";
 import EmptyState from "@/components/ui/EmptyState";
 import type { Account } from "@/types/account";
-import AccountForm from "./AccountForm";
+import AccountForm from "./accounts/AccountForm";
 
 type EditAccountSheetProps = {
   open: boolean;

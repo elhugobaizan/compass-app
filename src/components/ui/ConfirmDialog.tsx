@@ -8,6 +8,8 @@ type ConfirmDialogProps = {
   readonly description?: string;
   readonly confirmText?: string;
   readonly cancelText?: string;
+  readonly loadingText?: string;
+  readonly confirmVariant?: "primary" | "secondary" | "danger";
   readonly isLoading?: boolean;
   readonly onConfirm: () => void;
   readonly onClose: () => void;
@@ -19,6 +21,8 @@ export default function ConfirmDialog({
   description,
   confirmText = "Confirmar",
   cancelText = "Cancelar",
+  loadingText = "Procesando...",
+  confirmVariant = "danger",
   isLoading = false,
   onConfirm,
   onClose,
@@ -26,17 +30,23 @@ export default function ConfirmDialog({
   return (
     <Modal open={open} onClose={onClose} title={title}>
       <div className="space-y-4">
-        {description && (
-          <p className="text-sm text-gray-600">{description}</p>
-        )}
+        {description && <p className="text-sm leading-6 text-gray-600">{description}</p>}
 
-        <div className="flex justify-end gap-2">
-          <Button variant="ghost" onClick={onClose} disabled={isLoading}>
+        <div className="flex justify-end gap-2 border-t border-gray-100 pt-4">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            disabled={isLoading}
+          >
             {cancelText}
           </Button>
 
-          <Button onClick={onConfirm} disabled={isLoading}>
-            {isLoading ? "Eliminando..." : confirmText}
+          <Button
+            variant={confirmVariant}
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? loadingText : confirmText}
           </Button>
         </div>
       </div>

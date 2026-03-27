@@ -13,6 +13,7 @@ type TransactionRowProps = {
   readonly location?: string | null;
   readonly onDelete?: () => void;
   readonly onEdit?: () => void;
+  readonly isMobile: boolean;
 };
 
 function getAmountClass(typeLabel?: string): string {
@@ -74,6 +75,7 @@ export default function TransactionRow({
   location,
   onDelete,
   onEdit,
+  isMobile
 }: TransactionRowProps): JSX.Element {
   return (
     <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-100 bg-white px-4 py-3">
@@ -124,24 +126,24 @@ export default function TransactionRow({
       </div>
 
       <div className="flex items-center gap-1">
-        {onEdit && (
+        {onEdit && !isMobile && (
           <Button
-            type="button"
+            variant="ghost"
+            size="sm"
             onClick={onEdit}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
             aria-label="Editar movimiento"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="mr-1 h-3.5 w-3.5" />
           </Button>
         )}
-        {onDelete && (
+        {onDelete && !isMobile && (
           <Button
-            type="button"
+            variant="danger-ghost"
+            size="sm"
             onClick={onDelete}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600"
             aria-label="Eliminar movimiento"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="mr-1 h-3.5 w-3.5" />
           </Button>
         )}
       </div>

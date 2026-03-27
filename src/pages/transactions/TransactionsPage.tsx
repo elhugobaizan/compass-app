@@ -21,6 +21,7 @@ import type { Transaction } from "@/types/transaction";
 
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
+import { ArrowLeftRight, ArrowUpRight } from "lucide-react";
 
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -70,11 +71,17 @@ export default function TransactionsPage(): JSX.Element {
         }
         action={
           <div className="flex gap-2">
-            <Button onClick={() => setIsCreateTransactionOpen(true)}>
-              + Movimiento
+            <Button 
+              variant="primary"
+              onClick={() => setIsCreateTransactionOpen(true)}>
+              <ArrowUpRight className="mr-1 h-3.5 w-3.5" />
+              Movimiento
             </Button>
-            <Button onClick={() => setIsCreateTransferOpen(true)}>
-              + Transferencia
+            <Button 
+              variant="secondary"
+              onClick={() => setIsCreateTransferOpen(true)}>
+              <ArrowLeftRight className="mr-1 h-3.5 w-3.5" />
+              Transferencia
             </Button>
           </div>
         }
@@ -130,6 +137,7 @@ export default function TransactionsPage(): JSX.Element {
                 location={transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
+                isMobile
               />)
             })}
           </div>
@@ -171,6 +179,8 @@ export default function TransactionsPage(): JSX.Element {
         title="Eliminar movimiento"
         description="Esta acción quitará el movimiento del listado y actualizará el resumen."
         confirmText="Eliminar"
+        loadingText="Eliminando..."
+        confirmVariant="danger"
         isLoading={isDeleting}
         onClose={() => setTransactionToDelete(null)}
         onConfirm={handleConfirmDelete}

@@ -94,22 +94,20 @@ export default function AssetRow({
       <div className="flex items-center gap-1">
         {onEdit && (
           <Button
-            type="button"
+            variant="ghost"
             onClick={onEdit}
-            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
             aria-label="Editar movimiento"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="mr-1 h-3.5 w-3.5" />
           </Button>
         )}
         {onDelete && (
           <Button
-            type="button"
+            variant="danger-ghost"
             onClick={onDelete}
-            className="ml-2 rounded-md p-1.5 text-red-400 hover:bg-red-100 hover:text-red-700"
             aria-label="Eliminar activo"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="mr-1 h-3.5 w-3.5" />
           </Button>
         )}
 

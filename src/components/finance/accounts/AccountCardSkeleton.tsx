@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import Card from "../ui/Card";
+import Card from "../../ui/Card";
 
 type AccountCardSkeletonProps = {
   readonly compact?: boolean;

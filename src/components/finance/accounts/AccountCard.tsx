@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { Landmark, Wallet, LineChart } from "lucide-react";
 
-import Card from "../ui/Card";
+import Card from "../../ui/Card";
 import { formatCurrency } from "@/utils/formatters";
 
 export type AccountType = "BANK" | "WALLET" | "BROKER";
