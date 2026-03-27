@@ -3,9 +3,8 @@ import SectionBlock from "@/components/ui/SectionBlock";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import AccountCard from "@/components/finance/AccountCard";
-import type { Account } from "@/types/account";
+import type { Account, AccountType } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
-import { accountGroupLabels } from "@/utils/accountGroups";
 import { getMostUsedAccounts } from "@/utils/accounts";
 import { formatCurrency } from "@/utils/formatters";
 import { useNavigate } from "react-router-dom";
@@ -62,11 +61,10 @@ export default function AccountsSection({
             <AccountCard
               key={account.id}
               name={account.name}
-              isMobile={isMobile}
+              compact={isMobile}
               institution={account.institution}
               currency={account.currency}
-              accountType={account.account_type}
-              accountGroup={accountGroupLabels[account.account_group.name] ?? "UNKNOWN"}
+              accountType={account.account_type as AccountType}
               balance={(account.opening_balance && formatCurrency(account.opening_balance)) ?? "-"}
               isPaymentMethod={account.is_payment_method}
             />

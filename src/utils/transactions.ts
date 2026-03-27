@@ -1,15 +1,29 @@
 import type { Transaction } from "@/types/transaction";
 import { toNumber } from "@/utils/numbers";
 import { TRANSACTION_TYPES } from "./transactionTypes";
+import { TransactionListItem } from "@/types/transactionList";
 
 export function getRecentTransactions(
-  transactions: Transaction[],
+  transactions: TransactionListItem[],
   count: number = 5
-): Transaction[] {
+): TransactionListItem[] {
   return [...transactions]
     .sort(
-      (a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+      (a, b) => {
+        let itemA;
+        if(a.kind === "transfer") {
+          itemA = a.date;
+        } else {
+          itemA = a.transaction.date;
+        }
+        let itemB;
+        if(b.kind === "transfer") {
+          itemB = b.date;
+        } else {
+          itemB = b.transaction.date;
+        }        
+        return new Date(itemB).getTime() - new Date(itemA).getTime()
+      }
     )
     .slice(0, count);
 }

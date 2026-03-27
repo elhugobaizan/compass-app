@@ -171,11 +171,11 @@ export function calculateAnalyticsKPIs(params: {
   for (const account of accounts) {
     const balance = toNumber(account.opening_balance);
 
-    if (account.account_group_id === ACCOUNT_GROUPS.LIQUID) {
+    if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       liquidity += balance;
     }
 
-    if (account.account_group_id === ACCOUNT_GROUPS.DEBT) {
+    if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
       debt += balance;
     }
   }

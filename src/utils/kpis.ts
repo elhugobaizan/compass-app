@@ -122,15 +122,9 @@ export function calculateSummaryKPIs(
   const withAccounts = accounts.reduce((acc, account) => {
     const balance = toNumber(account.opening_balance);
 
-    acc.netWorth += balance;
-    
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       acc.liquidity += balance;
     }
-    
-/*     if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
-      acc.investments += balance;
-    } */
     
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
       acc.debt += balance;
@@ -140,9 +134,9 @@ export function calculateSummaryKPIs(
   }, base);
   const totalAssetsValue = getTotalAssetsValue(assets);
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
-
+  
   withAccounts.investments += totalAssetsValue;
-  withAccounts.netWorth += totalAssetsValue + netWorthExtras;
+  withAccounts.netWorth = withAccounts.liquidity + totalAssetsValue + netWorthExtras;
   
   const income = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.INGRESO);
   const expenses = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.GASTO);

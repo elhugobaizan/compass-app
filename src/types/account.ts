@@ -24,3 +24,5 @@ export type AccountGroup = {
   id: number;
   name: string;
 }
+
+export type AccountType = "BANK" | "WALLET" | "BROKER";
