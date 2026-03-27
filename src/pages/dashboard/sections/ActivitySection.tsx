@@ -152,6 +152,7 @@ export default function ActivitySection({
                   concept={transaction.concept}
                   typeLabel={transaction.type.name || "unknown"}
                   categoryLabel={transaction.category?.name || "Sin categoría"}
+                  isMobile={isMobile}
                 />);
               })}
             </div>

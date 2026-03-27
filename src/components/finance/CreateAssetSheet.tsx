@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import Modal from "@/components/ui/Modal";
 import EmptyState from "@/components/ui/EmptyState";
-import AssetForm from "@/components/finance/AssetForm";
+import AssetForm from "@/components/finance/assets/AssetForm";
 import type { Account } from "@/types/account";
 
 type CreateAssetSheetProps = {

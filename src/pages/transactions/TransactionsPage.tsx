@@ -137,7 +137,7 @@ export default function TransactionsPage(): JSX.Element {
                 location={transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
-                isMobile
+                isMobile={isMobile}
               />)
             })}
           </div>

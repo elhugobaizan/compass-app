@@ -5,9 +5,9 @@ import type { Account } from "@/types/account";
 import AccountForm from "./accounts/AccountForm";
 
 type EditAccountSheetProps = {
-  open: boolean;
-  onClose: () => void;
-  account?: Account | null;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly account?: Account | null;
 };
 
 export default function EditAccountSheet({

@@ -1,27 +1,43 @@
-import type { ReactNode, JSX } from "react";
+import { JSX, ReactNode } from "react";
 
 type PageHeaderProps = {
   readonly title: string;
   readonly description?: string;
+  readonly alert?: ReactNode;
+  readonly summary?: ReactNode;
   readonly action?: ReactNode;
 };
 
 export default function PageHeader({
   title,
   description,
+  alert,
+  summary,
   action,
 }: PageHeaderProps): JSX.Element {
   return (
-    <div className="flex flex-col gap-4 border-b border-gray-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+    <header className="space-y-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+            {title}
+          </h1>
 
-        {description && (
-          <p className="mt-1 text-sm text-gray-500">{description}</p>
+          {description && (
+            <p className="mt-1 text-sm text-gray-500">{description}</p>
+          )}
+        </div>
+
+        {action && (
+          <div className="flex shrink-0 items-center md:justify-end">
+            {action}
+          </div>
         )}
       </div>
 
-      {action && <div className="shrink-0">{action}</div>}
-    </div>
+      {alert}
+
+      {summary}
+    </header>
   );
 }

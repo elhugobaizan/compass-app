@@ -27,3 +27,14 @@ export function isCurrentMonth(dateString: string): boolean {
     input.getMonth() === now.getMonth()
   );
 }
+
+export function parseLocalDate(dateString: string): Date | null {
+  if(dateString) {
+    const [date] = dateString.split('T');
+    const [year, month, day] = date.split("-").map(Number);
+  
+    return new Date(year, month - 1, day);
+  }
+
+  return null;
+}

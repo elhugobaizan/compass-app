@@ -3,15 +3,15 @@ import Modal from "@/components/ui/Modal";
 import EmptyState from "@/components/ui/EmptyState";
 import type { Account } from "@/types/account";
 import type { Asset } from "@/types/asset";
-import AssetForm from "./AssetForm";
+import AssetForm from "./assets/AssetForm";
 
 type EditAssetSheetProps = {
-  open: boolean;
-  onClose: () => void;
-  asset?: Asset | null;
-  accounts?: Account[];
-  isLoadingAccounts?: boolean;
-  isErrorAccounts?: boolean;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly asset?: Asset | null;
+  readonly accounts?: Account[];
+  readonly isLoadingAccounts?: boolean;
+  readonly isErrorAccounts?: boolean;
 };
 
 export default function EditAssetSheet({
