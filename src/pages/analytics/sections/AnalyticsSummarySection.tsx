@@ -1,7 +1,7 @@
 import KPICard from "@/components/finance/KPICard";
 import SectionBlock from "@/components/ui/SectionBlock";
+import { AnalyticsKPIs } from "@/utils/analyticsKPIs";
 import { formatCurrency } from "@/utils/formatters";
-import { SummaryKPIs } from "@/utils/kpis";
 import { JSX } from "react";
 
 type AnalyticsSummaryProps = {
@@ -10,7 +10,7 @@ type AnalyticsSummaryProps = {
   readonly hasFinancialData: boolean;
   readonly hasAccounts: boolean;
   readonly hasTransactions: boolean;
-  readonly summary: SummaryKPIs;
+  readonly summary: AnalyticsKPIs;
 };
 
 export default function AnalyticsSummarySection({
@@ -32,7 +32,7 @@ export default function AnalyticsSummarySection({
         </div>
       )}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <KPICard 
+        <KPICard
           label="Patrimonio neto"
           value={hasAccounts ? formatCurrency(summary.netWorth) : null}
           isLoading={isLoading}
@@ -58,26 +58,29 @@ export default function AnalyticsSummarySection({
           tone="negative"
         />
         <KPICard
-          label="Ingresos del mes"
-          value={hasTransactions ? formatCurrency(summary.monthlyIncome) : null}
+          label="Ingresos del periodo"
+          value={hasTransactions ? formatCurrency(summary.periodIncome) : null}
+          subvalue={`Promedio mensual: ${formatCurrency(summary.averageMonthlyIncome)}`}
           isLoading={isLoading}
           tone="positive"
           trend={summary.trends.income}
         />
         <KPICard
-          label="Gastos del mes"
-          value={hasTransactions ? formatCurrency(summary.monthlyExpenses) : null}
+          label="Gastos del periodo"
+          value={hasTransactions ? formatCurrency(summary.periodExpenses) : null}
+          subvalue={`Promedio mensual: ${formatCurrency(summary.averageMonthlyExpenses)}`}
           isLoading={isLoading}
           tone="negative"
           trend={summary.trends.expenses}
         />
         <KPICard
-          label="Ahorro del mes"
-          value={hasTransactions ? formatCurrency(summary.monthlySavings) : null}
+          label="Ahorro del periodo"
+          value={hasTransactions ? formatCurrency(summary.periodSavings) : null}
+          subvalue={`Promedio mensual: ${formatCurrency(summary.averageMonthlySavings)}`}
           isLoading={isLoading}
-          tone={summary.monthlySavings >= 0 ? "positive" : "negative"}
+          tone={summary.periodSavings >= 0 ? "positive" : "negative"}
           trend={summary.trends.savings}
-        />        
+        />
       </div>
     </SectionBlock>
   );

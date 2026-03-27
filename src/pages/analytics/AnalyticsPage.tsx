@@ -1,4 +1,4 @@
-import { JSX, useState } from "react";
+import { JSX } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import { useBreakpoint } from "@/utils/utils";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -13,10 +13,23 @@ import AnalyticsChartsSection from "./sections/AnalyticsChartsSection";
 import AnalyticsInsightsSection from "./sections/AnalyticsInsightsSection";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
+import { useSearchParams } from "react-router-dom";
+
+const VALID_PERIODS: AnalyticsPeriod[] = ["3m", "6m", "12m", "ytd"];
+
+function getSafePeriod(value: string | null): AnalyticsPeriod {
+  if (value && VALID_PERIODS.includes(value as AnalyticsPeriod)) {
+    return value as AnalyticsPeriod;
+  }
+
+  return "6m"
+}
 
 export default function AnalyticsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
-  const [period, setPeriod] = useState<AnalyticsPeriod>("6m");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const period = getSafePeriod(searchParams.get("period"));
 
   const {
     accounts,
@@ -55,6 +68,10 @@ export default function AnalyticsPage(): JSX.Element {
     isLoadingAssets ||
     isLoadingSettings;
 
+  function handlePeriodChange(nextPeriod: AnalyticsPeriod) {
+    setSearchParams({ period: nextPeriod });
+  }
+
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <PageHeader
@@ -66,7 +83,7 @@ export default function AnalyticsPage(): JSX.Element {
         }
       />
 
-      <AnalyticsFilters period={period} onPeriodChange={setPeriod} />
+      <AnalyticsFilters period={period} onPeriodChange={handlePeriodChange} />
 
       <AnalyticsSummarySection
         isMobile={isMobile}
@@ -101,5 +118,5 @@ export default function AnalyticsPage(): JSX.Element {
     <LayoutMobile>{content}</LayoutMobile>
   ) : (
     <LayoutWeb>{content}</LayoutWeb>
-  );  
+  );
 }

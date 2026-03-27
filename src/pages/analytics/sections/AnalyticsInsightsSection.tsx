@@ -4,17 +4,12 @@ import Card from "@/components/ui/Card";
 import EmptyState from "@/components/ui/EmptyState";
 import type { Transaction } from "@/types/transaction";
 import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
-
-type Summary = {
-  monthlyIncome: number;
-  monthlyExpenses: number;
-  monthlySavings: number;
-};
+import { AnalyticsKPIs } from "@/utils/analyticsKPIs";
 
 type Props = {
   readonly isMobile: boolean;
   readonly transactions?: Transaction[];
-  readonly summary: Summary;
+  readonly summary: AnalyticsKPIs;
   readonly isLoading: boolean;
   readonly isError: boolean;
 };
@@ -69,9 +64,9 @@ export default function AnalyticsInsightsSection({
       {!isLoading && !isError && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <Card>
-            <p className="text-sm text-gray-500">Resultado del mes</p>
+            <p className="text-sm text-gray-500">Resultado del periodo</p>
             <p className="mt-2 text-lg font-semibold text-gray-900">
-              {summary.monthlySavings >= 0 ? "Mes positivo" : "Mes negativo"}
+              {summary.periodSavings >= 0 ? "Mes positivo" : "Mes negativo"}
             </p>
           </Card>
 
@@ -85,10 +80,10 @@ export default function AnalyticsInsightsSection({
           <Card>
             <p className="text-sm text-gray-500">Relación gasto / ingreso</p>
             <p className="mt-2 text-lg font-semibold text-gray-900">
-              {summary.monthlyIncome > 0
+              {summary.periodIncome > 0
                 ? `${Math.round(
-                    (summary.monthlyExpenses / summary.monthlyIncome) * 100
-                  )}%`
+                  (summary.periodExpenses / summary.periodIncome) * 100
+                )}%`
                 : "—"}
             </p>
           </Card>

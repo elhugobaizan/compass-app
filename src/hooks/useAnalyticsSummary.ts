@@ -6,8 +6,7 @@ import type { Setting } from "@/types/settings";
 import type { Snapshot } from "@/services/snapshots";
 import type { AnalyticsPeriod } from "@/types/analytics";
 
-import { filterTransactionsByPeriod, filterSnapshotsByPeriod } from "@/utils/analytics";
-import { calculateSummaryKPIs } from "@/utils/kpis";
+import { calculateAnalyticsKPIs } from "@/utils/analyticsKPIs";
 
 type UseAnalyticsSummaryParams = {
   accounts?: Account[];
@@ -27,24 +26,14 @@ export function useAnalyticsSummary({
   period,
 }: UseAnalyticsSummaryParams) {
   return useMemo(() => {
-    const filteredTransactions = filterTransactionsByPeriod(
-      period,
-      transactions ?? []
-    );
+    return calculateAnalyticsKPIs({
+      accounts,
+      transactions,
+      snapshots,
+      assets,
+      settings,
+      period
+    });
 
-    const filteredSnapshots = filterSnapshotsByPeriod(
-      period,
-      snapshots ?? []
-    );
-
-    const summary = calculateSummaryKPIs(
-      accounts ?? [],
-      filteredTransactions,
-      filteredSnapshots,
-      assets ?? [],
-      settings ?? []
-    );
-
-    return summary;
   }, [accounts, transactions, snapshots, assets, settings, period]);
 }
