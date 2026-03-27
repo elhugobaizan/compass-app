@@ -1,8 +1,8 @@
-import { AppRouteItem, navigationItems } from "@/config/navigation";
+import { NavigationItem, navigationItems } from "@/config/navigation";
 
 export function isRouteActive(
   currentPath: string,
-  item: AppRouteItem
+  item: NavigationItem
 ): boolean {
   if (item.route === "/") {
     return currentPath === "/";
