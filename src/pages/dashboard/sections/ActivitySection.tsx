@@ -48,7 +48,7 @@ export default function ActivitySection({
       subtitle={isMobile ? undefined : "Gráficos y movimientos recientes"}
     >
       <div className={isMobile ? "space-y-4" : "grid grid-cols-2 xl:grid-cols-3 gap-6"}>
-        <PanelCard
+        {!isMobile && <PanelCard
           title="Evolución del patrimonio"
           subtitle="Últimos meses"
           className="h-64"
@@ -75,7 +75,7 @@ export default function ActivitySection({
           {!isLoadingSnapshots && !isErrorSnapshots && netWorthHistory.length > 0 && (
             <NetWorthHistoryChart items={netWorthHistory} />
           )}
-        </PanelCard>
+        </PanelCard>}
 
         {!isMobile && (<PanelCard
           title="Ingresos vs  Gastos"
@@ -86,14 +86,14 @@ export default function ActivitySection({
             <p className="text-sm text-gray-500">Cargando gráfico...</p>
           )}
           {isError && (
-            <EmptyState 
+            <EmptyState
               title=""
               description=""
               variant="error"
             />
           )}
           {!isLoading && !isError && monthlyData.length === 0 && (
-            <EmptyState 
+            <EmptyState
               title=""
               description=""
             />
@@ -103,7 +103,7 @@ export default function ActivitySection({
           )}
         </PanelCard>)}
 
-{/*         {!isMobile && (<PanelCard
+        {/*         {!isMobile && (<PanelCard
           title="Gastos por categoría"
           subtitle="Mes actual"
           className="h-64"
