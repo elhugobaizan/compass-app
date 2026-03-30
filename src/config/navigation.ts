@@ -40,7 +40,7 @@ export const navigationItems: NavigationItem[] = [
   {
     id: "transactions",
     route: "/transactions",
-    label: "Movs",
+    label: "Movimientos",
     title: "Movimientos",
     icon: ArrowRightLeft,
     mobile: "primary",

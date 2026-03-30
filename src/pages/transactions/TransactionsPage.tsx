@@ -65,7 +65,7 @@ export default function TransactionsPage(): JSX.Element {
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <PageHeader
-        title=""
+        title={isMobile ? "Movimientos" : ""}
         description={
           isMobile ? undefined : "Consultá y cargá ingresos, gastos y movimientos"
         }

@@ -1,3 +1,5 @@
+import { parseLocalDate } from "./date";
+
 export function formatCurrency(value: number, currency = "ARS"): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -15,7 +17,7 @@ export function formatDate(dateString: string): string {
 }
 
 export function formatRelativeDate(value: string): string {
-  const input = new Date(value);
+  const input = parseLocalDate(value);
   const today = new Date();
 
   const inputDate = new Date(

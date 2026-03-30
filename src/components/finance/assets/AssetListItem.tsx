@@ -7,25 +7,32 @@ import AssetCard from "./AssetCard";
 
 type AssetListItemProps = {
   readonly asset: Asset;
+  readonly isMobile: boolean;
   readonly accountName?: string;
   readonly onEdit?: () => void;
   readonly onDelete?: () => void;
+  readonly id?: string;
+  readonly isHighlighted?: boolean;
 };
 
 export function AssetListItem({
   asset,
+  isMobile,
   accountName,
   onEdit,
   onDelete,
+  id,
+  isHighlighted = false,
 }: AssetListItemProps): JSX.Element {
   const hasActions = Boolean(onEdit || onDelete);
 
   return (
-    <div className="overflow-hidden rounded-2xl">
+    <div id={id} className={["scroll-mt-24 overflow-hidden rounded-xl transition-shadow border border-gray-200 bg-white", 
+      isHighlighted ? "ring-2 ring-amber-200 shadow-sm" : ""].join(" ")}>
       <AssetCard asset={asset} accountName={accountName} />
 
-      {hasActions && (
-        <div className="flex items-center justify-end gap-2 border border-t-0 border-gray-100 bg-gray-50/70 px-4 py-3">
+      {hasActions && !isMobile && (
+        <div className="flex items-center justify-end gap-2 border border-t border-gray-100 bg-gray-50/80 px-4 py-3">
           {onEdit && (
             <Button
               variant="secondary"

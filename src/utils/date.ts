@@ -28,13 +28,42 @@ export function isCurrentMonth(dateString: string): boolean {
   );
 }
 
-export function parseLocalDate(dateString: string): Date | null {
-  if(dateString) {
+export function parseLocalDate(dateString: string): Date {
     const [date] = dateString.split('T');
     const [year, month, day] = date.split("-").map(Number);
   
     return new Date(year, month - 1, day);
-  }
+}
 
-  return null;
+export function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function isSameLocalDate(left: Date, right: Date): boolean {
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
+}
+
+export function isTodayDateString(dateString?: string | null): boolean {
+  if (!dateString) return false;
+
+  const local = parseLocalDate(dateString);
+  if(!local) return false;
+
+  return isSameLocalDate(local, new Date());
+}
+
+export function getDaysFromToday(dateString?: string | null): number | null {
+  if (!dateString) return null;
+
+  const today = startOfLocalDay(new Date());
+  const local = parseLocalDate(dateString);
+  if(!local) return null;
+
+  const target = startOfLocalDay(local);
+  const diffMs = target.getTime() - today.getTime();
+  return Math.round(diffMs / 86_400_000);
 }

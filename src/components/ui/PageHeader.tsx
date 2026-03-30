@@ -17,7 +17,7 @@ export default function PageHeader({
 }: PageHeaderProps): JSX.Element {
   return (
     <header className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+      <div className="flex flex-row gap-3 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
             {title}

@@ -83,7 +83,7 @@ export default function AccountsPage(): JSX.Element {
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <PageHeader
-        title=""
+        title={isMobile ? "Cuentas" : ""}
         description={
           isMobile ? undefined : "Administrá wallets, bancos y brokers."
         }

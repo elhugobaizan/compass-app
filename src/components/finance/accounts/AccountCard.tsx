@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Landmark, Wallet, LineChart } from "lucide-react";
+import { Landmark, Wallet, LineChart, LucideIcon } from "lucide-react";
 
 import Card from "../../ui/Card";
 import { formatCurrency } from "@/utils/formatters";
@@ -17,27 +17,46 @@ type AccountCardProps = {
   readonly unstyled?: boolean;
 };
 
-function getAccountTypeIcon(accountType: AccountType): JSX.Element {
-  const className = "h-4 w-4 text-gray-600";
+type AssetVisualConfig = {
+  readonly label: string;
+  readonly Icon: LucideIcon;
+  readonly containerClassName: string;
+  readonly iconClassName: string;
+};
 
-  switch (accountType) {
+function getAccountVisualConfig(assetType: string): AssetVisualConfig {
+  switch (assetType) {
     case "BANK":
-      return <Landmark className={className} />;
-    case "WALLET":
-      return <Wallet className={className} />;
-    case "BROKER":
-      return <LineChart className={className} />;
-  }
-}
+      return {
+        label: "Banco",
+        Icon: Landmark,
+        containerClassName: "bg-amber-50 border border-amber-100",
+        iconClassName: "text-amber-600",
+      };
 
-function getAccountTypeLabel(accountType: AccountType): string {
-  switch (accountType) {
-    case "BANK":
-      return "Banco";
     case "WALLET":
-      return "Billetera";
+      return {
+        label: "Billetera virtual",
+        Icon: Wallet,
+        containerClassName: "bg-sky-50 border border-sky-100",
+        iconClassName: "text-sky-700",
+      };
+
     case "BROKER":
-      return "Broker";
+      return {
+        label: "Broker",
+        Icon: LineChart,
+        containerClassName: "bg-violet-50 border border-violet-100",
+        iconClassName: "text-violet-700",
+      };
+
+    default:
+      return {
+        label: assetType,
+        Icon: Wallet,
+        containerClassName: "bg-gray-50 border border-gray-100",
+        iconClassName: "text-gray-600",
+      };
   }
 }
 
@@ -51,6 +70,8 @@ export default function AccountCard({
   compact = false,
   unstyled = false,
 }: AccountCardProps): JSX.Element {
+  const visual = getAccountVisualConfig(accountType);
+  const { Icon } = visual;
   const formattedBalance =
     typeof balance === "number" ? formatCurrency(balance) : balance;
 
@@ -61,11 +82,11 @@ export default function AccountCard({
           <div
             className={
               compact
-                ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100"
-                : "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-100"
+                ? `flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
+                : `flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
             }
           >
-            {getAccountTypeIcon(accountType)}
+            <Icon className={`h-4 w-4 ${visual.iconClassName}`} />
           </div>
 
           <div className="min-w-0">
@@ -84,7 +105,7 @@ export default function AccountCard({
             <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500 sm:text-sm">
               {institution && <span className="truncate">{institution}</span>}
               {institution && <span className="text-gray-300">•</span>}
-              <span>{getAccountTypeLabel(accountType)}</span>
+              <span>{visual.label}</span>
             </div>
           </div>
         </div>
@@ -124,7 +145,7 @@ export default function AccountCard({
   }
 
   return (
-    <Card className={compact ? "rounded-xl p-3" : "rounded-xl p-4"}>
+    <Card className={compact ? "rounded-xl p-3 my-3" : "rounded-xl p-4"}>
       {content}
     </Card>
   );  

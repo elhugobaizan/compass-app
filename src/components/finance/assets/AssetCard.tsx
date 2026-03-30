@@ -9,6 +9,9 @@ import {
 
 import type { Asset } from "@/types/asset";
 import { formatCurrency } from "@/utils/formatters";
+import { getDaysFromToday } from "@/utils/date";
+import { toNumber } from "@/utils/numbers";
+import { getAssetValue } from "@/utils/assets";
 
 type AssetCardProps = {
   readonly asset: Asset;
@@ -21,30 +24,6 @@ type AssetVisualConfig = {
   readonly containerClassName: string;
   readonly iconClassName: string;
 };
-
-function toNumber(value: string | number | null | undefined): number {
-  if (value === null || value === undefined) return 0;
-  if (typeof value === "number") return value;
-
-  const parsed = Number(value);
-  return Number.isNaN(parsed) ? 0 : parsed;
-}
-
-function getAssetValue(asset: Asset): string | null {
-  const quantity = toNumber(asset.quantity);
-  const price = toNumber(asset.price);
-  const capital = toNumber(asset.capital);
-
-  if (quantity > 0 && price > 0) {
-    return formatCurrency(quantity * price);
-  }
-
-  if (capital > 0) {
-    return formatCurrency(capital);
-  }
-
-  return null;
-}
 
 function getAssetVisualConfig(assetType: string): AssetVisualConfig {
   switch (assetType) {
@@ -82,6 +61,17 @@ function getAssetVisualConfig(assetType: string): AssetVisualConfig {
   }
 }
 
+function getMaturityLabel(dateString?: string | null): string | null {
+  const days = getDaysFromToday(dateString);
+
+  if (days === null) return null;
+  if (days === 0) return "Vence hoy";
+  if (days === 1) return "Vence mañana";
+  if (days > 1) return `Vence en ${days} días`;
+
+  return null;
+}
+
 function getFormattedQuantity(asset: Asset): string | null {
   const quantity = toNumber(asset.quantity);
 
@@ -96,13 +86,14 @@ export default function AssetCard({
   asset,
   accountName,
 }: AssetCardProps): JSX.Element {
-  const assetValue = getAssetValue(asset);
+  const assetValue = formatCurrency(getAssetValue(asset));
   const formattedQuantity = getFormattedQuantity(asset);
   const visual = getAssetVisualConfig(asset.asset_type);
   const { Icon } = visual;
+  const maturityLabel = getMaturityLabel(asset.maturity);
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3">
+    <div className="px-4 py-3">
       <div className="flex items-start gap-3">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`}
@@ -130,6 +121,18 @@ export default function AssetCard({
                 <span className="rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-600">
                   {visual.label}
                 </span>
+
+                {maturityLabel && (
+                  <span
+                    className={
+                      maturityLabel === "Vence hoy"
+                        ? "rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
+                        : "rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-600"
+                    }
+                  >
+                    {maturityLabel}
+                  </span>
+                )}
               </div>
 
               <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
