@@ -6,11 +6,9 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
 import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
 import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
-import TransactionRow from "@/components/finance/TransactionRow";
-import TransferRow from "@/components/finance/TransferRow";
 
 import { useBreakpoint } from "@/utils/utils";
-import { transactionTypeLabels } from "@/utils/transactionTypes";
+import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
 import { buildTransactionListItems } from "@/utils/transactionList";
 import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
@@ -22,6 +20,61 @@ import type { Transaction } from "@/types/transaction";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
 import { ArrowLeftRight, ArrowUpRight } from "lucide-react";
+import TransactionSummary from "@/components/finance/transactions/TransactionSummary";
+import TransactionListItem from "@/components/finance/transactions/TransactionListItem";
+import TransactionCardSkeleton from "@/components/finance/transactions/TransactionCardSkeleton";
+import { toNumber } from "@/utils/numbers";
+import { formatCurrency } from "@/utils/formatters";
+
+function getTransactionSummaryValues(
+  transactions: readonly {
+    amount: string | number;
+    type: { name: string };
+  }[] | undefined,
+): {
+  totalTransactions: number;
+  totalIncomeAmount: number;
+  totalExpenseAmount: number;
+  totalIncomesCount: number;
+  totalExpensesCount: number;
+} {
+  if (!transactions || transactions.length === 0) {
+    return {
+      totalTransactions: 0,
+      totalIncomeAmount: 0,
+      totalExpenseAmount: 0,
+      totalIncomesCount: 0,
+      totalExpensesCount: 0,
+    };
+  }
+
+  return transactions.reduce(
+    (acc, transaction) => {
+      const amount = toNumber(transaction.amount);
+
+      acc.totalTransactions += 1;
+
+      if (transaction.type.name === TRANSACTION_TYPES.INGRESO) {
+        acc.totalIncomesCount += 1;
+        acc.totalIncomeAmount += amount;
+      }
+
+      if (transaction.type.name === TRANSACTION_TYPES.GASTO) {
+        acc.totalExpensesCount += 1;
+        acc.totalExpenseAmount += amount;
+      }
+
+      return acc;
+    },
+    {
+      totalTransactions: 0,
+      totalIncomeAmount: 0,
+      totalExpenseAmount: 0,
+      totalIncomesCount: 0,
+      totalExpensesCount: 0,
+    },
+  );
+}
 
 export default function TransactionsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -50,10 +103,13 @@ export default function TransactionsPage(): JSX.Element {
 
   const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
+
   const transactionListItems = useMemo(
     () => buildTransactionListItems(transactions ?? []),
     [transactions]
   );
+
+  const summary = useMemo(() => getTransactionSummaryValues(transactions), [transactions]);
 
   async function handleConfirmDelete() {
     if (!transactionToDelete) return;
@@ -63,7 +119,7 @@ export default function TransactionsPage(): JSX.Element {
   }
 
   const content = (
-    <div className={isMobile ? "space-y-4" : "space-y-6"}>
+    <div className={isMobile ? "space-y-4" : "space-y-8"}>
       <PageHeader
         title={isMobile ? "Movimientos" : ""}
         description={
@@ -71,13 +127,13 @@ export default function TransactionsPage(): JSX.Element {
         }
         action={
           <div className="flex gap-2">
-            <Button 
+            <Button
               variant="primary"
               onClick={() => setIsCreateTransactionOpen(true)}>
               <ArrowUpRight className="mr-1 h-3.5 w-3.5" />
               Movimiento
             </Button>
-            <Button 
+            <Button
               variant="secondary"
               onClick={() => setIsCreateTransferOpen(true)}>
               <ArrowLeftRight className="mr-1 h-3.5 w-3.5" />
@@ -85,10 +141,26 @@ export default function TransactionsPage(): JSX.Element {
             </Button>
           </div>
         }
+        summary={!isMobile && (<TransactionSummary
+          totalTransactions={summary.totalTransactions}
+          totalIncomes={formatCurrency(summary.totalIncomeAmount)}
+          totalExpenses={formatCurrency(summary.totalExpenseAmount)}
+          totalIncomesCount={summary.totalIncomesCount}
+          totalExpensesCount={summary.totalExpensesCount}
+        />
+        )}
       />
 
+      {!isMobile && (<div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-gray-200" />
+        <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
+          Actividad reciente
+        </span>
+        <div className="h-px flex-1 bg-gray-200" />
+      </div>)}
+
       {isLoadingTransactions && (
-        <p className="text-sm text-gray-500">Cargando movimientos...</p>
+        <TransactionCardSkeleton count={isMobile ? 5 : 6} showActions={!isMobile} />
       )}
 
       {isErrorTransactions && (
@@ -118,26 +190,29 @@ export default function TransactionsPage(): JSX.Element {
         transactionListItems.length > 0 && (
           <div className="space-y-3">
             {transactionListItems.map((item) => {
-              if(item.kind  === "transfer") {
-                return (<TransferRow 
+              if (item.kind === "transfer") {
+                return (<TransactionListItem
                   key={item.transfer_group}
+                  kind="transfer"
+                  isMobile={isMobile}
                   item={item}
                 />);
               }
 
               const transaction = item.transaction;
 
-              return (<TransactionRow
+              return (<TransactionListItem
                 key={transaction.id}
+                kind="transaction"
+                isMobile={isMobile}
+                concept={transaction.concept}
                 amount={transaction.amount}
                 date={transaction.date}
-                concept={transaction.concept}
-                typeLabel={transactionTypeLabels[transaction.type.name]}
+                typeLabel={transaction.type.name}
                 categoryLabel={transaction.category?.name}
                 location={transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
-                isMobile={isMobile}
               />)
             })}
           </div>
@@ -166,7 +241,7 @@ export default function TransactionsPage(): JSX.Element {
         isErrorCategories={isErrorCategories}
       />
 
-      <CreateTransferSheet 
+      <CreateTransferSheet
         open={isCreateTransferOpen}
         onClose={() => setIsCreateTransferOpen(false)}
         accounts={accounts}

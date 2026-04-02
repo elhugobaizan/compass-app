@@ -12,6 +12,7 @@ import { formatCurrency } from "@/utils/formatters";
 import { getDaysFromToday } from "@/utils/date";
 import { toNumber } from "@/utils/numbers";
 import { getAssetValue } from "@/utils/assets";
+import Badge from "@/components/ui/Badge";
 
 type AssetCardProps = {
   readonly asset: Asset;
@@ -111,27 +112,19 @@ export default function AssetCard({
                 </p>
 
                 {asset.symbol && (
-                  <span className="rounded-md bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-600">
+                  <Badge tone="subtle" className="px-1.5 text-[10px] font-semibold uppercase tracking-wide">
                     {asset.symbol}
-                  </span>
+                  </Badge>
                 )}
               </div>
 
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-600">
-                  {visual.label}
-                </span>
+                <Badge>{visual.label}</Badge>
 
                 {maturityLabel && (
-                  <span
-                    className={
-                      maturityLabel === "Vence hoy"
-                        ? "rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
-                        : "rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-600"
-                    }
-                  >
+                  <Badge tone={maturityLabel === "Vence hoy" ? "warning" : "subtle"}>
                     {maturityLabel}
-                  </span>
+                  </Badge>
                 )}
               </div>
 

@@ -2,7 +2,6 @@ import { JSX } from "react";
 import SectionBlock from "@/components/ui/SectionBlock";
 import PanelCard from "@/components/ui/PanelCard";
 import EmptyState from "@/components/ui/EmptyState";
-import TransactionRow from "@/components/finance/TransactionRow";
 import type { Transaction } from "@/types/transaction";
 import { getRecentTransactions } from "@/utils/transactions";
 import Button from "@/components/ui/Button";
@@ -13,7 +12,8 @@ import { useNetWorthHistory } from "@/hooks/useNetWorthHistory";
 import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
 import { Snapshot } from "@/services/snapshots";
 import { buildTransactionListItems } from "@/utils/transactionList";
-import TransferRow from "@/components/finance/TransferRow";
+import TransferCard from "@/components/finance/transactions/TransferCard";
+import TransactionCard from "@/components/finance/transactions/TransactionCard";
 
 type ActivitySectionProps = {
   readonly isMobile: boolean;
@@ -34,7 +34,7 @@ export default function ActivitySection({
   isLoadingSnapshots,
   isErrorSnapshots
 }: ActivitySectionProps): JSX.Element {
-  const transactionsListItems =  buildTransactionListItems(transactions);
+  const transactionsListItems = buildTransactionListItems(transactions);
   const recentTransactions = getRecentTransactions(transactionsListItems || [], 3);
   const hasTransactions = !!recentTransactions?.length;
   const navigate = useNavigate();
@@ -136,23 +136,22 @@ export default function ActivitySection({
           {!isLoading && !isError && !!recentTransactions?.length && (
             <div className="h-full space-y-3 overflow-y-auto pr-1">
               {recentTransactions.map((item) => {
-                
-                if(item.kind === "transfer") {
-                  return (<TransferRow 
+
+                if (item.kind === "transfer") {
+                  return (<TransferCard
                     key={item.transfer_group}
                     item={item}
                   />);
                 }
 
-                const transaction =  item.transaction;
-                return (<TransactionRow
+                const transaction = item.transaction;
+                return (<TransactionCard
                   key={transaction.id}
                   amount={transaction.amount}
                   date={transaction.date}
                   concept={transaction.concept}
                   typeLabel={transaction.type.name || "unknown"}
                   categoryLabel={transaction.category?.name || "Sin categoría"}
-                  isMobile={isMobile}
                 />);
               })}
             </div>

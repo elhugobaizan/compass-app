@@ -11,17 +11,17 @@ export function getRecentTransactions(
     .sort(
       (a, b) => {
         let itemA;
-        if(a.kind === "transfer") {
+        if (a.kind === "transfer") {
           itemA = a.date;
         } else {
           itemA = a.transaction.date;
         }
         let itemB;
-        if(b.kind === "transfer") {
+        if (b.kind === "transfer") {
           itemB = b.date;
         } else {
           itemB = b.transaction.date;
-        }        
+        }
         return new Date(itemB).getTime() - new Date(itemA).getTime()
       }
     )
@@ -148,3 +148,4 @@ export function getMonthlyIncomeExpense(
       month: formatMonthLabel(item.month),
     }));
 }
+

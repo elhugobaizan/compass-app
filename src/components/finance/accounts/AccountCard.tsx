@@ -3,6 +3,7 @@ import { Landmark, Wallet, LineChart, LucideIcon } from "lucide-react";
 
 import Card from "../../ui/Card";
 import { formatCurrency } from "@/utils/formatters";
+import Badge from "@/components/ui/Badge";
 
 export type AccountType = "BANK" | "WALLET" | "BROKER";
 
@@ -96,9 +97,9 @@ export default function AccountCard({
               </h3>
 
               {isPaymentMethod && (
-                <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+                <Badge tone="success">
                   Método de pago
-                </span>
+                </Badge>
               )}
             </div>
 
@@ -148,5 +149,5 @@ export default function AccountCard({
     <Card className={compact ? "rounded-xl p-3 my-3" : "rounded-xl p-4"}>
       {content}
     </Card>
-  );  
+  );
 }

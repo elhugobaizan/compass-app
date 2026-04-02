@@ -1,26 +1,31 @@
 import { JSX } from "react";
+
 import Modal from "@/components/ui/Modal";
 import EmptyState from "@/components/ui/EmptyState";
-import TransferForm from "@/components/finance/transactions/TransferForm";
-import type { Account } from "@/types/account";
+import BillForm from "@/components/finance/bills/BillForm";
 
-type CreateTransferSheetProps = {
+import type { Account } from "@/types/account";
+import { Category } from "@/types/category";
+
+type CreateBillSheetProps = {
   readonly open: boolean;
   readonly onClose: () => void;
   readonly accounts?: Account[];
   readonly isLoadingAccounts?: boolean;
   readonly isErrorAccounts?: boolean;
+  readonly categories?: Category[];
 };
 
-export default function CreateTransferSheet({
+export default function CreateBillSheet({
   open,
   onClose,
   accounts = [],
   isLoadingAccounts = false,
   isErrorAccounts = false,
-}: CreateTransferSheetProps): JSX.Element {
+  categories = [],
+}: CreateBillSheetProps): JSX.Element {
   return (
-    <Modal open={open} onClose={onClose} title="Nueva transferencia">
+    <Modal open={open} onClose={onClose} title="Nuevo impuesto">
       {isLoadingAccounts && (
         <p className="text-sm text-gray-500">Cargando cuentas...</p>
       )}
@@ -33,15 +38,15 @@ export default function CreateTransferSheet({
         />
       )}
 
-      {!isLoadingAccounts && !isErrorAccounts && accounts.length < 2 && (
+      {!isLoadingAccounts && !isErrorAccounts && accounts.length === 0 && (
         <EmptyState
-          title="No hay cuentas suficientes"
-          description="Necesitás al menos dos cuentas activas para registrar una transferencia."
+          title="No hay cuentas disponibles"
+          description="Necesitás al menos una cuenta para registrar un impuesto."
         />
       )}
 
-      {!isLoadingAccounts && !isErrorAccounts && accounts.length >= 2 && (
-        <TransferForm accounts={accounts} onSuccess={onClose} />
+      {!isLoadingAccounts && !isErrorAccounts && accounts.length > 0 && (
+        <BillForm accounts={accounts} categories={categories} onSuccess={onClose} />
       )}
     </Modal>
   );

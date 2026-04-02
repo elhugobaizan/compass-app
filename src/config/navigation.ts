@@ -6,6 +6,7 @@ import {
   BarChart3,
   Landmark,
   Settings,
+  BanknoteArrowUp,
 } from "lucide-react";
 
 export type NavigationItem = {
@@ -34,7 +35,7 @@ export const navigationItems: NavigationItem[] = [
     label: "Cuentas",
     title: "Cuentas",
     icon: Wallet,
-    mobile: "primary",
+    mobile: "secondary",
     showInWeb: true,
   },
   {
@@ -43,6 +44,15 @@ export const navigationItems: NavigationItem[] = [
     label: "Movimientos",
     title: "Movimientos",
     icon: ArrowRightLeft,
+    mobile: "primary",
+    showInWeb: true,
+  },
+  {
+    id: "bills",
+    route: "/bills",
+    label: "Facturas y Servicios",
+    title: "Facturas y Servicios",
+    icon: BanknoteArrowUp,
     mobile: "primary",
     showInWeb: true,
   },
@@ -71,7 +81,7 @@ export const navigationItems: NavigationItem[] = [
     title: "Ajustes",
     icon: Settings,
     mobile: "secondary",
-    showInWeb: true,
+    showInWeb: false,
   },
 ];
 

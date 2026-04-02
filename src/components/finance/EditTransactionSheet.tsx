@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import Modal from "@/components/ui/Modal";
 import EmptyState from "@/components/ui/EmptyState";
-import TransactionForm from "@/components/finance/TransactionForm";
+import TransactionForm from "@/components/finance/transactions/TransactionForm";
 import type { Account } from "@/types/account";
 import type { Category } from "@/types/category";
 import type { Transaction } from "@/types/transaction";
