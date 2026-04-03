@@ -39,8 +39,8 @@ type TransactionListItemProps =
   | TransferTransactionItemProps;
 
 function TransactionActions({
-  onEdit,
-  onDelete,
+  onEdit = () => { },
+  onDelete = () => { },
   editLabel,
   deleteLabel,
 }: {
@@ -95,6 +95,9 @@ function DesktopItemFrame({
 export default function TransactionListItem(
   props: TransactionListItemProps,
 ): JSX.Element {
+  const onEdit = "onEdit" in props ? props.onEdit : undefined;
+  const onDelete = "onDelete" in props ? props.onDelete : undefined;
+
   if (props.kind === "transaction") {
     if (props.isMobile) {
       return (
@@ -132,12 +135,12 @@ export default function TransactionListItem(
     );
   }
 
-  const handleEdit = props.onEdit
-    ? () => props.onEdit(props.item)
+  const handleEdit = onEdit
+    ? () => onEdit(props.item)
     : undefined;
 
-  const handleDelete = props.onDelete
-    ? () => props.onDelete(props.item)
+  const handleDelete = onDelete
+    ? () => onDelete(props.item)
     : undefined;
 
   if (props.isMobile) {
