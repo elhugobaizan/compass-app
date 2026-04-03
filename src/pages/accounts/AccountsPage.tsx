@@ -16,8 +16,9 @@ import { useBreakpoint } from "@/utils/utils";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useDeleteAccount } from "@/hooks/mutations/useDeleteAccount";
 
-import type { Account } from "@/types/account";
+import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
+import AccountTypeFilter from "@/components/finance/accounts/AccountTypeFilter";
 
 function toNumber(value: string | number | null | undefined): number {
   if (value === null || value === undefined) return 0;
@@ -47,6 +48,7 @@ export default function AccountsPage(): JSX.Element {
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [accountTypeFilter, setAccountTypeFilter] = useState<AccountTypeFilterValue>("all");
 
   const {
     data: accounts,
@@ -58,6 +60,13 @@ export default function AccountsPage(): JSX.Element {
     useDeleteAccount();
 
   const sortedAccounts = useMemo(() => sortAccounts(accounts ?? []), [accounts]);
+  const filteredAccounts = useMemo(() => {
+    if (accountTypeFilter === "all") return sortedAccounts;
+
+    return sortedAccounts.filter(
+      (account) => account.account_type === accountTypeFilter,
+    );
+  }, [sortedAccounts, accountTypeFilter]);
 
   async function handleConfirmDelete() {
     if (!accountToDelete) return;
@@ -94,6 +103,8 @@ export default function AccountsPage(): JSX.Element {
         }
       />
 
+      <AccountTypeFilter value={accountTypeFilter} onChange={setAccountTypeFilter} />
+
       {submitError && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {submitError}
@@ -128,9 +139,21 @@ export default function AccountsPage(): JSX.Element {
         />
       )}
 
-      {!isLoading && !isError && sortedAccounts.length > 0 && (
+      {!isLoading && !isError && sortedAccounts.length > 0 && filteredAccounts.length === 0 && (
+        <EmptyState
+          title="No hay cuentas para este filtro"
+          description="Probá con otro tipo de cuenta."
+          action={
+            <Button onClick={() => setAccountTypeFilter("all")}>
+              Ver todas
+            </Button>
+          }
+        />
+      )}
+
+      {!isLoading && !isError && filteredAccounts.length > 0 && (
         <div className={listClassName}>
-          {sortedAccounts.map((account) => (
+          {filteredAccounts.map((account) => (
             <AccountListItem
               key={account.id}
               account={account}

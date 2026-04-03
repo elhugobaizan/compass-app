@@ -184,7 +184,7 @@ export default function PayBillSheet({
         <p className="text-sm text-gray-500">No seleccionaste ningún impuesto.</p>
       ) : (
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3">
             <p className="text-sm font-medium text-gray-900">{bill.name}</p>
 
             <div className="mt-1 space-y-1 text-sm text-gray-500">

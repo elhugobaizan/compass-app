@@ -8,15 +8,17 @@ type EmptyStateProps = {
   readonly variant?: string;
 };
 
-function getBorderColor(variant: string)  {
-  if(variant == "warning") return "border-yellow-500";
-  if(variant == "error") return "border-red-500";
+function getBorderColor(variant: string) {
+  if (variant == "warning") return "border-yellow-500";
+  if (variant == "error") return "border-red-500";
+  if (variant == "info") return "border-blue-500";
   return "border-gray-300";
 }
 
-function getBackgroundColor(variant: string)  {
-  if(variant == "warning") return "bg-yellow-50";
-  if(variant == "error") return "bg-red-50";
+function getBackgroundColor(variant: string) {
+  if (variant == "warning") return "bg-yellow-50";
+  if (variant == "error") return "bg-red-50";
+  if (variant == "info") return "bg-blue-50";
   return "bg-gray-50";
 }
 
@@ -25,7 +27,7 @@ export default function EmptyState({
   description,
   action,
   className = "",
-  variant = "info",
+  variant = "default",
 }: EmptyStateProps): JSX.Element {
   return (
     <div

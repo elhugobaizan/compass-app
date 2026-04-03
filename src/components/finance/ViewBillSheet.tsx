@@ -68,8 +68,8 @@ function DetailItem({
   readonly value: string;
 }): JSX.Element {
   return (
-    <div className="rounded-xl border border-border bg-card px-3 py-3">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-xl bg-gray-50 px-3 py-3">
+      <p className="text-xs font-medium text-muted-foreground">
         {label}
       </p>
       <p className="mt-1 text-sm text-foreground">{value || "—"}</p>
@@ -94,10 +94,10 @@ export default function ViewBillSheet({
         </p>
       ) : (
         <div className="space-y-4">
-          <section className="rounded-2xl border border-border bg-card p-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
+          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
-                <h2 className="truncate text-lg font-semibold text-foreground">
+                <h2 className="truncate text-xl font-semibold text-foreground">
                   {row.bill?.name}
                 </h2>
 
@@ -127,7 +127,7 @@ export default function ViewBillSheet({
                 value={formatDate(row.paidAt)}
               />
               <DetailItem
-                label="Día de vencimiento habitual"
+                label="Vencimiento habitual"
                 value={row.bill?.due_day ? String(row.bill?.due_day) : "—"}
               />
               <DetailItem
@@ -147,27 +147,28 @@ export default function ViewBillSheet({
           </section>
 
           {(row.bill?.notes || row.bill?.url || row.bill?.logo) && (
-            <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-              <h3 className="text-sm font-medium text-muted-foreground">
+            <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+              <h3 className="mb-3 text-sm font-medium text-muted-foreground">
                 Información adicional
               </h3>
+              <div className="space-y-3">
+                {row.bill?.notes ? (
+                  <DetailItem label="Notas" value={row.bill?.notes} />
+                ) : null}
 
-              {row.bill?.notes ? (
-                <DetailItem label="Notas" value={row.bill?.notes} />
-              ) : null}
+                {row.bill?.url ? (
+                  <DetailItem label="URL" value={row.bill?.url} />
+                ) : null}
 
-              {row.bill?.url ? (
-                <DetailItem label="URL" value={row.bill?.url} />
-              ) : null}
-
-              {row.bill?.logo ? (
-                <DetailItem label="Logo" value={row.bill?.logo} />
-              ) : null}
+                {row.bill?.logo ? (
+                  <DetailItem label="Logo" value={row.bill?.logo} />
+                ) : null}
+              </div>
             </section>
           )}
 
-          <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-            <h3 className="text-sm font-medium text-muted-foreground">
+          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <h3 className="mb-3 text-sm font-medium text-muted-foreground">
               Pago del período
             </h3>
 
@@ -201,7 +202,7 @@ export default function ViewBillSheet({
             </div>
           </section>
 
-          <div className="flex flex-wrap justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2 pt-1">
             {row.status !== "paid" && onPay ? (
               <Button onClick={onPay}>Pagar</Button>
             ) : null}

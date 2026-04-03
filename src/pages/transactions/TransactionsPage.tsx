@@ -1,30 +1,32 @@
-import { JSX, useMemo, useState } from "react";
-import PageHeader from "@/components/ui/PageHeader";
-import Button from "@/components/ui/Button";
-import EmptyState from "@/components/ui/EmptyState";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
-import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
 import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
+import EditTransactionSheet from "@/components/finance/EditTransactionSheet";
+import Button from "@/components/ui/Button";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import EmptyState from "@/components/ui/EmptyState";
+import PageHeader from "@/components/ui/PageHeader";
+import { JSX, useMemo, useState } from "react";
 
-import { useBreakpoint } from "@/utils/utils";
-import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
-import { buildTransactionListItems } from "@/utils/transactionList";
-import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
+import { useDeleteTransaction } from "@/hooks/mutations/useDeleteTransaction";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
-import { useDeleteTransaction } from "@/hooks/mutations/useDeleteTransaction";
+import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
+import { buildTransactionListItems } from "@/utils/transactionList";
+import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
+import { useBreakpoint } from "@/utils/utils";
 
 import type { Transaction } from "@/types/transaction";
 
+import TransactionCardSkeleton from "@/components/finance/transactions/TransactionCardSkeleton";
+import TransactionListItem from "@/components/finance/transactions/TransactionListItem";
+import TransactionSummary from "@/components/finance/transactions/TransactionSummary";
+import MonthPicker from "@/components/ui/MonthPicker";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
-import { ArrowLeftRight, ArrowUpRight } from "lucide-react";
-import TransactionSummary from "@/components/finance/transactions/TransactionSummary";
-import TransactionListItem from "@/components/finance/transactions/TransactionListItem";
-import TransactionCardSkeleton from "@/components/finance/transactions/TransactionCardSkeleton";
-import { toNumber } from "@/utils/numbers";
+import { addMonths, parseLocalDate, startOfMonth } from "@/utils/date";
 import { formatCurrency } from "@/utils/formatters";
+import { toNumber } from "@/utils/numbers";
+import { ArrowLeftRight, ArrowUpRight } from "lucide-react";
 
 function getTransactionSummaryValues(
   transactions: readonly {
@@ -82,6 +84,7 @@ export default function TransactionsPage(): JSX.Element {
   const [isCreateTransferOpen, setIsCreateTransferOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<Date>(() => startOfMonth(new Date()));
 
   const {
     data: transactions,
@@ -103,13 +106,39 @@ export default function TransactionsPage(): JSX.Element {
 
   const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
+  const filteredTransactions = useMemo(() => {
+    const selectedYear = selectedMonth.getFullYear();
+    const selectedMonthIndex = selectedMonth.getMonth();
+
+    return (transactions ?? []).filter((transaction) => {
+      const date = parseLocalDate(transaction.date);
+      if (Number.isNaN(date.getTime())) return false;
+
+      return (
+        date.getFullYear() === selectedYear &&
+        date.getMonth() === selectedMonthIndex
+      );
+    });
+  }, [transactions, selectedMonth]);
 
   const transactionListItems = useMemo(
-    () => buildTransactionListItems(transactions ?? []),
-    [transactions]
+    () => buildTransactionListItems(filteredTransactions ?? []),
+    [filteredTransactions]
   );
 
-  const summary = useMemo(() => getTransactionSummaryValues(transactions), [transactions]);
+  const summary = useMemo(() => getTransactionSummaryValues(filteredTransactions), [filteredTransactions]);
+
+  function handlePreviousMonth() {
+    setSelectedMonth((prev) => addMonths(prev, -1));
+  }
+
+  function handleNextMonth() {
+    setSelectedMonth((prev) => addMonths(prev, 1));
+  }
+
+  function handleResetToCurrentMonth() {
+    setSelectedMonth(startOfMonth(new Date()));
+  }
 
   async function handleConfirmDelete() {
     if (!transactionToDelete) return;
@@ -151,10 +180,17 @@ export default function TransactionsPage(): JSX.Element {
         )}
       />
 
+      <MonthPicker
+        selectedMonth={selectedMonth}
+        onPrevious={handlePreviousMonth}
+        onNext={handleNextMonth}
+        onResetToCurrentMonth={handleResetToCurrentMonth}
+      />
+
       {!isMobile && (<div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-gray-200" />
         <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
-          Actividad reciente
+          Movimientos del mes
         </span>
         <div className="h-px flex-1 bg-gray-200" />
       </div>)}
@@ -175,12 +211,18 @@ export default function TransactionsPage(): JSX.Element {
         !isErrorTransactions &&
         transactionListItems.length === 0 && (
           <EmptyState
-            title="Todavía no hay movimientos"
-            description="Creá tu primer movimiento para empezar a poblar la app."
+            title="No hay movimientos en este mes"
+            variant="info"
+            description="Probá con otro período o cargá un nuevo movimiento."
             action={
-              <Button onClick={() => setIsCreateTransactionOpen(true)}>
-                Crear movimiento
-              </Button>
+              <div className="flex gap-3">
+                <Button variant="secondary" onClick={() => setSelectedMonth(startOfMonth(new Date()))}>
+                  Este mes
+                </Button>
+                <Button variant="secondary" onClick={() => setIsCreateTransactionOpen(true)}>
+                  Crear movimiento
+                </Button>
+              </div>
             }
           />
         )}

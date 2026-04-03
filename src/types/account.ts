@@ -26,3 +26,15 @@ export type AccountGroup = {
 }
 
 export type AccountType = "BANK" | "WALLET" | "BROKER";
+
+export type AccountTypeFilterValue = "all" | "BANK" | "WALLET" | "BROKER";
+
+export const ACCOUNT_TYPE_FILTERS: ReadonlyArray<{
+  readonly label: string;
+  readonly value: AccountTypeFilterValue;
+}> = [
+    { label: "Todas", value: "all" },
+    { label: "Bancos", value: "BANK" },
+    { label: "Wallets", value: "WALLET" },
+    { label: "Brokers", value: "BROKER" },
+  ];

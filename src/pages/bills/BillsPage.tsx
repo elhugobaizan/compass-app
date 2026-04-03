@@ -21,7 +21,6 @@ import { useBillsQuery } from "@/hooks/queries/useBillsQuery";
 import { useBreakpoint } from "@/utils/utils";
 
 import ViewBillSheet from "@/components/finance/ViewBillSheet";
-import BillsMonthPicker from "@/components/finance/bills/BillsMonthPicker";
 import BillsStatusFilter from "@/components/finance/bills/BillsStatusFilter";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
@@ -29,6 +28,7 @@ import { BILL_STATUS_FILTERS, type Bill, type BillPayment, type BillStatusFilter
 import { addMonths, getTodayKey, pad2, startOfMonth, toDateKey } from "@/utils/date";
 import { formatCurrency } from "@/utils/formatters";
 import { toNumber } from "@/utils/numbers";
+import MonthPicker from "@/components/ui/MonthPicker";
 
 
 type BillRow = {
@@ -223,7 +223,7 @@ export default function BillsPage(): JSX.Element {
         }
       />
 
-      <BillsMonthPicker
+      <MonthPicker
         selectedMonth={selectedMonth}
         onPrevious={handlePreviousMonth}
         onNext={handleNextMonth}
