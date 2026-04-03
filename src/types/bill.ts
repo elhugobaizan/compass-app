@@ -53,3 +53,12 @@ export type BillPaymentInput = Omit<BillPayment, "id" | "created_at" | "updated_
 
 export type CreateBillPaymentInput = BillPaymentInput;
 export type UpdateBillPaymentInput = BillPaymentInput;
+
+export type BillStatusFilter = "all" | "pending" | "paid" | "overdue";
+
+export const BILL_STATUS_FILTERS = [
+  { label: "Todos", value: "all" },
+  { label: "Pendientes", value: "pending" },
+  { label: "Pagados", value: "paid" },
+  { label: "Vencidos", value: "overdue" },
+] as const;

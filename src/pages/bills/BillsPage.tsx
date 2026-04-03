@@ -1,9 +1,9 @@
 import { JSX, useMemo, useState } from "react";
 
-import PageHeader from "@/components/ui/PageHeader";
 import Button from "@/components/ui/Button";
-import EmptyState from "@/components/ui/EmptyState";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import EmptyState from "@/components/ui/EmptyState";
+import PageHeader from "@/components/ui/PageHeader";
 import SummaryCard from "@/components/ui/SummaryCard";
 
 import LayoutMobile from "@/layouts/LayoutMobile";
@@ -12,23 +12,24 @@ import LayoutWeb from "@/layouts/LayoutWeb";
 import CreateBillSheet from "@/components/finance/CreateBillSheet";
 import EditBillSheet from "@/components/finance/EditBillSheet";
 import PayBillSheet from "@/components/finance/PayBillSheet";
-import BillListItem from "@/components/finance/bills/BillListItem";
 import BillCardSkeleton from "@/components/finance/bills/BillCardSkeleton";
+import BillListItem from "@/components/finance/bills/BillListItem";
 
-import { useBreakpoint } from "@/utils/utils";
-import { useBillsQuery } from "@/hooks/queries/useBillsQuery";
-import { useBillPaymentsByMonthQuery } from "@/hooks/queries/useBillPaymentsByMonthQuery";
 import { useDeleteBill } from "@/hooks/mutations/useDeleteBill";
+import { useBillPaymentsByMonthQuery } from "@/hooks/queries/useBillPaymentsByMonthQuery";
+import { useBillsQuery } from "@/hooks/queries/useBillsQuery";
+import { useBreakpoint } from "@/utils/utils";
 
-import type { Bill, BillPayment } from "@/types/bill";
-import { toNumber } from "@/utils/numbers";
-import { formatCurrency } from "@/utils/formatters";
-import { addMonths, getMonthLabel, getTodayKey, pad2, startOfMonth, toDateKey } from "@/utils/date";
+import ViewBillSheet from "@/components/finance/ViewBillSheet";
+import BillsMonthPicker from "@/components/finance/bills/BillsMonthPicker";
+import BillsStatusFilter from "@/components/finance/bills/BillsStatusFilter";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
-import ViewBillSheet from "@/components/finance/ViewBillSheet";
+import { BILL_STATUS_FILTERS, type Bill, type BillPayment, type BillStatusFilter } from "@/types/bill";
+import { addMonths, getTodayKey, pad2, startOfMonth, toDateKey } from "@/utils/date";
+import { formatCurrency } from "@/utils/formatters";
+import { toNumber } from "@/utils/numbers";
 
-type BillStatusFilter = "all" | "pending" | "paid" | "overdue";
 
 type BillRow = {
   readonly bill: Bill;
@@ -38,16 +39,6 @@ type BillRow = {
   readonly amount: number;
   readonly paidAt: string | null;
 };
-
-const STATUS_FILTERS: ReadonlyArray<{
-  readonly label: string;
-  readonly value: BillStatusFilter;
-}> = [
-    { label: "Todos", value: "all" },
-    { label: "Pendientes", value: "pending" },
-    { label: "Pagados", value: "paid" },
-    { label: "Vencidos", value: "overdue" },
-  ];
 
 function toMonthQuery(date: Date): { year: number; month: number } {
   return {
@@ -222,6 +213,7 @@ export default function BillsPage(): JSX.Element {
     setDeletingBill(null);
   }
 
+  const listClassName = isMobile ? "space-y-3" : "grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3";
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
       <PageHeader
@@ -231,24 +223,14 @@ export default function BillsPage(): JSX.Element {
         }
       />
 
-      <section className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3 sm:p-4">
-        <Button variant="ghost" onClick={handlePreviousMonth}>
-          Anterior
-        </Button>
+      <BillsMonthPicker
+        selectedMonth={selectedMonth}
+        onPrevious={handlePreviousMonth}
+        onNext={handleNextMonth}
+        onResetToCurrentMonth={() => setSelectedMonth(startOfMonth(new Date()))}
+      />
 
-        <div className="min-w-0 text-center">
-          <p className="text-sm text-muted-foreground">Mes seleccionado</p>
-          <h2 className="truncate text-lg font-semibold capitalize">
-            {getMonthLabel(selectedMonth)}
-          </h2>
-        </div>
-
-        <Button variant="ghost" onClick={handleNextMonth}>
-          Siguiente
-        </Button>
-      </section>
-
-      <section className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard
           label="Total estimado"
           value={formatCurrency(summary.totalEstimated)}
@@ -278,37 +260,27 @@ export default function BillsPage(): JSX.Element {
         />
       </section>
 
-      <section className="mt-6">
-        <div className="mb-4 border-t border-border pt-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-sm font-medium text-muted-foreground">
+      <section>
+        <div className="mb-4 pt-4">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Vencimientos del mes
-            </h2>
-
-            <div className="flex flex-wrap gap-2">
-              {STATUS_FILTERS.map((filter) => {
-                const isActive = filter.value === statusFilter;
-
-                return (
-                  <Button
-                    key={filter.value}
-                    variant={isActive ? "primary" : "ghost"}
-                    size="sm"
-                    onClick={() => setStatusFilter(filter.value)}
-                  >
-                    {filter.label}
-                  </Button>
-                );
-              })}
-            </div>
+            </span>
+            <div className="h-px flex-1 bg-gray-200" />
           </div>
+          <BillsStatusFilter
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={BILL_STATUS_FILTERS}
+          />
         </div>
 
         {isLoading ? (
-          <div className="space-y-3">
-            <BillCardSkeleton />
-            <BillCardSkeleton />
-            <BillCardSkeleton />
+          <div className={listClassName}>
+            <BillCardSkeleton compact={isMobile} />
+            <BillCardSkeleton compact={isMobile} />
+            <BillCardSkeleton compact={isMobile} />
           </div>
         ) : filteredRows.length === 0 ? (
           rows.length === 0 ? (
@@ -325,7 +297,7 @@ export default function BillsPage(): JSX.Element {
             />
           )
         ) : (
-          <div className="space-y-3">
+          <div className={listClassName}>
             {filteredRows.map((row) => (
               <BillListItem
                 key={row.bill.id}
@@ -335,11 +307,11 @@ export default function BillsPage(): JSX.Element {
                 amount={row.amount}
                 status={row.status}
                 paidAt={row.paidAt}
+                compact={isMobile}
                 accountName={row.bill.account?.name ?? null}
-                onClick={() => setEditingBill(row.bill)}
+                onClick={() => setViewingBill(row)}
                 onPay={() => setPayingBill(row)}
                 onEdit={() => setEditingBill(row.bill)}
-                onView={() => setViewingBill(row)}
                 onDelete={() => setDeletingBill(row.bill)}
               />
             ))}

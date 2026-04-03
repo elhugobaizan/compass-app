@@ -123,7 +123,7 @@ export default function TransactionForm({
           type="number"
           name="amount"
           inputMode="decimal"
-          step="0.1"
+          step="0.01"
           min="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
