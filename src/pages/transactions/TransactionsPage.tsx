@@ -10,7 +10,7 @@ import { JSX, useMemo, useState } from "react";
 import { useDeleteTransaction } from "@/hooks/mutations/useDeleteTransaction";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
-import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
+import { useTransactionsByMonthQuery } from "@/hooks/queries/useTransactionsByMonthQuery";
 import { buildTransactionListItems } from "@/utils/transactionList";
 import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
 import { useBreakpoint } from "@/utils/utils";
@@ -23,7 +23,7 @@ import TransactionSummary from "@/components/finance/transactions/TransactionSum
 import MonthPicker from "@/components/ui/MonthPicker";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
-import { addMonths, parseLocalDate, startOfMonth } from "@/utils/date";
+import { addMonths, startOfMonth } from "@/utils/date";
 import { formatCurrency } from "@/utils/formatters";
 import { toNumber } from "@/utils/numbers";
 import { ArrowLeftRight, ArrowUpRight } from "lucide-react";
@@ -90,7 +90,7 @@ export default function TransactionsPage(): JSX.Element {
     data: transactions,
     isLoading: isLoadingTransactions,
     isError: isErrorTransactions,
-  } = useTransactionsQuery();
+  } = useTransactionsByMonthQuery(selectedMonth);
 
   const {
     data: accounts,
@@ -106,20 +106,12 @@ export default function TransactionsPage(): JSX.Element {
 
   const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
-  const filteredTransactions = useMemo(() => {
-    const selectedYear = selectedMonth.getFullYear();
-    const selectedMonthIndex = selectedMonth.getMonth();
-
-    return (transactions ?? []).filter((transaction) => {
-      const date = parseLocalDate(transaction.date);
-      if (Number.isNaN(date.getTime())) return false;
-
-      return (
-        date.getFullYear() === selectedYear &&
-        date.getMonth() === selectedMonthIndex
-      );
-    });
-  }, [transactions, selectedMonth]);
+  // El backend ya filtra por mes (useTransactionsByMonthQuery), así que acá
+  // solo normalizamos el caso sin datos.
+  const filteredTransactions = useMemo(
+    () => transactions ?? [],
+    [transactions]
+  );
 
   const transactionListItems = useMemo(
     () => buildTransactionListItems(filteredTransactions ?? []),

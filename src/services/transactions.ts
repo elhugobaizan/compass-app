@@ -12,8 +12,34 @@ export type UpdateTransactionInput = TransactionInput
 
 type UpdateTransactionPayload = TransactionInput
 
-export function getTransactions(): Promise<Transaction[]> {
-  return apiFetch<Transaction[]>("/transactions");
+export type GetTransactionsParams = {
+  from?: string;
+  to?: string;
+  take?: number;
+  orderBy?: Record<string, "asc" | "desc">;
+};
+
+export function getTransactions(
+  params: GetTransactionsParams = {}
+): Promise<Transaction[]> {
+  const query: Record<string, string | number> = {};
+
+  if (params.from || params.to) {
+    const date: { gte?: string; lt?: string } = {};
+    if (params.from) date.gte = params.from;
+    if (params.to) date.lt = params.to;
+    query.filter = JSON.stringify({ date });
+  }
+
+  if (params.orderBy) {
+    query.orderBy = JSON.stringify(params.orderBy);
+  }
+
+  if (params.take != null) {
+    query.take = params.take;
+  }
+
+  return apiFetch<Transaction[]>("/transactions", { query });
 }
 
 export function createTransaction(

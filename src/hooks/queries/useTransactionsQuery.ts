@@ -6,6 +6,6 @@ import type { Transaction } from "@/types/transaction";
 export function useTransactionsQuery() {
   return useQuery<Transaction[]>({
     queryKey: ["transactions"],
-    queryFn: getTransactions,
+    queryFn: () => getTransactions({ take: 10000, orderBy: { date: "desc" } }),
   });
 }
