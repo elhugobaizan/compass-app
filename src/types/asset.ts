@@ -1,6 +1,7 @@
 export type Asset = {
   id: string;
   account_id: string;
+  origin_account_id?: string | null;
   name: string;
   symbol?: string | null;
   asset_type: string;

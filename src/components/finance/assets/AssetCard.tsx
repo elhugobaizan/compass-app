@@ -1,17 +1,9 @@
 import { JSX } from "react";
-import {
-  Bitcoin,
-  Landmark,
-  TrendingUp,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react";
-
 import type { Asset } from "@/types/asset";
-import { formatCurrency } from "@/utils/formatters";
 import { getDaysFromToday } from "@/utils/date";
 import { toNumber } from "@/utils/numbers";
-import { getAssetValue } from "@/utils/assets";
+import { getAssetTypeConfig } from "@/utils/assetTypes";
+import { useAssetCard } from "@/hooks/useAssetCard";
 import Badge from "@/components/ui/Badge";
 
 type AssetCardProps = {
@@ -19,58 +11,20 @@ type AssetCardProps = {
   readonly accountName?: string;
 };
 
-type AssetVisualConfig = {
-  readonly label: string;
-  readonly Icon: LucideIcon;
-  readonly containerClassName: string;
-  readonly iconClassName: string;
+type MaturityLabel = {
+  text: string;
+  tone: "warning" | "error" | "subtle";
 };
 
-function getAssetVisualConfig(assetType: string): AssetVisualConfig {
-  switch (assetType) {
-    case "CRYPTO":
-      return {
-        label: "Cripto",
-        Icon: Bitcoin,
-        containerClassName: "bg-amber-50 border border-amber-100",
-        iconClassName: "text-amber-600",
-      };
-
-    case "FIXED_DEPOSIT":
-      return {
-        label: "Plazo fijo",
-        Icon: Landmark,
-        containerClassName: "bg-sky-50 border border-sky-100",
-        iconClassName: "text-sky-700",
-      };
-
-    case "INVESTMENT":
-      return {
-        label: "Inversión",
-        Icon: TrendingUp,
-        containerClassName: "bg-violet-50 border border-violet-100",
-        iconClassName: "text-violet-700",
-      };
-
-    default:
-      return {
-        label: assetType,
-        Icon: Wallet,
-        containerClassName: "bg-gray-50 border border-gray-100",
-        iconClassName: "text-gray-600",
-      };
-  }
-}
-
-function getMaturityLabel(dateString?: string | null): string | null {
+function getMaturityLabel(dateString?: string | null): MaturityLabel | null {
   const days = getDaysFromToday(dateString);
 
   if (days === null) return null;
-  if (days === 0) return "Vence hoy";
-  if (days === 1) return "Vence mañana";
-  if (days > 1) return `Vence en ${days} días`;
-
-  return null;
+  if (days === 0) return { text: "Vence hoy", tone: "warning" };
+  if (days === 1) return { text: "Vence mañana", tone: "subtle" };
+  if (days > 1) return { text: `Vence en ${days} días`, tone: "subtle" };
+  if (days === -1) return { text: "Venció ayer", tone: "error" };
+  return { text: `Venció hace ${Math.abs(days)} días`, tone: "error" };
 }
 
 function getFormattedQuantity(asset: Asset): string | null {
@@ -87,9 +41,9 @@ export default function AssetCard({
   asset,
   accountName,
 }: AssetCardProps): JSX.Element {
-  const assetValue = formatCurrency(getAssetValue(asset));
+  const { formattedValue, formattedProjectedValue, formattedInterest } = useAssetCard(asset);
   const formattedQuantity = getFormattedQuantity(asset);
-  const visual = getAssetVisualConfig(asset.asset_type);
+  const visual = getAssetTypeConfig(asset.asset_type);
   const { Icon } = visual;
   const maturityLabel = getMaturityLabel(asset.maturity);
 
@@ -122,8 +76,8 @@ export default function AssetCard({
                 <Badge>{visual.label}</Badge>
 
                 {maturityLabel && (
-                  <Badge tone={maturityLabel === "Vence hoy" ? "warning" : "subtle"}>
-                    {maturityLabel}
+                  <Badge tone={maturityLabel.tone}>
+                    {maturityLabel.text}
                   </Badge>
                 )}
               </div>
@@ -140,19 +94,26 @@ export default function AssetCard({
             </div>
 
             <div className="shrink-0 text-right">
-              {assetValue ? (
+              {formattedValue ? (
                 <>
-                  <p className="text-sm font-bold text-gray-900">{assetValue}</p>
-                  <p className="mt-0.5 text-[11px] text-gray-400">
-                    Valor actual
-                  </p>
+                  <p className="text-sm font-bold text-gray-900">{formattedValue}</p>
+                  <p className="mt-0.5 text-[11px] text-gray-400">Capital</p>
+
+                  {formattedInterest && (
+                    <p className="mt-1 text-[11px] font-medium text-sky-600">{formattedInterest}</p>
+                  )}
+
+                  {formattedProjectedValue && (
+                    <>
+                      <p className="mt-1 text-sm font-semibold text-emerald-600">{formattedProjectedValue}</p>
+                      <p className="mt-0.5 text-[11px] text-gray-400">Al vencimiento</p>
+                    </>
+                  )}
                 </>
               ) : (
                 <>
                   <p className="text-sm font-medium text-gray-400">—</p>
-                  <p className="mt-0.5 text-[11px] text-gray-400">
-                    Sin valuación
-                  </p>
+                  <p className="mt-0.5 text-[11px] text-gray-400">Sin valuación</p>
                 </>
               )}
             </div>

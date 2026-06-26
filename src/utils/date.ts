@@ -68,6 +68,20 @@ export function getDaysFromToday(dateString?: string | null): number | null {
   return Math.round(diffMs / 86_400_000);
 }
 
+export function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function toLocalDateString(date: Date): string {
+  return [
+    date.getFullYear(),
+    pad2(date.getMonth() + 1),
+    pad2(date.getDate()),
+  ].join("-");
+}
+
 export function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }

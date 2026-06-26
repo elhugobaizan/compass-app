@@ -7,6 +7,7 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import CreateAssetSheet from "@/components/finance/CreateAssetSheet";
 import EditAssetSheet from "@/components/finance/EditAssetSheet";
+import RenewFixedDepositModal from "@/components/finance/assets/RenewFixedDepositModal";
 import { AssetListItem } from "@/components/finance/assets/AssetListItem";
 import AssetCardSkeleton from "@/components/finance/assets/AssetCardSkeleton";
 
@@ -22,7 +23,7 @@ import type { Asset } from "@/types/asset";
 import type { Account } from "@/types/account";
 import HeaderAlert from "@/components/ui/HeaderAlert";
 import { isTodayDateString } from "@/utils/date";
-import { getAssetNumericValue, getAssetsDueInNextDays, sortAssetsByPriority } from "@/utils/assets";
+import { getAssetValue, getAssetsDueInNextDays, sortAssetsByPriority } from "@/utils/assets";
 import AssetSummary from "@/components/finance/assets/AssetSummary";
 import { formatCurrency } from "@/utils/formatters";
 
@@ -39,6 +40,7 @@ export default function AssetsPage(): JSX.Element {
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
   const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
   const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
+  const [assetToRenew, setAssetToRenew] = useState<Asset | null>(null);
   const [highlightedAssetId, setHighlightedAssetId] = useState<string | null>(null);
 
   const {
@@ -72,7 +74,7 @@ export default function AssetsPage(): JSX.Element {
 
   const totalValue = useMemo(() => {
     return sortedAssets.reduce((sum, asset) => {
-      return sum + getAssetNumericValue(asset);
+      return sum + getAssetValue(asset);
     }, 0);
   }, [sortedAssets]);
 
@@ -185,6 +187,7 @@ export default function AssetsPage(): JSX.Element {
               isMobile={isMobile}
               accountName={accountMap[asset.account_id]}
               onEdit={() => setAssetToEdit(asset)}
+              onRenew={() => setAssetToRenew(asset)}
               onDelete={() => setAssetToDelete(asset)}
               id={asset.id === firstDueTodayAsset?.id ? "due-today-anchor" : undefined}
               isHighlighted={asset.id === highlightedAssetId}
@@ -209,6 +212,14 @@ export default function AssetsPage(): JSX.Element {
         isLoadingAccounts={isLoadingAccounts}
         isErrorAccounts={isErrorAccounts}
       />
+
+      {assetToRenew && (
+        <RenewFixedDepositModal
+          open={!!assetToRenew}
+          onClose={() => setAssetToRenew(null)}
+          asset={assetToRenew}
+        />
+      )}
 
       <ConfirmDialog
         open={!!assetToDelete}

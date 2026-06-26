@@ -8,7 +8,7 @@ export function useCreateBillPayment() {
   return useMutation({
     mutationFn: (data: CreateBillPaymentInput) => createBillPayment(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bill-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["bill_payments"] });
       queryClient.invalidateQueries({ queryKey: ["bills"] });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },

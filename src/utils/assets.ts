@@ -7,21 +7,9 @@ export function getAssetValue(asset: Asset): number {
   const price = toNumber(asset.price);
   const capital = toNumber(asset.capital);
 
-  if ((asset.asset_type === "CRYPTO" || asset.asset_type === "STOCK") && quantity > 0 && price > 0) {
-    return quantity * price;
-  }
-
-  if (asset.asset_type === "FIXED_DEPOSIT" && capital > 0) {
-    return capital;
-  }
-
-  if (capital > 0) {
-    return capital;
-  }
-
-  if (price > 0) {
-    return price;
-  }
+  if (quantity > 0 && price > 0) return quantity * price;
+  if (capital > 0) return capital;
+  if (price > 0) return price;
 
   return 0;
 }
@@ -68,20 +56,20 @@ export function sortAssetsByPriority(assets: Asset[] = []): Asset[] {
   });
 }
 
-export function getAssetNumericValue(asset: Asset): number {
-  const quantity = toNumber(asset.quantity);
-  const price = toNumber(asset.price);
+
+export function getFixedDepositProjectedValue(asset: Asset): number | null {
   const capital = toNumber(asset.capital);
+  const interest = toNumber(asset.interest);
 
-  if (quantity > 0 && price > 0) {
-    return quantity * price;
-  }
+  if (capital <= 0 || interest <= 0 || !asset.start_date || !asset.maturity) return null;
 
-  if (capital > 0) {
-    return capital;
-  }
+  const start = parseLocalDate(asset.start_date);
+  const end = parseLocalDate(asset.maturity);
+  const days = Math.round((end.getTime() - start.getTime()) / 86_400_000);
 
-  return 0;
+  if (days <= 0) return null;
+
+  return capital * (1 + (interest / 100) * (days / 365));
 }
 
 export function getAssetsDueInNextDays(assets: Asset[], days: number): number {

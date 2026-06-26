@@ -16,7 +16,7 @@ export function useUpdateBillPayment() {
     mutationFn: ({ id, data }: UpdateBillPaymentArgs) =>
       updateBillPayment(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bill-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["bill_payments"] });
       queryClient.invalidateQueries({ queryKey: ["bills"] });
     },
   });

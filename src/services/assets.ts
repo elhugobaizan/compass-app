@@ -3,6 +3,7 @@ import type { Asset } from "@/types/asset";
 
 type AssetInput = {
   account_id: string;
+  origin_account_id?: string;
   name: string;
   symbol?: string;
   asset_type: string;
@@ -15,7 +16,7 @@ type AssetInput = {
 };
 
 export type CreateAssetInput = AssetInput;
-export type UpdateAssetInput = AssetInput;
+export type UpdateAssetInput = Partial<AssetInput>;
 
 export function getAssets(): Promise<Asset[]> {
   return apiFetch<Asset[]>("/assets");

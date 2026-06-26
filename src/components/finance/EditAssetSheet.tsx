@@ -57,11 +57,11 @@ export default function EditAssetSheet({
             account_id: asset.account_id,
             asset_type: asset.asset_type,
             interest: asset.interest ?? "",
-            maturity: asset.maturity ?? "",
+            maturity: asset.maturity?.slice(0, 10) ?? "",
             name: asset.name,
             price: asset.price ?? "",
             quantity: asset.quantity ?? "",
-            start_date: asset.start_date,
+            start_date: asset.start_date?.slice(0, 10) ?? "",
             symbol: asset.symbol ?? "",
           }}
           onSuccess={onClose}
