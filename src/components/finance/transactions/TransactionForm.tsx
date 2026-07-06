@@ -110,13 +110,13 @@ export default function TransactionForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {submitError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
           {submitError}
         </div>
       )}
 
       <div>
-        <label htmlFor="amount" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="amount" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Monto
         </label>
         <input
@@ -127,13 +127,13 @@ export default function TransactionForm({
           min="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-lg"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-lg"
           placeholder="0"
         />
       </div>
 
       <div>
-        <label htmlFor="type" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="type" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Tipo
         </label>
         <select
@@ -143,7 +143,7 @@ export default function TransactionForm({
             setTypeId(e.target.value);
             setCategoryId("");
           }}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           {TRANSACTION_TYPES.map((type) => (
             <option key={type.id} value={type.id}>
@@ -154,14 +154,14 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label htmlFor="account" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="account" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Cuenta
         </label>
         <select
           name="account"
           value={accountId}
           onChange={(e) => setAccountId(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           <option value="">Seleccionar cuenta</option>
           {accounts.map((account) => (
@@ -173,14 +173,14 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label htmlFor="category" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Categoría
         </label>
         <select
           value={categoryId}
           name="category"
           onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           <option value="">Sin categoría</option>
           {filteredCategories.map((category) => (
@@ -192,7 +192,7 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label htmlFor="concept" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="concept" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Concepto
         </label>
         <input
@@ -200,13 +200,13 @@ export default function TransactionForm({
           name="concept"
           value={concept}
           onChange={(e) => setConcept(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Supermercado"
         />
       </div>
 
       <div>
-        <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="date" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Fecha
         </label>
         <input
@@ -214,12 +214,12 @@ export default function TransactionForm({
           name="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         />
       </div>
 
       <div>
-        <label htmlFor="location" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="location" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Ubicación
         </label>
         <input
@@ -227,7 +227,7 @@ export default function TransactionForm({
           name="location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Opcional"
         />
       </div>

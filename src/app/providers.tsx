@@ -4,6 +4,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { ThemeProvider } from "@/hooks/useTheme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,7 @@ type ProvidersProps = {
 export default function Providers({ children }: ProvidersProps): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <ThemeProvider>{children}</ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -92,7 +92,7 @@ export default function AccountCard({
 
           <div className="min-w-0">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
+              <h3 className="truncate text-sm font-semibold text-[var(--color-ink)] sm:text-base">
                 {name}
               </h3>
 
@@ -103,15 +103,15 @@ export default function AccountCard({
               )}
             </div>
 
-            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500 sm:text-sm">
+            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--color-muted)] sm:text-sm">
               {institution && <span className="truncate">{institution}</span>}
-              {institution && <span className="text-gray-300">•</span>}
+              {institution && <span className="text-[var(--color-border)]">•</span>}
               <span>{visual.label}</span>
             </div>
           </div>
         </div>
 
-        <span className="shrink-0 rounded-md bg-gray-100 px-2 py-1 text-[11px] font-medium text-gray-700 sm:text-xs">
+        <span className="shrink-0 rounded-md bg-[var(--color-accent-bg)] px-2 py-1 text-[11px] font-medium text-[var(--color-accent-text)] sm:text-xs">
           {currency}
         </span>
       </div>
@@ -120,17 +120,17 @@ export default function AccountCard({
         <div
           className={
             compact
-              ? "mt-3 border-t border-gray-100 pt-3"
-              : "mt-4 border-t border-gray-100 pt-4"
+              ? "mt-3 border-t border-[var(--color-border)] pt-3"
+              : "mt-4 border-t border-[var(--color-border)] pt-4"
           }
         >
           <div className="flex items-end justify-between gap-3">
-            <span className="text-xs text-gray-500">Saldo</span>
+            <span className="text-xs text-[var(--color-muted)]">Saldo</span>
             <span
               className={
                 compact
-                  ? "text-base font-semibold text-gray-900"
-                  : "text-lg font-semibold text-gray-900"
+                  ? "font-serif text-base font-semibold text-[var(--color-ink)]"
+                  : "font-serif text-lg font-semibold text-[var(--color-ink)]"
               }
             >
               {formattedBalance}

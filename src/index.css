@@ -1,13 +1,90 @@
 @import "tailwindcss";
 
 @theme {
-  
-  --color-compass-accent: #1F6F8B;
+  --color-compass-accent: var(--color-accent);
+  --font-serif: Georgia, "Times New Roman", serif;
 }
 
 :root {
-  --primary-color: #1F6F8B;
-  --secondary-color: #6c757d;
-  --background-color: #f8f9fa;
-  --text-color: #212529;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
+/* ============================================================
+   PALETAS — estilo cálido editorial
+   Cada tema define el mismo set de variables semánticas.
+   Los componentes SIEMPRE usan var(--color-*), nunca hex directo.
+   Default: ciruela & salvia (en :root, sin data-theme).
+   ============================================================ */
+
+:root,
+[data-theme="ciruela"] {
+  --color-paper: #F7F1EC;
+  --color-card: #FEFBF9;
+  --color-border: #ECDFDA;
+  --color-ink: #2C2622;
+  --color-muted: #8A7B80;
+  --color-accent: #7C4B63;
+  --color-accent-contrast: #FBF4F7;
+  --color-accent-bg: #EEE1E8;
+  --color-accent-text: #6E3F58;
+  --color-income: #5E7A62;
+  --color-income-bg: #E4EDE5;
+  --color-income-text: #46654B;
+  --color-expense: #933F49;
+  --color-expense-bg: #F3DEE1;
+  --color-expense-text: #933F49;
+}
+
+[data-theme="terracota"] {
+  --color-paper: #F8F2E7;
+  --color-card: #FFFDF9;
+  --color-border: #ECE3D3;
+  --color-ink: #2E2A24;
+  --color-muted: #8A7E6A;
+  --color-accent: #B85C38;
+  --color-accent-contrast: #FFF7EF;
+  --color-accent-bg: #F3E7D8;
+  --color-accent-text: #8A5A2E;
+  --color-income: #3A7D5C;
+  --color-income-bg: #E3EFE4;
+  --color-income-text: #3A7D5C;
+  --color-expense: #A5493B;
+  --color-expense-bg: #F6E0DA;
+  --color-expense-text: #A5493B;
+}
+
+[data-theme="oliva"] {
+  --color-paper: #F6F3E5;
+  --color-card: #FDFCF3;
+  --color-border: #E9E6D2;
+  --color-ink: #2C2B22;
+  --color-muted: #847E62;
+  --color-accent: #7C7A34;
+  --color-accent-contrast: #FBFAF0;
+  --color-accent-bg: #EDE9CF;
+  --color-accent-text: #6B6A2E;
+  --color-income: #5C7A4A;
+  --color-income-bg: #E7EBD5;
+  --color-income-text: #4F6B3A;
+  --color-expense: #9A5030;
+  --color-expense-bg: #F1E1D3;
+  --color-expense-text: #9A5030;
+}
+
+[data-theme="teal"] {
+  --color-paper: #F0F1E9;
+  --color-card: #FBFCF7;
+  --color-border: #E1E6D9;
+  --color-ink: #222826;
+  --color-muted: #75817B;
+  --color-accent: #2F6E6A;
+  --color-accent-contrast: #F3FAF8;
+  --color-accent-bg: #DCEAE5;
+  --color-accent-text: #245A56;
+  --color-income: #3A7D5C;
+  --color-income-bg: #DCEAE5;
+  --color-income-text: #245A56;
+  --color-expense: #9A5030;
+  --color-expense-bg: #F1E1D3;
+  --color-expense-text: #9A5030;
 }

@@ -22,7 +22,7 @@ export default function CreateTransferSheet({
   return (
     <Modal open={open} onClose={onClose} title="Nueva transferencia">
       {isLoadingAccounts && (
-        <p className="text-sm text-gray-500">Cargando cuentas...</p>
+        <p className="text-sm text-[var(--color-muted)]">Cargando cuentas...</p>
       )}
 
       {isErrorAccounts && (

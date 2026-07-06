@@ -181,13 +181,13 @@ export default function PayBillSheet({
   return (
     <Modal open={open} onClose={onClose} title="Registrar pago">
       {!bill ? (
-        <p className="text-sm text-gray-500">No seleccionaste ningún impuesto.</p>
+        <p className="text-sm text-[var(--color-muted)]">No seleccionaste ningún impuesto.</p>
       ) : (
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3">
-            <p className="text-sm font-medium text-gray-900">{bill.name}</p>
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-paper)] px-3 py-3">
+            <p className="text-sm font-medium text-[var(--color-ink)]">{bill.name}</p>
 
-            <div className="mt-1 space-y-1 text-sm text-gray-500">
+            <div className="mt-1 space-y-1 text-sm text-[var(--color-muted)]">
               {bill.customer_number ? (
                 <p>Cliente {bill.customer_number}</p>
               ) : null}
@@ -197,7 +197,7 @@ export default function PayBillSheet({
           </div>
 
           {submitError ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
               {submitError}
             </div>
           ) : null}
@@ -205,7 +205,7 @@ export default function PayBillSheet({
           <div>
             <label
               htmlFor="pay-bill-account"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
             >
               Cuenta
             </label>
@@ -213,7 +213,7 @@ export default function PayBillSheet({
               id="pay-bill-account"
               value={accountId}
               onChange={(event) => setAccountId(event.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             >
               <option value="">Seleccionar cuenta</option>
               {accounts.map((account) => (
@@ -227,7 +227,7 @@ export default function PayBillSheet({
           <div>
             <label
               htmlFor="pay-bill-date"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
             >
               Fecha de pago
             </label>
@@ -236,14 +236,14 @@ export default function PayBillSheet({
               type="date"
               value={date}
               onChange={(event) => setDate(event.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
 
           <div>
             <label
               htmlFor="pay-bill-amount"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
             >
               Monto pagado
             </label>
@@ -255,7 +255,7 @@ export default function PayBillSheet({
               step="0.01"
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
               placeholder="Ej: 25000"
             />
           </div>
@@ -263,7 +263,7 @@ export default function PayBillSheet({
           <div>
             <label
               htmlFor="pay-bill-concept"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
             >
               Concepto
             </label>
@@ -272,7 +272,7 @@ export default function PayBillSheet({
               type="text"
               value={concept}
               onChange={(event) => setConcept(event.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
               placeholder="Ej: Luz - mar 2026"
             />
           </div>
@@ -280,7 +280,7 @@ export default function PayBillSheet({
           <div>
             <label
               htmlFor="pay-bill-notes"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
             >
               Notas
             </label>
@@ -288,7 +288,7 @@ export default function PayBillSheet({
               id="pay-bill-notes"
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
-              className="min-h-24 w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="min-h-24 w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
               placeholder="Observaciones del pago..."
             />
           </div>

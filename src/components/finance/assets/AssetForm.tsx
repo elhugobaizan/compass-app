@@ -102,20 +102,20 @@ export default function AssetForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {submitError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
           {submitError}
         </div>
       )}
 
       <div>
-        <label htmlFor="account" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="account" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Cuenta
         </label>
         <select
           name="account"
           value={accountId}
           onChange={(e) => setAccountId(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           <option value="">Seleccionar cuenta</option>
           {accounts.map((account) => (
@@ -127,14 +127,14 @@ export default function AssetForm({
       </div>
 
       <div>
-        <label htmlFor="asset" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="asset" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Tipo de asset
         </label>
         <select
           name="asset"
           value={assetType}
           onChange={(e) => setAssetType(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           {ASSET_TYPES.map((type) => (
             <option key={type.value} value={type.value}>
@@ -145,7 +145,7 @@ export default function AssetForm({
       </div>
 
       <div>
-        <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Nombre
         </label>
         <input
@@ -153,14 +153,14 @@ export default function AssetForm({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Bitcoin, SPY, Plazo fijo Galicia"
         />
       </div>
 
       {assetTypeConfig.showsSymbol && (
         <div>
-          <label htmlFor="symbol" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="symbol" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Símbolo
           </label>
           <input
@@ -168,7 +168,7 @@ export default function AssetForm({
             type="text"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             placeholder="Ej: BTC, SPY"
           />
         </div>
@@ -177,7 +177,7 @@ export default function AssetForm({
       {isMarketAsset && (
         <>
           <div>
-            <label htmlFor="quantity" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="quantity" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Cantidad
             </label>
             <input
@@ -188,12 +188,12 @@ export default function AssetForm({
               min="0"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
 
           <div>
-            <label htmlFor="price" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="price" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Precio
             </label>
             <input
@@ -204,7 +204,7 @@ export default function AssetForm({
               min="0"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
         </>
@@ -213,7 +213,7 @@ export default function AssetForm({
       {isFixedDeposit && (
         <>
           <div>
-            <label htmlFor="capital" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="capital" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Capital
             </label>
             <input
@@ -224,12 +224,12 @@ export default function AssetForm({
               min="0"
               value={capital}
               onChange={(e) => setCapital(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
 
           <div>
-            <label htmlFor="interest" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="interest" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Interés / TNA
             </label>
             <input
@@ -240,12 +240,12 @@ export default function AssetForm({
               min="0"
               value={interest}
               onChange={(e) => setInterest(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
 
           <div>
-            <label htmlFor="startDate" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="startDate" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Fecha de inicio
             </label>
             <input
@@ -253,12 +253,12 @@ export default function AssetForm({
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
 
           <div>
-            <label htmlFor="maturity" className="mb-1 block text-sm font-medium text-gray-700">
+            <label htmlFor="maturity" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
               Vencimiento
             </label>
             <input
@@ -266,7 +266,7 @@ export default function AssetForm({
               type="date"
               value={maturity}
               onChange={(e) => setMaturity(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2"
+              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             />
           </div>
         </>

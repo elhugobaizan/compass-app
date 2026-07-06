@@ -1,5 +1,7 @@
 import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 import { type ReactNode, type JSX } from "react";
+import ThemeSwitcher from "@/components/ui/ThemeSwitcher";
+import Logo from "@/components/ui/Logo";
 
 type LayoutMobileProps = {
   readonly children: ReactNode;
@@ -8,11 +10,14 @@ type LayoutMobileProps = {
 export default function LayoutMobile({ children }: LayoutMobileProps): JSX.Element {
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white px-4 py-3">
+    <div className="min-h-screen bg-[var(--color-paper)] text-[var(--color-ink)]">
+      <header className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-card)] px-4 py-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold">Compass</h1>
-          <span className="text-sm text-gray-500">Mobile</span>
+          <div className="flex items-center gap-2">
+            <Logo size={26} />
+            <h1 className="font-serif text-lg font-bold text-[var(--color-ink)]">Compass</h1>
+          </div>
+          <ThemeSwitcher />
         </div>
       </header>
 

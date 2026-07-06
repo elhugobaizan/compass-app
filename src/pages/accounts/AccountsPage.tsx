@@ -19,6 +19,8 @@ import { useDeleteAccount } from "@/hooks/mutations/useDeleteAccount";
 import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
 import AccountTypeFilter from "@/components/finance/accounts/AccountTypeFilter";
+import AccountSummary from "@/components/finance/accounts/AccountSummary";
+import { formatCurrency } from "@/utils/formatters";
 
 function toNumber(value: string | number | null | undefined): number {
   if (value === null || value === undefined) return 0;
@@ -60,6 +62,16 @@ export default function AccountsPage(): JSX.Element {
     useDeleteAccount();
 
   const sortedAccounts = useMemo(() => sortAccounts(accounts ?? []), [accounts]);
+
+  const totalBalance = useMemo(
+    () => sortedAccounts.reduce((sum, account) => sum + toNumber(account.opening_balance), 0),
+    [sortedAccounts],
+  );
+  const paymentMethods = useMemo(
+    () => sortedAccounts.filter((account) => account.is_payment_method).length,
+    [sortedAccounts],
+  );
+
   const filteredAccounts = useMemo(() => {
     if (accountTypeFilter === "all") return sortedAccounts;
 
@@ -96,6 +108,15 @@ export default function AccountsPage(): JSX.Element {
         description={
           isMobile ? undefined : "Administrá wallets, bancos y brokers."
         }
+        summary={
+          (sortedAccounts.length > 0 && !isMobile) ? (
+            <AccountSummary
+              totalBalanceLabel={formatCurrency(totalBalance)}
+              totalAccounts={sortedAccounts.length}
+              paymentMethods={paymentMethods}
+            />
+          ) : undefined
+        }
         action={
           <Button onClick={() => setIsCreateAccountOpen(true)}>
             + Cuenta
@@ -106,7 +127,7 @@ export default function AccountsPage(): JSX.Element {
       <AccountTypeFilter value={accountTypeFilter} onChange={setAccountTypeFilter} />
 
       {submitError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
           {submitError}
         </div>
       )}

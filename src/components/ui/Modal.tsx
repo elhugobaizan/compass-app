@@ -47,18 +47,18 @@ export default function Modal({
       />
 
       {isMobile ? (
-        <div className="absolute inset-x-0 bottom-0 max-h-[90vh] rounded-t-2xl bg-white shadow-2xl">
-          <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-gray-300" />
+        <div className="absolute inset-x-0 bottom-0 max-h-[90vh] rounded-t-2xl bg-[var(--color-card)] shadow-2xl">
+          <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-[var(--color-border)]" />
 
           <div className="flex items-center justify-between px-4 py-3">
-            <h2 className="text-base font-semibold text-gray-900">
+            <h2 className="font-serif text-base font-semibold text-[var(--color-ink)]">
               {title}
             </h2>
 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md p-2 text-gray-500 hover:bg-gray-100"
+              className="rounded-md p-2 text-[var(--color-muted)] hover:bg-[var(--color-accent-bg)]"
             >
               <X className="h-5 w-5" />
             </button>
@@ -69,14 +69,14 @@ export default function Modal({
           </div>
         </div>
       ) : (
-        <div className="absolute left-1/2 top-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <div className="absolute left-1/2 top-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-[var(--color-card)] shadow-2xl">
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
+            <h2 className="font-serif text-lg font-semibold text-[var(--color-ink)]">{title}</h2>
 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md p-2 text-gray-500 hover:bg-gray-100"
+              className="rounded-md p-2 text-[var(--color-muted)] hover:bg-[var(--color-accent-bg)]"
             >
               <X className="h-5 w-5" />
             </button>

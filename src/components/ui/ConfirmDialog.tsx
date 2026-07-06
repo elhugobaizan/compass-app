@@ -30,9 +30,9 @@ export default function ConfirmDialog({
   return (
     <Modal open={open} onClose={onClose} title={title}>
       <div className="space-y-4">
-        {description && <p className="text-sm leading-6 text-gray-600">{description}</p>}
+        {description && <p className="text-sm leading-6 text-[var(--color-muted)]">{description}</p>}
 
-        <div className="flex justify-end gap-2 border-t border-gray-100 pt-4">
+        <div className="flex justify-end gap-2 border-t border-[var(--color-border)] pt-4">
           <Button
             variant="ghost"
             onClick={onClose}

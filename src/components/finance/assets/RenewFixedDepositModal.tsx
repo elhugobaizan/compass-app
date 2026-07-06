@@ -58,25 +58,25 @@ export default function RenewFixedDepositModal({
     <Modal open={open} onClose={onClose} title="Renovar plazo fijo">
       <form className="space-y-4" onSubmit={handleSubmit}>
         {submitError && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
             {submitError}
           </div>
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Fecha de inicio
           </label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Vencimiento
           </label>
           <input
@@ -84,12 +84,12 @@ export default function RenewFixedDepositModal({
             value={maturity}
             min={startDate}
             onChange={(e) => setMaturity(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Capital
           </label>
           <input
@@ -99,12 +99,12 @@ export default function RenewFixedDepositModal({
             min="0"
             value={capital}
             onChange={(e) => setCapital(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Interés / TNA
           </label>
           <input
@@ -114,7 +114,7 @@ export default function RenewFixedDepositModal({
             min="0"
             value={interest}
             onChange={(e) => setInterest(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           />
         </div>
 

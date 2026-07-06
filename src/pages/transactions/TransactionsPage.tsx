@@ -180,11 +180,11 @@ export default function TransactionsPage(): JSX.Element {
       />
 
       {!isMobile && (<div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-gray-200" />
-        <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
+        <div className="h-px flex-1 bg-[var(--color-border)]" />
+        <span className="text-xs font-medium uppercase tracking-wide text-[var(--color-muted)]">
           Movimientos del mes
         </span>
-        <div className="h-px flex-1 bg-gray-200" />
+        <div className="h-px flex-1 bg-[var(--color-border)]" />
       </div>)}
 
       {isLoadingTransactions && (

@@ -15,8 +15,8 @@ export default function MobileBottomNav(): JSX.Element {
 
   const itemBaseClass =
     "flex flex-col items-center justify-center rounded-xl px-2 py-2 text-xs transition";
-  const itemActiveClass = "bg-gray-50 text-gray-900";
-  const itemInactiveClass = "text-gray-500 hover:bg-gray-50 hover:text-gray-900";
+  const itemActiveClass = "bg-[var(--color-accent-bg)] text-[var(--color-accent-text)]";
+  const itemInactiveClass = "text-[var(--color-muted)] hover:bg-[var(--color-accent-bg)] hover:text-[var(--color-ink)]";
 
   const isMoreActive = location.pathname.startsWith("/assets") ||
     location.pathname.startsWith("/analytics") ||
@@ -24,7 +24,7 @@ export default function MobileBottomNav(): JSX.Element {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200 bg-white px-4 py-3">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--color-border)] bg-[var(--color-card)] px-4 py-3">
         <div className="grid grid-cols-4 gap-2">
           {primaryMobileNavItems.map((item) => {
             const active = isRouteActive(location.pathname, item);

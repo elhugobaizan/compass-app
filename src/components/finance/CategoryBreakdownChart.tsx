@@ -21,13 +21,7 @@ type CategoryBreakdownChartProps = {
   items: CategoryBreakdownItem[];
 };
 
-const BAR_COLORS = [
-  "#9CA3AF",
-  "#6B7280",
-  "#4B5563",
-  "#374151",
-  "#1F2937",
-];
+const BAR_OPACITIES = [1, 0.82, 0.64, 0.46, 0.3];
 
 type TooltipProps = {
   active?: boolean;
@@ -43,10 +37,10 @@ function CustomTooltip({ active, payload }: TooltipProps): JSX.Element | null {
   const item = payload[0].payload;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
-      <p className="text-sm font-medium text-gray-900">{item.categoryName}</p>
-      <p className="text-sm text-gray-600">{formatCurrency(item.total)}</p>
-      <p className="text-xs text-gray-500">{item.percentage.toFixed(0)}%</p>
+    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2 shadow-sm">
+      <p className="text-sm font-medium text-[var(--color-ink)]">{item.categoryName}</p>
+      <p className="text-sm text-[var(--color-muted)]">{formatCurrency(item.total)}</p>
+      <p className="text-xs text-[var(--color-muted)]">{item.percentage.toFixed(0)}%</p>
     </div>
   );
 }
@@ -69,12 +63,13 @@ export default function CategoryBreakdownChart({
             width={90}
             tick={{ fontSize: 12 }}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "#F3F4F6" }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--color-accent-bg)" }} />
           <Bar dataKey="total" radius={[0, 6, 6, 0]}>
             {items.map((item, index) => (
               <Cell
                 key={item.categoryId}
-                fill={BAR_COLORS[index % BAR_COLORS.length]}
+                fill="var(--color-accent)"
+                fillOpacity={BAR_OPACITIES[index % BAR_OPACITIES.length]}
               />
             ))}
           </Bar>

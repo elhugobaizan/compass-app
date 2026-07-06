@@ -27,7 +27,7 @@ export default function AnalyticsSummarySection({
       subtitle={isMobile ? undefined : "Métricas clave del período actual"}
     >
       {!hasFinancialData && !isLoading && (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500">
+        <div className="rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3 text-sm text-[var(--color-muted)]">
           Todavía no hay datos suficientes para mostrar analítica
         </div>
       )}

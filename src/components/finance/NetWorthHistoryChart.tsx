@@ -32,9 +32,9 @@ function CustomTooltip({ active, payload }: TooltipProps): JSX.Element | null {
   const item = payload[0].payload;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
-      <p className="text-sm font-medium text-gray-900">{item.month}</p>
-      <p className="text-sm text-gray-600">{formatCurrency(item.netWorth)}</p>
+    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2 shadow-sm">
+      <p className="text-sm font-medium text-[var(--color-ink)]">{item.month}</p>
+      <p className="text-sm text-[var(--color-muted)]">{formatCurrency(item.netWorth)}</p>
     </div>
   );
 }
@@ -52,7 +52,7 @@ export default function NetWorthHistoryChart({
           <Line
             type="monotone"
             dataKey="netWorth"
-            stroke="#1F2937"
+            stroke="var(--color-accent)"
             strokeWidth={2.5}
             dot={{ r: 3 }}
             activeDot={{ r: 5 }}

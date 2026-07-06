@@ -25,8 +25,8 @@ export default function MobileMoreMenu({
         onClick={onClose}
       />
 
-      <div className="fixed inset-x-0 bottom-20 z-50 mx-4 rounded-2xl border border-gray-200 bg-white p-3 shadow-xl">
-        <div className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-gray-400">
+      <div className="fixed inset-x-0 bottom-20 z-50 mx-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-3 shadow-xl">
+        <div className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-[var(--color-muted)]">
           Más opciones
         </div>
 
@@ -40,8 +40,8 @@ export default function MobileMoreMenu({
                 key={item.id}
                 type="button"
                 className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm ${active
-                  ? "bg-gray-50 text-gray-900"
-                  : "text-gray-700 hover:bg-gray-50"
+                  ? "bg-[var(--color-accent-bg)] text-[var(--color-accent-text)]"
+                  : "text-[var(--color-ink)] hover:bg-[var(--color-accent-bg)]"
                   }`}
                 onClick={() => {
                   navigate(item.route);

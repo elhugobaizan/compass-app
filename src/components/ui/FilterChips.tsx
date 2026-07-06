@@ -28,8 +28,8 @@ export default function FilterChips<T extends string>({
             onClick={() => onChange(option.value)}
             className={
               isActive
-                ? "rounded-full border border-gray-300 bg-gray-100 px-2.5 py-1 text-sm font-medium text-gray-900 transition"
-                : "rounded-full border border-gray-200 bg-white px-2.5 py-1 text-sm font-medium text-gray-600 transition hover:border-gray-400 hover:bg-gray-50"
+                ? "rounded-full border border-[var(--color-accent)] bg-[var(--color-accent-bg)] px-2.5 py-1 text-sm font-medium text-[var(--color-accent-text)] transition"
+                : "rounded-full border border-[var(--color-border)] bg-[var(--color-card)] px-2.5 py-1 text-sm font-medium text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-bg)]"
             }
           >
             {option.label}

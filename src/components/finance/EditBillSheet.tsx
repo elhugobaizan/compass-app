@@ -29,7 +29,7 @@ export default function EditBillSheet({
   return (
     <Modal open={open} onClose={onClose} title="Editar impuesto">
       {isLoadingAccounts && (
-        <p className="text-sm text-gray-500">Cargando datos del formulario...</p>
+        <p className="text-sm text-[var(--color-muted)]">Cargando datos del formulario...</p>
       )}
 
       {isErrorAccounts && (

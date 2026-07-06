@@ -41,17 +41,17 @@ export default function TransactionCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-gray-900">
+              <p className="truncate text-sm font-semibold text-[var(--color-ink)]">
                 {concept?.trim() || "Sin concepto"}
               </p>
 
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[var(--color-muted)]">
                 <span>{formatRelativeDate(date)}</span>
 
                 {categoryLabel && <Badge>{categoryLabel}</Badge>}
 
                 {location && (
-                  <span className="truncate text-gray-400">{location}</span>
+                  <span className="truncate text-[var(--color-muted)]">{location}</span>
                 )}
               </div>
             </div>

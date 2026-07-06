@@ -9,17 +9,17 @@ type EmptyStateProps = {
 };
 
 function getBorderColor(variant: string) {
-  if (variant == "warning") return "border-yellow-500";
-  if (variant == "error") return "border-red-500";
-  if (variant == "info") return "border-blue-500";
-  return "border-gray-300";
+  if (variant == "warning") return "border-[#C9942F]";
+  if (variant == "error") return "border-[var(--color-expense)]";
+  if (variant == "info") return "border-[var(--color-accent)]";
+  return "border-[var(--color-border)]";
 }
 
 function getBackgroundColor(variant: string) {
-  if (variant == "warning") return "bg-yellow-50";
-  if (variant == "error") return "bg-red-50";
-  if (variant == "info") return "bg-blue-50";
-  return "bg-gray-50";
+  if (variant == "warning") return "bg-[#F6EAD5]";
+  if (variant == "error") return "bg-[var(--color-expense-bg)]";
+  if (variant == "info") return "bg-[var(--color-accent-bg)]";
+  return "bg-[var(--color-paper)]";
 }
 
 export default function EmptyState({
@@ -33,10 +33,10 @@ export default function EmptyState({
     <div
       className={`flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed ${getBorderColor(variant)} ${getBackgroundColor(variant)} px-6 py-8 text-center ${className}`}
     >
-      <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+      <h3 className="font-serif text-base font-semibold text-[var(--color-ink)]">{title}</h3>
 
       {description && (
-        <p className="mt-2 max-w-md text-sm text-gray-500">{description}</p>
+        <p className="mt-2 max-w-md text-sm text-[var(--color-muted)]">{description}</p>
       )}
 
       {action && <div className="mt-4">{action}</div>}

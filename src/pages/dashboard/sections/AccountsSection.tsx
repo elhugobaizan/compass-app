@@ -38,7 +38,7 @@ export default function AccountsSection({
       subtitle={isMobile ? undefined : "Wallets, bancos y brokers"}
       action={!isMobile && <Button onClick={() => navigate("/accounts")}>Ver todas</Button>}
     >
-      {isLoading && <p className="text-sm text-gray-500">Cargando cuentas...</p>}
+      {isLoading && <p className="text-sm text-[var(--color-muted)]">Cargando cuentas...</p>}
 
       {isError && (
         <EmptyState

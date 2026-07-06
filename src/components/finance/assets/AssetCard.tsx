@@ -61,7 +61,7 @@ export default function AssetCard({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="truncate text-sm font-semibold text-gray-900">
+                <p className="truncate text-sm font-semibold text-[var(--color-ink)]">
                   {asset.name}
                 </p>
 
@@ -82,11 +82,11 @@ export default function AssetCard({
                 )}
               </div>
 
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--color-muted)]">
                 {accountName && <span className="truncate">{accountName}</span>}
 
                 {accountName && formattedQuantity && (
-                  <span className="text-gray-300">•</span>
+                  <span className="text-[var(--color-border)]">•</span>
                 )}
 
                 {formattedQuantity && <span>Cant: {formattedQuantity}</span>}
@@ -96,24 +96,24 @@ export default function AssetCard({
             <div className="shrink-0 text-right">
               {formattedValue ? (
                 <>
-                  <p className="text-sm font-bold text-gray-900">{formattedValue}</p>
-                  <p className="mt-0.5 text-[11px] text-gray-400">Capital</p>
+                  <p className="font-serif text-sm font-bold text-[var(--color-ink)]">{formattedValue}</p>
+                  <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">Capital</p>
 
                   {formattedInterest && (
-                    <p className="mt-1 text-[11px] font-medium text-sky-600">{formattedInterest}</p>
+                    <p className="mt-1 text-[11px] font-medium text-[var(--color-accent)]">{formattedInterest}</p>
                   )}
 
                   {formattedProjectedValue && (
                     <>
-                      <p className="mt-1 text-sm font-semibold text-emerald-600">{formattedProjectedValue}</p>
-                      <p className="mt-0.5 text-[11px] text-gray-400">Al vencimiento</p>
+                      <p className="mt-1 font-serif text-sm font-semibold text-[var(--color-income)]">{formattedProjectedValue}</p>
+                      <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">Al vencimiento</p>
                     </>
                   )}
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-medium text-gray-400">—</p>
-                  <p className="mt-0.5 text-[11px] text-gray-400">Sin valuación</p>
+                  <p className="text-sm font-medium text-[var(--color-muted)]">—</p>
+                  <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">Sin valuación</p>
                 </>
               )}
             </div>

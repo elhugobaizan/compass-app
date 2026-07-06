@@ -37,17 +37,21 @@ export function getTransactionDisplayLabel(typeLabel?: string): string {
 
 export function getTransactionAmountClass(typeLabel?: string): string {
   if (typeLabel === TRANSACTION_TYPES.INGRESO) {
-    return "text-green-600";
+    return "text-[var(--color-income)]";
+  }
+
+  if (typeLabel === TRANSACTION_TYPES.GASTO) {
+    return "text-[var(--color-expense)]";
   }
 
   if (
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA ||
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA
   ) {
-    return "text-blue-600";
+    return "text-[var(--color-accent)]";
   }
 
-  return "text-gray-900";
+  return "text-[var(--color-ink)]";
 }
 
 export function getTransactionAmountPrefix(typeLabel?: string): string {
@@ -74,30 +78,38 @@ export function formatTransactionAmount(
 
 export function getTransactionIcon(typeLabel?: string): JSX.Element {
   if (typeLabel === TRANSACTION_TYPES.INGRESO) {
-    return <ArrowDownLeft className="h-4 w-4 text-green-600" />;
+    return <ArrowDownLeft className="h-4 w-4 text-[var(--color-income)]" />;
+  }
+
+  if (typeLabel === TRANSACTION_TYPES.GASTO) {
+    return <ArrowUpRight className="h-4 w-4 text-[var(--color-expense)]" />;
   }
 
   if (
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA ||
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA
   ) {
-    return <ArrowRightLeft className="h-4 w-4 text-blue-600" />;
+    return <ArrowRightLeft className="h-4 w-4 text-[var(--color-accent)]" />;
   }
 
-  return <ArrowUpRight className="h-4 w-4 text-gray-700" />;
+  return <ArrowUpRight className="h-4 w-4 text-[var(--color-ink)]" />;
 }
 
 export function getTransactionIconContainerClass(typeLabel?: string): string {
   if (typeLabel === TRANSACTION_TYPES.INGRESO) {
-    return "bg-green-50";
+    return "bg-[var(--color-income-bg)]";
+  }
+
+  if (typeLabel === TRANSACTION_TYPES.GASTO) {
+    return "bg-[var(--color-expense-bg)]";
   }
 
   if (
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA ||
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA
   ) {
-    return "bg-blue-50";
+    return "bg-[var(--color-accent-bg)]";
   }
 
-  return "bg-gray-100";
+  return "bg-[var(--color-accent-bg)]";
 }

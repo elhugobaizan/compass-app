@@ -25,26 +25,26 @@ function getToneStyles(tone: Tone) {
   switch (tone) {
     case "positive":
       return {
-        value: "text-green-600",
-        accent: "bg-green-50 border-green-100",
+        value: "text-[var(--color-income)]",
+        accent: "bg-[var(--color-income-bg)] border-[var(--color-border)]",
       };
 
     case "negative":
       return {
-        value: "text-red-600",
-        accent: "bg-red-50 border-red-100",
+        value: "text-[var(--color-expense)]",
+        accent: "bg-[var(--color-expense-bg)] border-[var(--color-border)]",
       };
 
     case "info":
       return {
-        value: "text-blue-600",
-        accent: "bg-blue-50 border-blue-100",
+        value: "text-[var(--color-accent)]",
+        accent: "bg-[var(--color-accent-bg)] border-[var(--color-border)]",
       };
 
     default:
       return {
-        value: "text-gray-900",
-        accent: "bg-white border-gray-200",
+        value: "text-[var(--color-ink)]",
+        accent: "bg-[var(--color-card)] border-[var(--color-border)]",
       };
   }
 }
@@ -63,11 +63,11 @@ function getTrendIcon(direction: TrendDirection): JSX.Element {
 function getTrendColor(sentiment: TrendSentiment = "neutral"): string {
   switch (sentiment) {
     case "positive":
-      return "text-green-600";
+      return "text-[var(--color-income)]";
     case "negative":
-      return "text-red-600";
+      return "text-[var(--color-expense)]";
     default:
-      return "text-gray-400";
+      return "text-[var(--color-muted)]";
   }
 }
 
@@ -92,13 +92,13 @@ export default function KPICard({
 
   const valueClass =
     size === "featured"
-      ? `mt-2 text-3xl font-bold md:text-3xl ${valueColor}`
-      : `mt-2 text-2xl font-bold ${valueColor}`;
+      ? `mt-2 font-serif text-3xl font-bold md:text-3xl ${valueColor}`
+      : `mt-2 font-serif text-2xl font-bold ${valueColor}`;
 
   const labelClass =
     size === "featured"
-      ? "text-sm font-medium text-gray-600"
-      : "text-sm text-gray-500";
+      ? "text-sm font-medium text-[var(--color-muted)]"
+      : "text-sm text-[var(--color-muted)]";
 
   const trendColor = trend ? getTrendColor(trend.sentiment) : "";
 
@@ -108,11 +108,11 @@ export default function KPICard({
         <span className={labelClass}>{label}</span>
 
         {isLoading ? (
-          <span className="mt-2 text-gray-400">Cargando...</span>
+          <span className="mt-2 text-[var(--color-muted)]">Cargando...</span>
         ) : value !== null && value !== undefined ? (
           <span className={valueClass}>{value}</span>
         ) : (
-          <span className="mt-2 text-2xl font-bold text-gray-300">—</span>
+          <span className="mt-2 font-serif text-2xl font-bold text-[var(--color-muted)]">—</span>
         )}
 
         {trend && (
@@ -125,7 +125,7 @@ export default function KPICard({
         )}
 
         {subvalue && (
-          <span className="mt-2 text-xs text-gray-400">{subvalue}</span>
+          <span className="mt-2 text-xs text-[var(--color-muted)]">{subvalue}</span>
         )}
       </div>
     </Card>

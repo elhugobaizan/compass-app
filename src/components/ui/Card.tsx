@@ -11,7 +11,7 @@ export default function Card({
 }: CardProps): JSX.Element {
   return (
     <div
-      className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm mb-0 ${className}`}
+      className={`rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-[0_1px_4px_rgba(46,42,36,0.04)] mb-0 ${className}`}
     >
       {children}
     </div>

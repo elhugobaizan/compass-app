@@ -53,7 +53,7 @@ export default function ActivitySection({
           className="h-64"
         >
           {isLoadingSnapshots && (
-            <p className="text-sm text-gray-500">Cargando evolución...</p>
+            <p className="text-sm text-[var(--color-muted)]">Cargando evolución...</p>
           )}
 
           {isErrorSnapshots && (
@@ -82,7 +82,7 @@ export default function ActivitySection({
           className="h-64"
         >
           {isLoading && (
-            <p className="text-sm text-gray-500">Cargando gráfico...</p>
+            <p className="text-sm text-[var(--color-muted)]">Cargando gráfico...</p>
           )}
           {isError && (
             <EmptyState
@@ -116,7 +116,7 @@ export default function ActivitySection({
             ) : null
           }
         >
-          {isLoading && <p className="text-sm text-gray-500">Cargando movimientos...</p>}
+          {isLoading && <p className="text-sm text-[var(--color-muted)]">Cargando movimientos...</p>}
 
           {isError && (
             <EmptyState

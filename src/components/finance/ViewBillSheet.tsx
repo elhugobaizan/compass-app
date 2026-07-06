@@ -68,7 +68,7 @@ function DetailItem({
   readonly value: string;
 }): JSX.Element {
   return (
-    <div className="rounded-xl bg-gray-50 px-3 py-3">
+    <div className="rounded-xl bg-[var(--color-paper)] px-3 py-3">
       <p className="text-xs font-medium text-muted-foreground">
         {label}
       </p>
@@ -94,7 +94,7 @@ export default function ViewBillSheet({
         </p>
       ) : (
         <div className="space-y-4">
-          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
                 <h2 className="truncate text-xl font-semibold text-foreground">
@@ -147,7 +147,7 @@ export default function ViewBillSheet({
           </section>
 
           {(row.bill?.notes || row.bill?.url || row.bill?.logo) && (
-            <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
               <h3 className="mb-3 text-sm font-medium text-muted-foreground">
                 Información adicional
               </h3>
@@ -167,7 +167,7 @@ export default function ViewBillSheet({
             </section>
           )}
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
             <h3 className="mb-3 text-sm font-medium text-muted-foreground">
               Pago del período
             </h3>

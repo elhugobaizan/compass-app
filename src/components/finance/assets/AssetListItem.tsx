@@ -30,12 +30,12 @@ export function AssetListItem({
   const hasActions = Boolean(onEdit || onRenew || onDelete);
 
   return (
-    <div id={id} className={["scroll-mt-24 overflow-hidden rounded-xl transition-shadow border border-gray-200 bg-white",
-      isHighlighted ? "ring-2 ring-amber-200 shadow-sm" : ""].join(" ")}>
+    <div id={id} className={["scroll-mt-24 overflow-hidden rounded-xl transition-shadow border border-[var(--color-border)] bg-[var(--color-card)]",
+      isHighlighted ? "ring-2 ring-[var(--color-accent)] shadow-sm" : ""].join(" ")}>
       <AssetCard asset={asset} accountName={accountName} />
 
       {hasActions && !isMobile && (
-        <div className="flex items-center justify-end gap-2 border border-t border-gray-100 bg-gray-50/80 px-4 py-3">
+        <div className="flex items-center justify-end gap-2 border-t border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3">
           {isFixedDeposit ? (
             onRenew && (
               <Button

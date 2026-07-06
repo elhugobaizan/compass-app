@@ -61,7 +61,7 @@ export default function SummarySection({
       subtitle={isMobile ? undefined : "Vista general de tu situación financiera"}
     >
       {!hasFinancialData && !isLoading && (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500">
+        <div className="rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3 text-sm text-[var(--color-muted)]">
           Todavía no hay datos suficientes para calcular el resumen.
         </div>
       )}

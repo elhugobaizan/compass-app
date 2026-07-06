@@ -20,26 +20,34 @@ export default function MonthPicker({
   label = "Período",
   resetLabel = "Este mes",
 }: MonthPickerProps): JSX.Element {
+  const now = new Date();
+  const monthDiff =
+    (selectedMonth.getFullYear() - now.getFullYear()) * 12 +
+    (selectedMonth.getMonth() - now.getMonth());
+  const isPast = monthDiff < 0;
+  const isCurrentMonth = monthDiff === 0;
+  const isFuture = monthDiff > 0;
+
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white px-3 py-3 shadow-sm sm:px-4">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-3 shadow-[0_1px_4px_rgba(46,42,36,0.04)] sm:px-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-[var(--color-muted)]">
             {label}
           </p>
-          <h2 className="mt-1 truncate text-lg font-semibold capitalize text-gray-900 sm:text-xl">
+          <h2 className="mt-1 truncate font-serif text-lg font-semibold capitalize text-[var(--color-ink)] sm:text-xl">
             {getMonthLabel(selectedMonth)}
           </h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={onPrevious}>
+          <Button variant={isPast ? "secondary" : "ghost"} size="sm" onClick={onPrevious}>
             Anterior
           </Button>
 
           {onResetToCurrentMonth ? (
             <Button
-              variant="secondary"
+              variant={isCurrentMonth ? "secondary" : "ghost"}
               size="sm"
               onClick={onResetToCurrentMonth}
             >
@@ -47,7 +55,7 @@ export default function MonthPicker({
             </Button>
           ) : null}
 
-          <Button variant="ghost" size="sm" onClick={onNext}>
+          <Button variant={isFuture ? "secondary" : "ghost"} size="sm" onClick={onNext}>
             Siguiente
           </Button>
         </div>

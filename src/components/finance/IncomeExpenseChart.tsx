@@ -25,12 +25,12 @@ function CustomTooltip({ active, payload }: any) {
   const data = payload[0].payload;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
-      <p className="text-sm font-medium">{data.month}</p>
-      <p className="text-sm text-gray-600">
+    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2 shadow-sm">
+      <p className="text-sm font-medium text-[var(--color-ink)]">{data.month}</p>
+      <p className="text-sm text-[var(--color-muted)]">
         Ingresos: {formatCurrency(data.income)}
       </p>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-[var(--color-muted)]">
         Gastos: {formatCurrency(data.expense)}
       </p>
     </div>
@@ -48,8 +48,8 @@ export default function IncomeExpenseChart({
           <YAxis hide />
           <Tooltip content={<CustomTooltip />} />
 
-          <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="expense" fill="var(--color-expense)" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

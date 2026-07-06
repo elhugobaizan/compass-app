@@ -19,8 +19,8 @@ export default function WebSidebarNav(): JSX.Element {
             onClick={() => navigate(item.route)}
             className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
               active
-                ? "bg-gray-100 font-medium text-gray-900"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-[var(--color-accent-bg)] font-medium text-[var(--color-accent-text)]"
+                : "text-[var(--color-ink)] hover:bg-[var(--color-accent-bg)]"
             }`}
           >
             {item.label}

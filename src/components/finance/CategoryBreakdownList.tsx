@@ -20,23 +20,23 @@ export default function CategoryBreakdownList({
       {items.map((item) => (
         <div key={item.categoryId} className="space-y-1">
           <div className="flex items-center justify-between gap-4">
-            <span className="truncate text-sm font-medium text-gray-900">
+            <span className="truncate text-sm font-medium text-[var(--color-ink)]">
               {item.categoryName}
             </span>
 
             <div className="text-right">
-              <div className="text-sm font-semibold text-gray-900">
+              <div className="text-sm font-semibold text-[var(--color-ink)]">
                 {formatCurrency(item.total)}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-[var(--color-muted)]">
                 {item.percentage.toFixed(0)}%
               </div>
             </div>
           </div>
 
-          <div className="h-2 rounded-full bg-gray-100">
+          <div className="h-2 rounded-full bg-[var(--color-border)]">
             <div
-              className="h-2 rounded-full bg-gray-400"
+              className="h-2 rounded-full bg-[var(--color-accent)]"
               style={{ width: `${item.percentage}%` }}
             />
           </div>

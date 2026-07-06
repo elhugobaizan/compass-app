@@ -22,7 +22,7 @@ export default function CreateAssetSheet({
   return (
     <Modal open={open} onClose={onClose} title="Nuevo asset">
       {isLoadingAccounts && (
-        <p className="text-sm text-gray-500">Cargando cuentas...</p>
+        <p className="text-sm text-[var(--color-muted)]">Cargando cuentas...</p>
       )}
 
       {isErrorAccounts && (

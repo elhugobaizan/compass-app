@@ -52,7 +52,7 @@ function TransactionActions({
   if (!onEdit && !onDelete) return null;
 
   return (
-    <div className="mt-0 flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50/80 px-4 py-3">
+    <div className="mt-0 flex items-center justify-end gap-2 border-t border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3">
       {onEdit && (
         <Button
           variant="secondary"
@@ -86,7 +86,7 @@ function DesktopItemFrame({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="scroll-mt-24 overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow">
+    <div className="scroll-mt-24 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] transition-shadow">
       {children}
     </div>
   );

@@ -51,7 +51,7 @@ export default function AnalyticsInsightsSection({
       title="Insights"
       subtitle={isMobile ? undefined : "Lecturas rápidas del período"}
     >
-      {isLoading && <p className="text-sm text-gray-500">Cargando insights...</p>}
+      {isLoading && <p className="text-sm text-[var(--color-muted)]">Cargando insights...</p>}
 
       {isError && (
         <EmptyState
@@ -64,22 +64,22 @@ export default function AnalyticsInsightsSection({
       {!isLoading && !isError && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <Card>
-            <p className="text-sm text-gray-500">Resultado del periodo</p>
-            <p className="mt-2 text-lg font-semibold text-gray-900">
+            <p className="text-sm text-[var(--color-muted)]">Resultado del periodo</p>
+            <p className="mt-2 font-serif text-lg font-semibold text-[var(--color-ink)]">
               {summary.periodSavings >= 0 ? "Mes positivo" : "Mes negativo"}
             </p>
           </Card>
 
           <Card>
-            <p className="text-sm text-gray-500">Categoría más pesada</p>
-            <p className="mt-2 text-lg font-semibold text-gray-900">
+            <p className="text-sm text-[var(--color-muted)]">Categoría más pesada</p>
+            <p className="mt-2 font-serif text-lg font-semibold text-[var(--color-ink)]">
               {topExpenseCategory ?? "—"}
             </p>
           </Card>
 
           <Card>
-            <p className="text-sm text-gray-500">Relación gasto / ingreso</p>
-            <p className="mt-2 text-lg font-semibold text-gray-900">
+            <p className="text-sm text-[var(--color-muted)]">Relación gasto / ingreso</p>
+            <p className="mt-2 font-serif text-lg font-semibold text-[var(--color-ink)]">
               {summary.periodIncome > 0
                 ? `${Math.round(
                   (summary.periodExpenses / summary.periodIncome) * 100

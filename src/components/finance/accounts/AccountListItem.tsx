@@ -44,7 +44,7 @@ export function AccountListItem({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
       <AccountCard
         name={account.name}
         institution={account.institution}
@@ -55,7 +55,7 @@ export function AccountListItem({
         unstyled
       />
 
-      <div className="border-t border-gray-100 bg-gray-50/80">
+      <div className="border-t border-[var(--color-border)] bg-[var(--color-paper)]">
         <div className="flex items-center justify-end gap-2 px-4 py-3">
           <Button
             variant="secondary"

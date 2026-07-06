@@ -19,12 +19,12 @@ export default function PageHeader({
     <header className="space-y-4">
       <div className="flex flex-row gap-3 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+          <h1 className="font-serif text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
             {title}
           </h1>
 
           {description && (
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
+            <p className="mt-1 text-sm text-[var(--color-muted)]">{description}</p>
           )}
         </div>
 

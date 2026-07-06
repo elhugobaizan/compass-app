@@ -21,7 +21,7 @@ export default function EditAccountSheet({
   return (
     <Modal open={open} onClose={onClose} title="Editar cuenta">
       {isLoading && (
-        <p className="text-sm text-gray-500">Cargando datos del formulario...</p>
+        <p className="text-sm text-[var(--color-muted)]">Cargando datos del formulario...</p>
       )}
 
       {isError && (

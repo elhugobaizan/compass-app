@@ -27,7 +27,7 @@ export default function CreateBillSheet({
   return (
     <Modal open={open} onClose={onClose} title="Nuevo impuesto">
       {isLoadingAccounts && (
-        <p className="text-sm text-gray-500">Cargando cuentas...</p>
+        <p className="text-sm text-[var(--color-muted)]">Cargando cuentas...</p>
       )}
 
       {isErrorAccounts && (

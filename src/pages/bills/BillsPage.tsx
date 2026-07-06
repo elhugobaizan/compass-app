@@ -263,11 +263,11 @@ export default function BillsPage(): JSX.Element {
       <section>
         <div className="mb-4 pt-4">
           <div className="flex items-center gap-3 mb-5">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
+            <div className="h-px flex-1 bg-[var(--color-border)]" />
+            <span className="text-xs font-medium uppercase tracking-wide text-[var(--color-muted)]">
               Vencimientos del mes
             </span>
-            <div className="h-px flex-1 bg-gray-200" />
+            <div className="h-px flex-1 bg-[var(--color-border)]" />
           </div>
           <BillsStatusFilter
             value={statusFilter}

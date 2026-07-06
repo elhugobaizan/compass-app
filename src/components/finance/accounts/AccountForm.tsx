@@ -129,46 +129,46 @@ export default function AccountForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {submitError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
           {submitError}
         </div>
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Nombre
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Lemon Wallet, ICBC Caja USD"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Institución
         </label>
         <input
           type="text"
           value={institution}
           onChange={(e) => setInstitution(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Lemon, ICBC"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Tipo
           </label>
           <select
             value={accountType}
             onChange={(e) => setAccountType(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           >
             {ACCOUNT_TYPE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -179,14 +179,14 @@ export default function AccountForm({
         </div>
 
         <div>
-          <label htmlFor="group" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="group" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Grupo
           </label>
           <select
             name="group"
             value={accountGroupId}
             onChange={(e) => setAccountGroupId(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           >
             {ACCOUNT_GROUP_OPTIONS.map((option) => (
               <option key={option.id} value={option.id}>
@@ -199,13 +199,13 @@ export default function AccountForm({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Moneda
           </label>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           >
             {CURRENCY_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -216,7 +216,7 @@ export default function AccountForm({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
             Saldo inicial
           </label>
           <input
@@ -225,14 +225,14 @@ export default function AccountForm({
             step="0.01"
             value={openingBalance}
             onChange={(e) => setOpeningBalance(Number(e.target.value))}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2"
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
             placeholder="0"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="date" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="date" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Fecha inicial
         </label>
         <input
@@ -240,16 +240,16 @@ export default function AccountForm({
           type="date"
           value={openingDate}
           onChange={(e) => setOpeningDate(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-gray-700">
+      <label className="flex items-center gap-2 text-sm text-[var(--color-ink)]">
         <input
           type="checkbox"
           checked={isPaymentMethod}
           onChange={(e) => setIsPaymentMethod(e.target.checked)}
-          className="rounded border-gray-300"
+          className="rounded border-[var(--color-border)]"
         />
         Es método de pago
       </label>

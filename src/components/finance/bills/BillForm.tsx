@@ -133,7 +133,7 @@ export default function BillForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {submitError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">
           {submitError}
         </div>
       )}
@@ -141,7 +141,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="account"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Cuenta
         </label>
@@ -150,7 +150,7 @@ export default function BillForm({
           name="account"
           value={accountId}
           onChange={(event) => setAccountId(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           <option value="">Seleccionar cuenta</option>
           {accounts.map((account) => (
@@ -164,7 +164,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="name"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Nombre
         </label>
@@ -174,7 +174,7 @@ export default function BillForm({
           type="text"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Luz, Gas, Internet"
         />
       </div>
@@ -182,7 +182,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="dueDay"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Día de vencimiento
         </label>
@@ -195,7 +195,7 @@ export default function BillForm({
           max="31"
           value={dueDay}
           onChange={(event) => setDueDay(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: 10"
         />
       </div>
@@ -203,7 +203,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="defaultAmount"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Monto estimado
         </label>
@@ -216,7 +216,7 @@ export default function BillForm({
           min="0"
           value={defaultAmount}
           onChange={(event) => setDefaultAmount(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: 25000"
         />
       </div>
@@ -224,7 +224,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="customerNumber"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Número de cliente
         </label>
@@ -234,7 +234,7 @@ export default function BillForm({
           type="text"
           value={customerNumber}
           onChange={(event) => setCustomerNumber(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: 12345678"
         />
       </div>
@@ -242,7 +242,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="url"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           URL
         </label>
@@ -252,7 +252,7 @@ export default function BillForm({
           type="url"
           value={url}
           onChange={(event) => setUrl(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: https://..."
         />
       </div>
@@ -260,7 +260,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="logo"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Logo
         </label>
@@ -270,7 +270,7 @@ export default function BillForm({
           type="text"
           value={logo}
           onChange={(event) => setLogo(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="URL o identificador del logo"
         />
       </div>
@@ -278,7 +278,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="notes"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]"
         >
           Notas
         </label>
@@ -287,13 +287,13 @@ export default function BillForm({
           name="notes"
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          className="min-h-24 w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="min-h-24 w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Información extra, referencia, observaciones..."
         />
       </div>
 
       <div>
-        <label htmlFor="category" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Categoría
         </label>
         <select
@@ -301,7 +301,7 @@ export default function BillForm({
           name="category"
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         >
           <option value="">Sin categoría</option>
           {categories.map((category) => (
@@ -315,7 +315,7 @@ export default function BillForm({
       <div>
         <label
           htmlFor="provider"
-          className="mb-1 block text-sm font-medium text-gray-700">
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Proveedor
         </label>
         <input
@@ -324,14 +324,14 @@ export default function BillForm({
           type="text"
           value={provider}
           onChange={(event) => setProvider(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         />
       </div>
 
       <div>
         <label
           htmlFor="referenceNumber"
-          className="mb-1 block text-sm font-medium text-gray-700">
+          className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
           Número de referencia
         </label>
         <input
@@ -340,11 +340,11 @@ export default function BillForm({
           type="text"
           value={referenceNumber}
           onChange={(event) => setReferenceNumber(event.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2"
+          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-gray-700">
+      <label className="flex items-center gap-2 text-sm text-[var(--color-ink)]">
         <input
           type="checkbox"
           checked={isActive}

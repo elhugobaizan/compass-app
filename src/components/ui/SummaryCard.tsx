@@ -20,17 +20,17 @@ export default function SummaryCard({
   return (
     <div
       className={[
-        "rounded-2xl border border-gray-100 bg-white px-4 py-3",
+        "rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] px-4 py-3",
         className,
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-medium text-gray-500">{label}</p>
+          <p className="text-xs font-medium text-[var(--color-muted)]">{label}</p>
 
           <p
             className={[
-              "mt-1 text-lg font-semibold text-gray-900",
+              "mt-1 font-serif text-lg font-semibold text-[var(--color-ink)]",
               valueClassName,
             ].join(" ")}
           >
@@ -38,11 +38,11 @@ export default function SummaryCard({
           </p>
 
           {helperText && (
-            <p className="mt-1 text-xs text-gray-400">{helperText}</p>
+            <p className="mt-1 text-xs text-[var(--color-muted)]">{helperText}</p>
           )}
         </div>
 
-        {icon && <div className="shrink-0 text-gray-400">{icon}</div>}
+        {icon && <div className="shrink-0 text-[var(--color-muted)]">{icon}</div>}
       </div>
     </div>
   );

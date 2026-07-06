@@ -140,30 +140,30 @@ export default function BillCard({
     <div className={compact ? "p-3" : "p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-100 bg-amber-50 text-sm font-semibold text-amber-700">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent-bg)] text-sm font-semibold text-[var(--color-accent-text)]">
             {initials}
           </div>
 
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
+            <h3 className="truncate text-sm font-semibold text-[var(--color-ink)] sm:text-base">
               {name}
             </h3>
 
             {secondaryLine ? (
-              <p className="mt-1 text-xs text-gray-500 sm:text-sm">
+              <p className="mt-1 text-xs text-[var(--color-muted)] sm:text-sm">
                 {secondaryLine}
               </p>
             ) : null}
 
             <div className="mt-3 space-y-1">
-              <p className="text-sm text-gray-600">{dueLabel}</p>
+              <p className="text-sm text-[var(--color-ink)]">{dueLabel}</p>
 
               {relativeDueText ? (
                 <p
                   className={
                     status === "overdue"
-                      ? "text-sm font-medium text-red-600"
-                      : "text-sm text-gray-500"
+                      ? "text-sm font-medium text-[var(--color-expense)]"
+                      : "text-sm text-[var(--color-muted)]"
                   }
                 >
                   {relativeDueText}
@@ -176,7 +176,7 @@ export default function BillCard({
         <div className="flex shrink-0 flex-col items-end gap-2">
           <Badge tone={statusConfig.variant}>{statusConfig.label}</Badge>
 
-          <p className="text-lg font-semibold text-gray-900">
+          <p className="font-serif text-lg font-semibold text-[var(--color-ink)]">
             {formatCurrency(amount)}
           </p>
         </div>

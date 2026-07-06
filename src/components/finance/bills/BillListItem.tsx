@@ -62,7 +62,7 @@ export default function BillListItem({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
       <div
         onClick={onClick}
         role={onClick ? "button" : undefined}
@@ -88,7 +88,7 @@ export default function BillListItem({
       </div>
 
       <div
-        className="hidden border-t border-gray-100 bg-gray-50/80 px-4 py-3 md:block"
+        className="hidden border-t border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3 md:block"
         onClick={(event) => {
           event.stopPropagation();
         }}

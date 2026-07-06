@@ -49,7 +49,7 @@ export default function AnalyticsChartsSection({
           className="h-72"
         >
           {isLoadingSnapshots && (
-            <p className="text-sm text-gray-500">Cargando evolución...</p>
+            <p className="text-sm text-[var(--color-muted)]">Cargando evolución...</p>
           )}
 
           {isErrorSnapshots && (
@@ -78,7 +78,7 @@ export default function AnalyticsChartsSection({
           className="h-72"
         >
           {isLoadingTransactions && (
-            <p className="text-sm text-gray-500">Cargando gráfico...</p>
+            <p className="text-sm text-[var(--color-muted)]">Cargando gráfico...</p>
           )}
 
           {isErrorTransactions && (
@@ -111,7 +111,7 @@ export default function AnalyticsChartsSection({
           className="h-72 xl:col-span-2"
         >
           {isLoadingTransactions && (
-            <p className="text-sm text-gray-500">Cargando breakdown...</p>
+            <p className="text-sm text-[var(--color-muted)]">Cargando breakdown...</p>
           )}
 
           {isErrorTransactions && (
