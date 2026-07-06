@@ -13,6 +13,8 @@ import AccountsSection from "./sections/AccountsSection";
 import ActivitySection from "./sections/ActivitySection";
 import Button from "@/components/ui/Button";
 import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
+import MonthlyHighlightsSection from "@/components/finance/MonthlyHighlightsSection";
+import { useMonthlyHighlights } from "@/hooks/useMonthlyHighlights";
 
 export default function Dashboard(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -21,6 +23,7 @@ export default function Dashboard(): JSX.Element {
     transactions,
     summary,
     snapshots,
+    assets,
     hasAccounts,
     hasTransactions,
     hasFinancialData,
@@ -39,6 +42,12 @@ export default function Dashboard(): JSX.Element {
     isError: isErrorCategories
   } = useCategoriesQuery();
   
+
+  const highlights = useMonthlyHighlights(
+    summary.liquidity,
+    transactions,
+    assets,
+  );
 
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
@@ -75,6 +84,8 @@ export default function Dashboard(): JSX.Element {
           + Movimiento
         </Button>
       </div>
+
+      <MonthlyHighlightsSection highlights={highlights} />
 
       <SummarySection
         isMobile={isMobile}
