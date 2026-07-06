@@ -7,7 +7,7 @@ type AccountInput = Pick<Account,
 >;
 
 export type CreateAccountInput = AccountInput;
-export type UpdateAccountInput = AccountInput;
+export type UpdateAccountInput = Partial<AccountInput>;
 
 
 export function getAccounts(): Promise<Account[]> {

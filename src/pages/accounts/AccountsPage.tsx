@@ -20,6 +20,7 @@ import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
 import AccountTypeFilter from "@/components/finance/accounts/AccountTypeFilter";
 import AccountSummary from "@/components/finance/accounts/AccountSummary";
+import BulkBalanceSheet from "@/components/finance/accounts/BulkBalanceSheet";
 import { formatCurrency } from "@/utils/formatters";
 
 function toNumber(value: string | number | null | undefined): number {
@@ -47,6 +48,7 @@ export default function AccountsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
 
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
+  const [isBulkBalanceOpen, setIsBulkBalanceOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -118,9 +120,16 @@ export default function AccountsPage(): JSX.Element {
           ) : undefined
         }
         action={
-          <Button onClick={() => setIsCreateAccountOpen(true)}>
-            + Cuenta
-          </Button>
+          <div className="flex items-center gap-2">
+            {!isMobile && sortedAccounts.length > 0 && (
+              <Button variant="secondary" onClick={() => setIsBulkBalanceOpen(true)}>
+                Actualizar saldos
+              </Button>
+            )}
+            <Button onClick={() => setIsCreateAccountOpen(true)}>
+              + Cuenta
+            </Button>
+          </div>
         }
       />
 
@@ -189,6 +198,12 @@ export default function AccountsPage(): JSX.Element {
       <CreateAccountSheet
         open={isCreateAccountOpen}
         onClose={() => setIsCreateAccountOpen(false)}
+      />
+
+      <BulkBalanceSheet
+        open={isBulkBalanceOpen}
+        onClose={() => setIsBulkBalanceOpen(false)}
+        accounts={sortedAccounts}
       />
 
       <EditAccountSheet
