@@ -4,6 +4,7 @@ import LayoutWeb from "@/layouts/LayoutWeb";
 import { useBreakpoint } from "@/utils/utils";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
+import { toNumber } from "@/utils/numbers";
 import CreateTransactionSheet from "@/components/finance/CreateTransactionSheet";
 import CreateAssetSheet from "@/components/finance/CreateAssetSheet";
 import CreateAccountSheet from "@/components/finance/CreateAccountSheet";
@@ -46,12 +47,14 @@ export default function Dashboard(): JSX.Element {
 
   const salary = useMemo(() => {
     const setting = settings?.find((s) => s.key === "sueldo");
-    return setting?.value ?? undefined;
+    const value = setting?.value;
+    return value ? toNumber(value) : undefined;
   }, [settings]);
 
   const reserve = useMemo(() => {
     const setting = settings?.find((s) => s.key === "reserva");
-    return setting?.value ?? undefined;
+    const value = setting?.value;
+    return value ? toNumber(value) : undefined;
   }, [settings]);
 
   const highlights = useMonthlyHighlights(
@@ -105,7 +108,7 @@ export default function Dashboard(): JSX.Element {
         hasFinancialData={hasFinancialData}
         hasAccounts={hasAccounts}
         hasTransactions={hasTransactions}
-        reserve={reserve ?? undefined}
+        reserve={reserve}
         summary={summary}
       />
 

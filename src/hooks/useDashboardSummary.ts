@@ -5,6 +5,7 @@ import type { Snapshot } from "@/services/snapshots";
 import type { Asset } from "@/types/asset";
 import { calculateSummaryKPIs } from "@/utils/kpis";
 import { Setting } from "@/types/settings";
+import { toNumber } from "@/utils/numbers";
 
 type DashboardSummary = {
   hasAccounts: boolean;
@@ -25,8 +26,8 @@ export function useDashboardSummary(
     const hasTransactions = !!transactions?.length;
     const hasFinancialData = hasAccounts || hasTransactions || !!assets?.length || !!settings?.length;
 
-    const salary = settings?.find((s) => s.key === "sueldo")?.value ?? undefined;
-    const reserve = settings?.find((s) => s.key === "reserva")?.value ?? undefined;
+    const salaryValue = settings?.find((s) => s.key === "sueldo")?.value;
+    const reserveValue = settings?.find((s) => s.key === "reserva")?.value;
 
     const summary = calculateSummaryKPIs(
       accounts ?? [],
@@ -34,8 +35,8 @@ export function useDashboardSummary(
       snapshots ?? [],
       assets ?? [],
       settings ?? [],
-      salary,
-      reserve
+      salaryValue ? toNumber(salaryValue) : undefined,
+      reserveValue ? toNumber(reserveValue) : undefined
     );
 
     return {
