@@ -46,12 +46,12 @@ export default function Dashboard(): JSX.Element {
 
   const salary = useMemo(() => {
     const setting = settings?.find((s) => s.key === "sueldo");
-    return setting?.value;
+    return setting?.value ?? undefined;
   }, [settings]);
 
   const reserve = useMemo(() => {
     const setting = settings?.find((s) => s.key === "reserva");
-    return setting?.value;
+    return setting?.value ?? undefined;
   }, [settings]);
 
   const highlights = useMonthlyHighlights(
@@ -105,7 +105,7 @@ export default function Dashboard(): JSX.Element {
         hasFinancialData={hasFinancialData}
         hasAccounts={hasAccounts}
         hasTransactions={hasTransactions}
-        reserve={reserve}
+        reserve={reserve ?? undefined}
         summary={summary}
       />
 

@@ -25,8 +25,8 @@ export function useDashboardSummary(
     const hasTransactions = !!transactions?.length;
     const hasFinancialData = hasAccounts || hasTransactions || !!assets?.length || !!settings?.length;
 
-    const salary = settings?.find((s) => s.key === "sueldo")?.value;
-    const reserve = settings?.find((s) => s.key === "reserva")?.value;
+    const salary = settings?.find((s) => s.key === "sueldo")?.value ?? undefined;
+    const reserve = settings?.find((s) => s.key === "reserva")?.value ?? undefined;
 
     const summary = calculateSummaryKPIs(
       accounts ?? [],

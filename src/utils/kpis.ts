@@ -11,7 +11,6 @@ import { getPreviousNetWorthFromSnapshots } from "./snapshots";
 import { TRANSACTION_TYPES } from "./transactionTypes";
 import { getTotalAssetsValue } from "./assets";
 import { getNetWorthExtrasFromSettings } from "./settings";
-import type { Bill, BillPayment } from "@/types/bill";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -149,7 +148,6 @@ export function calculateSummaryKPIs(
 
   // Calcular ahorros del mes: (gasto_máximo_diario × días_transcurridos) - gasto_total_mes
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   const daysInMonth = monthEnd.getDate();
   const dayOfMonth = now.getDate();
