@@ -25,6 +25,7 @@ import HeaderAlert from "@/components/ui/HeaderAlert";
 import { isTodayDateString } from "@/utils/date";
 import { getAssetValue, getAssetsDueInNextDays, sortAssetsByPriority } from "@/utils/assets";
 import AssetSummary from "@/components/finance/assets/AssetSummary";
+import AssetYieldSection from "@/components/finance/assets/AssetYieldSection";
 import { formatCurrency } from "@/utils/formatters";
 
 function buildAccountMap(accounts: Account[] = []): Record<string, string> {
@@ -179,21 +180,25 @@ export default function AssetsPage(): JSX.Element {
       )}
 
       {!isLoadingAssets && !isErrorAssets && sortedAssets.length > 0 && (
-        <div className={listClassName}>
-          {sortedAssets.map((asset) => (
-            <AssetListItem
-              key={asset.id}
-              asset={asset}
-              isMobile={isMobile}
-              accountName={accountMap[asset.account_id]}
-              onEdit={() => setAssetToEdit(asset)}
-              onRenew={() => setAssetToRenew(asset)}
-              onDelete={() => setAssetToDelete(asset)}
-              id={asset.id === firstDueTodayAsset?.id ? "due-today-anchor" : undefined}
-              isHighlighted={asset.id === highlightedAssetId}
-            />
-          ))}
-        </div>
+        <>
+          <AssetYieldSection assets={sortedAssets} isMobile={isMobile} />
+
+          <div className={listClassName}>
+            {sortedAssets.map((asset) => (
+              <AssetListItem
+                key={asset.id}
+                asset={asset}
+                isMobile={isMobile}
+                accountName={accountMap[asset.account_id]}
+                onEdit={() => setAssetToEdit(asset)}
+                onRenew={() => setAssetToRenew(asset)}
+                onDelete={() => setAssetToDelete(asset)}
+                id={asset.id === firstDueTodayAsset?.id ? "due-today-anchor" : undefined}
+                isHighlighted={asset.id === highlightedAssetId}
+              />
+            ))}
+          </div>
+        </>
       )}
 
       <CreateAssetSheet

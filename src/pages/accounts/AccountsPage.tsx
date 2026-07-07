@@ -21,6 +21,7 @@ import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
 import AccountTypeFilter from "@/components/finance/accounts/AccountTypeFilter";
 import AccountSummary from "@/components/finance/accounts/AccountSummary";
 import BulkBalanceSheet from "@/components/finance/accounts/BulkBalanceSheet";
+import AccountYieldSection from "@/components/finance/accounts/AccountYieldSection";
 import { formatCurrency } from "@/utils/formatters";
 
 function toNumber(value: string | number | null | undefined): number {
@@ -134,6 +135,8 @@ export default function AccountsPage(): JSX.Element {
       />
 
       <AccountTypeFilter value={accountTypeFilter} onChange={setAccountTypeFilter} />
+
+      <AccountYieldSection accounts={sortedAccounts} isMobile={isMobile} />
 
       {submitError && (
         <div className="rounded-lg border border-[var(--color-expense-bg)] bg-[var(--color-expense-bg)] px-3 py-2 text-sm text-[var(--color-expense-text)]">

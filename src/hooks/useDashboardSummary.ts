@@ -25,12 +25,17 @@ export function useDashboardSummary(
     const hasTransactions = !!transactions?.length;
     const hasFinancialData = hasAccounts || hasTransactions || !!assets?.length || !!settings?.length;
 
+    const salary = settings?.find((s) => s.key === "sueldo")?.value;
+    const reserve = settings?.find((s) => s.key === "reserva")?.value;
+
     const summary = calculateSummaryKPIs(
       accounts ?? [],
       transactions ?? [],
       snapshots ?? [],
       assets ?? [],
-      settings ?? []
+      settings ?? [],
+      salary,
+      reserve
     );
 
     return {

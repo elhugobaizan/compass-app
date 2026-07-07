@@ -11,6 +11,7 @@ import { getPreviousNetWorthFromSnapshots } from "./snapshots";
 import { TRANSACTION_TYPES } from "./transactionTypes";
 import { getTotalAssetsValue } from "./assets";
 import { getNetWorthExtrasFromSettings } from "./settings";
+import type { Bill, BillPayment } from "@/types/bill";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -101,7 +102,9 @@ export function calculateSummaryKPIs(
   transactions: Transaction[] = [],
   snapshots: Snapshot[] = [],
   assets: Asset[] = [],
-  settings: Setting[] = []
+  settings: Setting[] = [],
+  salary?: number | string,
+  reserve?: number | string
 ): SummaryKPIs {
   const base: SummaryKPIs = {
     netWorth: 0,
@@ -143,7 +146,23 @@ export function calculateSummaryKPIs(
 
   withAccounts.monthlyIncome = income.current;
   withAccounts.monthlyExpenses = expenses.current;
-  withAccounts.monthlySavings = income.current - expenses.current;
+
+  // Calcular ahorros del mes: (gasto_máximo_diario × días_transcurridos) - gasto_total_mes
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const daysInMonth = monthEnd.getDate();
+  const dayOfMonth = now.getDate();
+
+  const salaryNum = salary ? toNumber(salary) : 0;
+  const reserveNum = reserve ? toNumber(reserve) : 0;
+  const availableLiquidity = Math.max(0, withAccounts.liquidity - reserveNum);
+
+  const budgetForMonth = salaryNum > 0 ? salaryNum : availableLiquidity;
+  const dailyMaxBudget = daysInMonth > 0 ? budgetForMonth / daysInMonth : 0;
+  const expectedSpendUntilToday = dailyMaxBudget * dayOfMonth;
+
+  withAccounts.monthlySavings = expectedSpendUntilToday - expenses.current;
 
   withAccounts.trends.income = calculateTrend(
     income.current,

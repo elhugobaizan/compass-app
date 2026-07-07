@@ -2,6 +2,7 @@ import { JSX } from "react";
 import SectionBlock from "@/components/ui/SectionBlock";
 import KPICard from "@/components/finance/KPICard";
 import { formatCurrency } from "@/utils/formatters";
+import { toNumber } from "@/utils/numbers";
 
 type SummarySectionProps = {
   readonly isMobile: boolean;
@@ -9,6 +10,7 @@ type SummarySectionProps = {
   readonly hasFinancialData: boolean;
   readonly hasAccounts: boolean;
   readonly hasTransactions: boolean;
+  readonly reserve?: string | number;
   readonly summary: {
     netWorth: number;
     liquidity: number;
@@ -44,10 +46,13 @@ export default function SummarySection({
   hasFinancialData,
   hasAccounts,
   hasTransactions,
+  reserve,
   summary,
 }: SummarySectionProps): JSX.Element {
   const netWorthValue = hasAccounts ? formatCurrency(summary.netWorth) : null;
-  const liquidityValue = hasAccounts ? formatCurrency(summary.liquidity) : null;
+  const reserveAmount = reserve ? toNumber(reserve) : 0;
+  const availableLiquidity = Math.max(0, summary.liquidity - reserveAmount);
+  const liquidityValue = hasAccounts ? formatCurrency(availableLiquidity) : null;
   const expensesValue = hasTransactions
     ? formatCurrency(summary.monthlyExpenses)
     : null;

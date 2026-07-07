@@ -1,4 +1,4 @@
-import { JSX, useState } from "react";
+import { JSX, useState, useMemo } from "react";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
 import { useBreakpoint } from "@/utils/utils";
@@ -24,6 +24,7 @@ export default function Dashboard(): JSX.Element {
     summary,
     snapshots,
     assets,
+    settings,
     hasAccounts,
     hasTransactions,
     hasFinancialData,
@@ -43,10 +44,21 @@ export default function Dashboard(): JSX.Element {
   } = useCategoriesQuery();
   
 
+  const salary = useMemo(() => {
+    const setting = settings?.find((s) => s.key === "sueldo");
+    return setting?.value;
+  }, [settings]);
+
+  const reserve = useMemo(() => {
+    const setting = settings?.find((s) => s.key === "reserva");
+    return setting?.value;
+  }, [settings]);
+
   const highlights = useMonthlyHighlights(
     summary.liquidity,
     transactions,
     assets,
+    salary,
   );
 
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
@@ -93,6 +105,7 @@ export default function Dashboard(): JSX.Element {
         hasFinancialData={hasFinancialData}
         hasAccounts={hasAccounts}
         hasTransactions={hasTransactions}
+        reserve={reserve}
         summary={summary}
       />
 

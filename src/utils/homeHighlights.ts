@@ -110,20 +110,23 @@ export function getNextFixedDeposit(assets: Asset[] = []): NextDue {
 
 export function computeMonthlyHighlights(input: {
   liquidity: number;
+  salary?: number;
   transactions: Transaction[];
   assets: Asset[];
   bills: Bill[];
   billPayments: BillPayment[];
 }): MonthlyHighlights {
-  const { liquidity, transactions, assets, bills, billPayments } = input;
+  const { liquidity, salary = 0, transactions, assets, bills, billPayments } = input;
 
   const spentToday = getSpentToday(transactions);
   const { pendingTotal, nextBill } = getPendingBills(bills, billPayments);
   const nextFixedDeposit = getNextFixedDeposit(assets);
 
   const daysRemaining = daysRemainingInMonth(new Date());
-  const available = Math.max(0, liquidity - pendingTotal);
-  const dailyMax = daysRemaining > 0 ? available / daysRemaining : 0;
+
+  // Si hay sueldo definido, usarlo como base; si no, usar liquidez
+  const base = salary > 0 ? salary - pendingTotal : Math.max(0, liquidity - pendingTotal);
+  const dailyMax = daysRemaining > 0 ? base / daysRemaining : 0;
 
   return {
     dailyMax,
