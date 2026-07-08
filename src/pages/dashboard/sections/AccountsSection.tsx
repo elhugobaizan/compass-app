@@ -6,6 +6,7 @@ import AccountCard from "@/components/finance/accounts/AccountCard";
 import type { Account, AccountType } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
 import { getMostUsedAccounts } from "@/utils/accounts";
+import { buildAccountBalanceMap } from "@/utils/accountBalance";
 import { formatCurrency } from "@/utils/formatters";
 import { useNavigate } from "react-router-dom";
 
@@ -29,6 +30,8 @@ export default function AccountsSection({
     transactions ?? [],
     3
   );
+
+  const balanceByAccount = buildAccountBalanceMap(accounts ?? [], transactions ?? []);
 
   const navigate = useNavigate();
   
@@ -65,7 +68,7 @@ export default function AccountsSection({
               institution={account.institution}
               currency={account.currency}
               accountType={account.account_type as AccountType}
-              balance={(account.opening_balance && formatCurrency(account.opening_balance)) ?? "-"}
+              balance={formatCurrency(balanceByAccount[account.id] ?? 0)}
               isPaymentMethod={account.is_payment_method}
             />
           ))}

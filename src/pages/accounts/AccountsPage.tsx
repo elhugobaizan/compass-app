@@ -14,7 +14,9 @@ import LayoutWeb from "@/layouts/LayoutWeb";
 
 import { useBreakpoint } from "@/utils/utils";
 import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
+import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useDeleteAccount } from "@/hooks/mutations/useDeleteAccount";
+import { buildAccountBalanceMap } from "@/utils/accountBalance";
 
 import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
@@ -22,6 +24,7 @@ import AccountTypeFilter from "@/components/finance/accounts/AccountTypeFilter";
 import AccountSummary from "@/components/finance/accounts/AccountSummary";
 import BulkBalanceSheet from "@/components/finance/accounts/BulkBalanceSheet";
 import AccountYieldSection from "@/components/finance/accounts/AccountYieldSection";
+import AccountMovementsModal from "@/components/finance/accounts/AccountMovementsModal";
 import { formatCurrency } from "@/utils/formatters";
 
 function toNumber(value: string | number | null | undefined): number {
@@ -52,6 +55,7 @@ export default function AccountsPage(): JSX.Element {
   const [isBulkBalanceOpen, setIsBulkBalanceOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
+  const [accountToView, setAccountToView] = useState<Account | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [accountTypeFilter, setAccountTypeFilter] = useState<AccountTypeFilterValue>("all");
 
@@ -61,14 +65,21 @@ export default function AccountsPage(): JSX.Element {
     isError,
   } = useAccountsQuery();
 
+  const { data: transactions } = useTransactionsQuery();
+
   const { mutateAsync: deleteAccount, isPending: isDeleting } =
     useDeleteAccount();
 
   const sortedAccounts = useMemo(() => sortAccounts(accounts ?? []), [accounts]);
 
+  const balanceByAccount = useMemo(
+    () => buildAccountBalanceMap(sortedAccounts, transactions ?? []),
+    [sortedAccounts, transactions],
+  );
+
   const totalBalance = useMemo(
-    () => sortedAccounts.reduce((sum, account) => sum + toNumber(account.opening_balance), 0),
-    [sortedAccounts],
+    () => sortedAccounts.reduce((sum, account) => sum + (balanceByAccount[account.id] ?? 0), 0),
+    [sortedAccounts, balanceByAccount],
   );
   const paymentMethods = useMemo(
     () => sortedAccounts.filter((account) => account.is_payment_method).length,
@@ -190,9 +201,11 @@ export default function AccountsPage(): JSX.Element {
             <AccountListItem
               key={account.id}
               account={account}
+              balance={balanceByAccount[account.id]}
               compact={isMobile}
               onEdit={setAccountToEdit}
               onDelete={setAccountToDelete}
+              onSelect={setAccountToView}
             />
           ))}
         </div>
@@ -201,6 +214,13 @@ export default function AccountsPage(): JSX.Element {
       <CreateAccountSheet
         open={isCreateAccountOpen}
         onClose={() => setIsCreateAccountOpen(false)}
+      />
+
+      <AccountMovementsModal
+        account={accountToView}
+        transactions={transactions ?? []}
+        balance={accountToView ? balanceByAccount[accountToView.id] : undefined}
+        onClose={() => setAccountToView(null)}
       />
 
       <BulkBalanceSheet

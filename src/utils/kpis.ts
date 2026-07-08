@@ -11,6 +11,7 @@ import { getPreviousNetWorthFromSnapshots } from "./snapshots";
 import { TRANSACTION_TYPES } from "./transactionTypes";
 import { getTotalAssetsValue } from "./assets";
 import { getNetWorthExtrasFromSettings } from "./settings";
+import { buildAccountBalanceMap } from "./accountBalance";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -121,17 +122,19 @@ export function calculateSummaryKPIs(
     },
   };
 
+  const balanceByAccount = buildAccountBalanceMap(accounts, transactions);
+
   const withAccounts = accounts.reduce((acc, account) => {
-    const balance = toNumber(account.opening_balance);
+    const balance = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       acc.liquidity += balance;
     }
-    
+
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
       acc.debt += balance;
     }
-    
+
     return acc;
   }, base);
   const totalAssetsValue = getTotalAssetsValue(assets);

@@ -6,6 +6,15 @@ export const TRANSACTION_TYPES = {
   AJUSTE: "AJUSTE"
 } as const;
 
+// IDs de la tabla transaction_types (DB)
+export const TRANSACTION_TYPE_IDS = {
+  GASTO: "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d",
+  INGRESO: "e0c36d0a-85ef-4fb6-a1f6-9480a17ed68f",
+  AJUSTE: "0edba551-6061-4c28-b72f-3ceeb72d1547",
+  TRANSFERENCIA_ENTRADA: "ef0f7192-c4b3-4d7c-88ef-0d451a77baea",
+  TRANSFERENCIA_SALIDA: "1e49a6a7-3519-4e5b-aa4b-62a4d11a7a11",
+} as const;
+
 export const transactionTypeLabels: Record<string, string> = {
   [TRANSACTION_TYPES.AJUSTE]: "AJUSTE",
   [TRANSACTION_TYPES.GASTO]: "GASTO",
