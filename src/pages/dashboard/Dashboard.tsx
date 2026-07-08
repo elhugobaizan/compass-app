@@ -16,6 +16,9 @@ import Button from "@/components/ui/Button";
 import CreateTransferSheet from "@/components/finance/CreateTransferSheet";
 import MonthlyHighlightsSection from "@/components/finance/MonthlyHighlightsSection";
 import { useMonthlyHighlights } from "@/hooks/useMonthlyHighlights";
+import { useMonthlySnapshot } from "@/hooks/useMonthlySnapshot";
+import { useDollarRate } from "@/hooks/queries/useDollarRate";
+import DollarRateChip from "@/components/finance/DollarRateChip";
 
 export default function Dashboard(): JSX.Element {
   const { isMobile } = useBreakpoint();
@@ -64,6 +67,25 @@ export default function Dashboard(): JSX.Element {
     salary,
   );
 
+  const { data: dollarRate, isLoading: isLoadingDollar } = useDollarRate();
+
+  const isSnapshotReady =
+    !isLoadingAccounts &&
+    !isLoadingAssets &&
+    !isLoadingSnapshots &&
+    !isLoadingSettings &&
+    !isLoadingDollar &&
+    !isErrorAccounts &&
+    !isErrorSnapshots &&
+    hasAccounts;
+
+  useMonthlySnapshot({
+    snapshots,
+    summary,
+    exchangeRate: dollarRate?.venta,
+    isReady: isSnapshotReady,
+  });
+
   const [isCreateTransactionOpen, setIsCreateTransactionOpen] = useState(false);
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
@@ -78,7 +100,10 @@ export default function Dashboard(): JSX.Element {
 
   const content = (
     <div className={isMobile ? "space-y-4" : "space-y-6"}>
-      <div className="flex flex-wrap justify-end gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <DollarRateChip />
+
+        <div className="flex flex-wrap items-center justify-end gap-2">
         {!isMobile && (
           <>
             <Button variant="secondary" onClick={() => setIsCreateAccountOpen(true)}>
@@ -98,6 +123,7 @@ export default function Dashboard(): JSX.Element {
         <Button onClick={() => setIsCreateTransactionOpen(true)}>
           + Movimiento
         </Button>
+        </div>
       </div>
 
       <MonthlyHighlightsSection highlights={highlights} />
