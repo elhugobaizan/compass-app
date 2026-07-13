@@ -3,6 +3,7 @@ import { Landmark, Wallet, LineChart, LucideIcon } from "lucide-react";
 
 import Card from "../../ui/Card";
 import { formatCurrency } from "@/utils/formatters";
+import { getLogoUrl } from "@/utils/logos";
 import Badge from "@/components/ui/Badge";
 
 export type AccountType = "BANK" | "WALLET" | "BROKER";
@@ -13,6 +14,7 @@ type AccountCardProps = {
   readonly currency: string;
   readonly accountType: AccountType;
   readonly balance?: number | string;
+  readonly logo?: string | null;
   readonly isPaymentMethod?: boolean;
   readonly compact?: boolean;
   readonly unstyled?: boolean;
@@ -67,12 +69,14 @@ export default function AccountCard({
   currency,
   accountType,
   balance,
+  logo,
   isPaymentMethod = false,
   compact = false,
   unstyled = false,
 }: AccountCardProps): JSX.Element {
   const visual = getAccountVisualConfig(accountType);
   const { Icon } = visual;
+  const logoUrl = getLogoUrl(logo);
   const formattedBalance =
     typeof balance === "number" ? formatCurrency(balance) : balance;
 
@@ -80,15 +84,27 @@ export default function AccountCard({
     <>
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
-          <div
-            className={
-              compact
-                ? `flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
-                : `flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
-            }
-          >
-            <Icon className={`h-4 w-4 ${visual.iconClassName}`} />
-          </div>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={name}
+              className={
+                compact
+                  ? "h-9 w-9 shrink-0 rounded-xl object-cover"
+                  : "h-10 w-10 shrink-0 rounded-xl object-cover"
+              }
+            />
+          ) : (
+            <div
+              className={
+                compact
+                  ? `flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
+                  : `flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`
+              }
+            >
+              <Icon className={`h-4 w-4 ${visual.iconClassName}`} />
+            </div>
+          )}
 
           <div className="min-w-0">
             <div className="flex min-w-0 flex-wrap items-center gap-2">

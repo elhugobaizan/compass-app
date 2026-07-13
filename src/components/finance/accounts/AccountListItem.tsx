@@ -48,6 +48,7 @@ export function AccountListItem({
           currency={account.currency}
           accountType={mapAccountType(account.account_type)}
           balance={displayBalance}
+          logo={account.logo}
           isPaymentMethod={account.is_payment_method}
           compact
         />
@@ -68,6 +69,7 @@ export function AccountListItem({
           currency={account.currency}
           accountType={mapAccountType(account.account_type)}
           balance={displayBalance}
+          logo={account.logo}
           isPaymentMethod={account.is_payment_method}
           unstyled
         />

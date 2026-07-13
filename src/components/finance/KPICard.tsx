@@ -92,8 +92,8 @@ export default function KPICard({
 
   const valueClass =
     size === "featured"
-      ? `mt-2 font-serif text-3xl font-bold md:text-3xl ${valueColor}`
-      : `mt-2 font-serif text-2xl font-bold ${valueColor}`;
+      ? `mt-2 w-full min-w-0 font-serif text-2xl font-bold leading-tight tabular-nums break-words ${valueColor}`
+      : `mt-2 w-full min-w-0 font-serif text-2xl font-bold leading-tight tabular-nums break-words ${valueColor}`;
 
   const labelClass =
     size === "featured"

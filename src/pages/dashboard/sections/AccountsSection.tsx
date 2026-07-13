@@ -69,6 +69,7 @@ export default function AccountsSection({
               currency={account.currency}
               accountType={account.account_type as AccountType}
               balance={formatCurrency(balanceByAccount[account.id] ?? 0)}
+              logo={account.logo}
               isPaymentMethod={account.is_payment_method}
             />
           ))}

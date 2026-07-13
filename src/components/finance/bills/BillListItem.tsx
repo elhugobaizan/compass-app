@@ -12,6 +12,7 @@ type BillListItemProps = {
   readonly status: "paid" | "pending" | "overdue";
   readonly paidAt?: string | null;
   readonly accountName?: string | null;
+  readonly logo?: string | null;
   readonly compact?: boolean;
   readonly onClick?: () => void;
   readonly onPay?: () => void;
@@ -27,6 +28,7 @@ export default function BillListItem({
   status,
   paidAt,
   accountName,
+  logo,
   compact = false,
   onClick,
   onPay,
@@ -55,6 +57,7 @@ export default function BillListItem({
           status={status}
           paidAt={paidAt}
           accountName={accountName}
+          logo={logo}
           compact
         />
       </div>
@@ -62,8 +65,9 @@ export default function BillListItem({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-[0_1px_4px_rgba(46,42,36,0.04)]">
       <div
+        className="flex-1"
         onClick={onClick}
         role={onClick ? "button" : undefined}
         tabIndex={onClick ? 0 : undefined}
@@ -83,6 +87,7 @@ export default function BillListItem({
           status={status}
           paidAt={paidAt}
           accountName={accountName}
+          logo={logo}
           unstyled
         />
       </div>

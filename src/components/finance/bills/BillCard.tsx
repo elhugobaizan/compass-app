@@ -4,6 +4,7 @@ import Badge, { BadgeTone } from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import { parseLocalDate } from "@/utils/date";
 import { formatCurrency } from "@/utils/formatters";
+import { getLogoUrl } from "@/utils/logos";
 
 type BillCardProps = {
   readonly name: string;
@@ -13,6 +14,7 @@ type BillCardProps = {
   readonly status: "paid" | "pending" | "overdue";
   readonly paidAt?: string | null;
   readonly accountName?: string | null;
+  readonly logo?: string | null;
   readonly compact?: boolean;
   readonly unstyled?: boolean;
 };
@@ -91,9 +93,11 @@ export default function BillCard({
   status,
   paidAt,
   accountName,
+  logo,
   compact = false,
   unstyled = false,
 }: BillCardProps): JSX.Element {
+  const logoUrl = getLogoUrl(logo);
   const formattedDueDate = useMemo(
     () => (dueDate ? dueDate : null),
     [dueDate],
@@ -140,9 +144,17 @@ export default function BillCard({
     <div className={compact ? "p-3" : "p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent-bg)] text-sm font-semibold text-[var(--color-accent-text)]">
-            {initials}
-          </div>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={name}
+              className="h-10 w-10 shrink-0 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent-bg)] text-sm font-semibold text-[var(--color-accent-text)]">
+              {initials}
+            </div>
+          )}
 
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-sm font-semibold text-[var(--color-ink)] sm:text-base">

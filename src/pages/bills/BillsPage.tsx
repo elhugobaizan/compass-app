@@ -309,6 +309,7 @@ export default function BillsPage(): JSX.Element {
                 paidAt={row.paidAt}
                 compact={isMobile}
                 accountName={row.bill.account?.name ?? null}
+                logo={row.bill.logo}
                 onClick={() => setViewingBill(row)}
                 onPay={() => setPayingBill(row)}
                 onEdit={() => setEditingBill(row.bill)}
