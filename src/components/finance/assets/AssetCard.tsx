@@ -3,12 +3,14 @@ import type { Asset } from "@/types/asset";
 import { getDaysFromToday } from "@/utils/date";
 import { toNumber } from "@/utils/numbers";
 import { getAssetTypeConfig } from "@/utils/assetTypes";
+import { getLogoUrl } from "@/utils/logos";
 import { useAssetCard } from "@/hooks/useAssetCard";
 import Badge from "@/components/ui/Badge";
 
 type AssetCardProps = {
   readonly asset: Asset;
   readonly accountName?: string;
+  readonly logo?: string | null;
 };
 
 type MaturityLabel = {
@@ -40,22 +42,32 @@ function getFormattedQuantity(asset: Asset): string | null {
 export default function AssetCard({
   asset,
   accountName,
+  logo,
 }: AssetCardProps): JSX.Element {
   const { formattedValue, formattedProjectedValue, formattedInterest } = useAssetCard(asset);
   const formattedQuantity = getFormattedQuantity(asset);
   const visual = getAssetTypeConfig(asset.asset_type);
   const { Icon } = visual;
+  const logoUrl = getLogoUrl(logo);
   const maturityLabel = getMaturityLabel(asset.maturity);
 
   return (
     <div className="px-4 py-3">
       <div className="flex items-start gap-3">
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`}
-          aria-hidden="true"
-        >
-          <Icon className={`h-4.5 w-4.5 ${visual.iconClassName}`} />
-        </div>
+        {logoUrl ? (
+          <img
+            src={logoUrl}
+            alt={accountName ?? asset.name}
+            className="h-10 w-10 shrink-0 rounded-xl object-cover"
+          />
+        ) : (
+          <div
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${visual.containerClassName}`}
+            aria-hidden="true"
+          >
+            <Icon className={`h-4.5 w-4.5 ${visual.iconClassName}`} />
+          </div>
+        )}
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">

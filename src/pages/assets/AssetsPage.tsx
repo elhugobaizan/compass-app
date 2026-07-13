@@ -35,6 +35,13 @@ function buildAccountMap(accounts: Account[] = []): Record<string, string> {
   }, {});
 }
 
+function buildAccountLogoMap(accounts: Account[] = []): Record<string, string | null> {
+  return accounts.reduce<Record<string, string | null>>((acc, account) => {
+    acc[account.id] = account.logo ?? null;
+    return acc;
+  }, {});
+}
+
 export default function AssetsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
 
@@ -60,6 +67,7 @@ export default function AssetsPage(): JSX.Element {
 
   const sortedAssets = useMemo(() => sortAssetsByPriority(assets ?? []), [assets]);
   const accountMap = useMemo(() => buildAccountMap(accounts ?? []), [accounts]);
+  const accountLogoMap = useMemo(() => buildAccountLogoMap(accounts ?? []), [accounts]);
   const assetsDueToday = useMemo(() => 
     sortedAssets.filter((asset) => isTodayDateString(asset.maturity))
   , [sortedAssets]);  
@@ -190,6 +198,7 @@ export default function AssetsPage(): JSX.Element {
                 asset={asset}
                 isMobile={isMobile}
                 accountName={accountMap[asset.account_id]}
+                accountLogo={accountLogoMap[asset.account_id]}
                 onEdit={() => setAssetToEdit(asset)}
                 onRenew={() => setAssetToRenew(asset)}
                 onDelete={() => setAssetToDelete(asset)}

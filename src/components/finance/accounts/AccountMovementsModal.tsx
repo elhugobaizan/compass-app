@@ -3,7 +3,11 @@ import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import type { Transaction } from "@/types/transaction";
-import { getAccountMovements, signedAmount } from "@/utils/accountBalance";
+import {
+  getAccountMovements,
+  signedAmount,
+  computeAccountBreakdown,
+} from "@/utils/accountBalance";
 import { formatCurrency } from "@/utils/formatters";
 import { toNumber } from "@/utils/numbers";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
@@ -35,6 +39,11 @@ export default function AccountMovementsModal({
     [account, transactions],
   );
 
+  const breakdown = useMemo(
+    () => (account ? computeAccountBreakdown(account, transactions) : null),
+    [account, transactions],
+  );
+
   const [isAdjusting, setIsAdjusting] = useState(false);
   const [realBalance, setRealBalance] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +59,9 @@ export default function AccountMovementsModal({
   if (!account) return null;
 
   const openingBalance = toNumber(account.opening_balance);
-  const currentBalance = balance ?? openingBalance;
+  const currentBalance = breakdown?.balance ?? balance ?? openingBalance;
+  const accruedInterest = breakdown?.accruedInterest ?? 0;
+  const interestDays = breakdown?.interestDays ?? 0;
 
   const parsedReal = Number(realBalance);
   const hasValidReal = realBalance.trim() !== "" && Number.isFinite(parsedReal);
@@ -134,6 +145,23 @@ export default function AccountMovementsModal({
                 );
               })}
             </ul>
+          )}
+
+          {accruedInterest !== 0 && (
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-[#E7D3B3] bg-[#F6EAD5]/50 px-3 py-2.5">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-[#8A5A2E]">
+                  Intereses devengados
+                </p>
+                <p className="text-xs text-[var(--color-muted)]">
+                  {interestDays} {interestDays === 1 ? "día" : "días"}
+                  {account.interest_rate ? ` · ${toNumber(account.interest_rate)}% TNA` : ""}
+                </p>
+              </div>
+              <span className="shrink-0 text-sm font-semibold text-[#8A5A2E]">
+                {accruedInterest >= 0 ? "+" : "-"} {formatCurrency(Math.abs(accruedInterest))}
+              </span>
+            </div>
           )}
         </div>
 

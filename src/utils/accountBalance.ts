@@ -51,26 +51,105 @@ function isAfterCutoff(txDate: string | null | undefined, cutoff: number | null)
   return !Number.isNaN(t) && t > cutoff;
 }
 
+const DAY_MS = 86_400_000;
+
+function toDayNumber(value: string | number): number {
+  const key = new Date(value).toISOString().slice(0, 10);
+  return Math.floor(new Date(`${key}T00:00:00.000Z`).getTime() / DAY_MS);
+}
+
+export type AccountBalanceBreakdown = {
+  /** Saldo inicial (opening_balance de la DB). */
+  readonly openingBalance: number;
+  /** Neto de los movimientos posteriores a la fecha de referencia. */
+  readonly movementsNet: number;
+  /** Interés devengado (cuentas remuneradas), 0 si no aplica. */
+  readonly accruedInterest: number;
+  /** Días de interés devengados desde la fecha de referencia. */
+  readonly interestDays: number;
+  /** Saldo actual = inicial + movimientos + interés devengado. */
+  readonly balance: number;
+};
+
 /**
- * Saldo real de una cuenta = saldo inicial (DB) + movimientos con fecha igual o
- * posterior a la fecha de referencia del saldo inicial.
+ * Desglose del saldo real de una cuenta:
+ *  saldo inicial (DB) + movimientos posteriores a la fecha de referencia
+ *  + interés devengado (cuentas remuneradas, compuesto diario simulando día a día).
+ */
+export function computeAccountBreakdown(
+  account: Account,
+  transactions: Transaction[] = [],
+  asOf: Date = new Date(),
+): AccountBalanceBreakdown {
+  const base = toNumber(account.opening_balance);
+  const cutoff = cutoffTime(account);
+  const rate = toNumber(account.interest_rate);
+
+  const movements = transactions.filter(
+    (tx) =>
+      tx.account_id === account.id &&
+      !tx.deleted_at &&
+      isAfterCutoff(tx.date, cutoff),
+  );
+  const movementsNet = movements.reduce((sum, tx) => sum + signedAmount(tx), 0);
+
+  // Sin tasa o sin fecha de referencia → solo saldo inicial + movimientos
+  if (!(rate > 0) || cutoff === null) {
+    return {
+      openingBalance: base,
+      movementsNet,
+      accruedInterest: 0,
+      interestDays: 0,
+      balance: base + movementsNet,
+    };
+  }
+
+  // Simulación día a día con capitalización diaria
+  const dailyRate = rate / 36500; // TNA (%) → tasa diaria
+  const startDay = toDayNumber(cutoff);
+  const todayDay = toDayNumber(asOf.getTime());
+  const interestDays = Math.max(0, todayDay - startDay);
+
+  // Movimientos agrupados por día (número de día); los futuros se suman al final
+  const movByDay = new Map<number, number>();
+  let futureNet = 0;
+  for (const tx of movements) {
+    const day = toDayNumber(tx.date);
+    const amount = signedAmount(tx);
+    if (day > todayDay) {
+      futureNet += amount;
+    } else {
+      movByDay.set(day, (movByDay.get(day) ?? 0) + amount);
+    }
+  }
+
+  let balance = base;
+  for (let i = 1; i <= interestDays; i++) {
+    balance *= 1 + dailyRate;
+    const dayMovements = movByDay.get(startDay + i);
+    if (dayMovements) balance += dayMovements;
+  }
+  balance += futureNet;
+
+  const accruedInterest = balance - base - movementsNet;
+
+  return {
+    openingBalance: base,
+    movementsNet,
+    accruedInterest,
+    interestDays,
+    balance,
+  };
+}
+
+/**
+ * Saldo real de una cuenta = saldo inicial + movimientos + interés devengado.
  */
 export function computeAccountBalance(
   account: Account,
   transactions: Transaction[] = [],
 ): number {
-  const base = toNumber(account.opening_balance);
-  const cutoff = cutoffTime(account);
-
-  const net = transactions.reduce((sum, tx) => {
-    if (tx.account_id !== account.id) return sum;
-    if (tx.deleted_at) return sum;
-    if (!isAfterCutoff(tx.date, cutoff)) return sum;
-
-    return sum + signedAmount(tx);
-  }, 0);
-
-  return base + net;
+  return computeAccountBreakdown(account, transactions).balance;
 }
 
 /**
@@ -97,26 +176,16 @@ export function getAccountMovements(
 }
 
 /**
- * Mapa id de cuenta → saldo real, recorriendo las transacciones una sola vez.
+ * Mapa id de cuenta → saldo real (inicial + movimientos + interés devengado).
  */
 export function buildAccountBalanceMap(
   accounts: Account[] = [],
   transactions: Transaction[] = [],
 ): Record<string, number> {
   const balances: Record<string, number> = {};
-  const cutoffs: Record<string, number | null> = {};
 
   for (const account of accounts) {
-    balances[account.id] = toNumber(account.opening_balance);
-    cutoffs[account.id] = cutoffTime(account);
-  }
-
-  for (const tx of transactions) {
-    if (tx.deleted_at) continue;
-    if (!(tx.account_id in balances)) continue;
-    if (!isAfterCutoff(tx.date, cutoffs[tx.account_id])) continue;
-
-    balances[tx.account_id] += signedAmount(tx);
+    balances[account.id] = computeAccountBreakdown(account, transactions).balance;
   }
 
   return balances;
