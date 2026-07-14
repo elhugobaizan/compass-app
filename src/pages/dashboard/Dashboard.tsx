@@ -1,4 +1,5 @@
 import { JSX, useState, useMemo } from "react";
+import { Plus } from "lucide-react";
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
 import { useBreakpoint } from "@/utils/utils";
@@ -103,27 +104,25 @@ export default function Dashboard(): JSX.Element {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <DollarRateChip />
 
-        <div className="flex flex-wrap items-center justify-end gap-2">
         {!isMobile && (
-          <>
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <Button variant="secondary" onClick={() => setIsCreateAccountOpen(true)}>
               + Cuenta
             </Button>
-            
+
             <Button variant="secondary" onClick={() => setIsCreateAssetOpen(true)}>
               + Asset
             </Button>
-          </>
+
+            <Button onClick={() => setIsCreateTransferOpen(true)}>
+              + Transferencia
+            </Button>
+
+            <Button onClick={() => setIsCreateTransactionOpen(true)}>
+              + Movimiento
+            </Button>
+          </div>
         )}
-
-        <Button onClick={() => setIsCreateTransferOpen(true)}>
-          + Transferencia
-        </Button>
-
-        <Button onClick={() => setIsCreateTransactionOpen(true)}>
-          + Movimiento
-        </Button>
-        </div>
       </div>
 
       <MonthlyHighlightsSection highlights={highlights} />
@@ -155,6 +154,17 @@ export default function Dashboard(): JSX.Element {
         isLoading={isLoadingAccounts}
         isError={isErrorAccounts}
       />
+
+      {isMobile && (
+        <button
+          type="button"
+          aria-label="Registrar movimiento"
+          onClick={() => setIsCreateTransactionOpen(true)}
+          className="fixed bottom-24 right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-lg transition-transform active:scale-95"
+        >
+          <Plus className="h-6 w-6" />
+        </button>
+      )}
 
       <CreateTransactionSheet
         open={isCreateTransactionOpen}

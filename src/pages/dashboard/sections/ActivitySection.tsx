@@ -12,6 +12,7 @@ import { useNetWorthHistory } from "@/hooks/useNetWorthHistory";
 import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
 import { Snapshot } from "@/services/snapshots";
 import { buildTransactionListItems } from "@/utils/transactionList";
+import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
 import TransferCard from "@/components/finance/transactions/TransferCard";
 import TransactionCard from "@/components/finance/transactions/TransactionCard";
 
@@ -34,7 +35,10 @@ export default function ActivitySection({
   isLoadingSnapshots,
   isErrorSnapshots
 }: ActivitySectionProps): JSX.Element {
-  const transactionsListItems = buildTransactionListItems(transactions);
+  const timelineTransactions = transactions?.filter(
+    (tx) => tx.type?.name !== TRANSACTION_TYPES.AJUSTE,
+  );
+  const transactionsListItems = buildTransactionListItems(timelineTransactions);
   const recentTransactions = getRecentTransactions(transactionsListItems || [], 3);
   const hasTransactions = !!recentTransactions?.length;
   const navigate = useNavigate();
