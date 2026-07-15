@@ -6,6 +6,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
 import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
 import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart";
+import DailyExpensesChart from "@/components/finance/DailyExpensesChart";
 
 import type { Transaction } from "@/types/transaction";
 import type { Snapshot } from "@/services/snapshots";
@@ -13,11 +14,13 @@ import type { Snapshot } from "@/services/snapshots";
 import { useNetWorthHistory } from "@/hooks/useNetWorthHistory";
 import { useMonthlyIncomeExpense } from "@/hooks/useMonthlyIncomeExpense";
 import { useExpenseBreakdown } from "@/hooks/useExpenseBreakdown";
+import { getDailyExpensesForMonth } from "@/utils/dailyExpenses";
 
 type Props = {
   readonly isMobile: boolean;
   readonly transactions?: Transaction[];
   readonly snapshots?: Snapshot[];
+  readonly dailyMax?: number;
   readonly isLoadingTransactions: boolean;
   readonly isLoadingSnapshots: boolean;
   readonly isErrorTransactions: boolean;
@@ -28,6 +31,7 @@ export default function AnalyticsChartsSection({
   isMobile,
   transactions,
   snapshots,
+  dailyMax,
   isLoadingTransactions,
   isLoadingSnapshots,
   isErrorTransactions,
@@ -36,6 +40,7 @@ export default function AnalyticsChartsSection({
   const netWorthHistory = useNetWorthHistory(snapshots);
   const monthlyIncomeExpense = useMonthlyIncomeExpense(transactions);
   const expenseBreakdown = useExpenseBreakdown(transactions).slice(0, 6);
+  const dailyExpenses = getDailyExpensesForMonth(transactions);
 
   return (
     <SectionBlock
@@ -102,6 +107,39 @@ export default function AnalyticsChartsSection({
             !isErrorTransactions &&
             monthlyIncomeExpense.length > 0 && (
               <IncomeExpenseChart items={monthlyIncomeExpense} />
+            )}
+        </PanelCard>
+
+        <PanelCard
+          title="Gasto diario"
+          subtitle="Mes actual · vs máximo diario"
+          className="h-72 xl:col-span-2"
+        >
+          {isLoadingTransactions && (
+            <p className="text-sm text-[var(--color-muted)]">Cargando gasto diario...</p>
+          )}
+
+          {isErrorTransactions && (
+            <EmptyState
+              title="No pudimos calcular el gasto diario"
+              description="Revisá la conexión o el backend."
+              variant="error"
+            />
+          )}
+
+          {!isLoadingTransactions &&
+            !isErrorTransactions &&
+            dailyExpenses.length === 0 && (
+              <EmptyState
+                title="Sin gastos este mes"
+                description="Cuando registres gastos, vas a ver el detalle diario acá."
+              />
+            )}
+
+          {!isLoadingTransactions &&
+            !isErrorTransactions &&
+            dailyExpenses.length > 0 && (
+              <DailyExpensesChart items={dailyExpenses} dailyMax={dailyMax} />
             )}
         </PanelCard>
 

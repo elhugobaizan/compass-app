@@ -1,7 +1,9 @@
-import { JSX } from "react";
+import { JSX, useMemo } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import { useBreakpoint } from "@/utils/utils";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useMonthlyHighlights } from "@/hooks/useMonthlyHighlights";
+import { toNumber } from "@/utils/numbers";
 import type { AnalyticsPeriod } from "@/types/analytics";
 
 import AnalyticsFilters from "@/components/analytics/AnalyticsFilters";
@@ -34,6 +36,7 @@ export default function AnalyticsPage(): JSX.Element {
   const {
     accounts,
     transactions,
+    summary,
     snapshots,
     assets,
     settings,
@@ -48,6 +51,18 @@ export default function AnalyticsPage(): JSX.Element {
     isErrorTransactions,
     isErrorSnapshots,
   } = useDashboardData();
+
+  const salary = useMemo(() => {
+    const value = settings?.find((s) => s.key === "sueldo")?.value;
+    return value ? toNumber(value) : undefined;
+  }, [settings]);
+
+  const highlights = useMonthlyHighlights(
+    summary.liquidity,
+    transactions,
+    assets,
+    salary,
+  );
 
   const filteredTransactions = useFilteredTransactions(transactions, period);
   const filteredSnapshots = useFilteredSnapshots(snapshots, period);
@@ -98,6 +113,7 @@ export default function AnalyticsPage(): JSX.Element {
         isMobile={isMobile}
         transactions={filteredTransactions}
         snapshots={filteredSnapshots}
+        dailyMax={highlights.dailyMax}
         isLoadingTransactions={isLoadingTransactions}
         isLoadingSnapshots={isLoadingSnapshots}
         isErrorTransactions={isErrorTransactions}
