@@ -9,7 +9,8 @@ import { ACCOUNT_GROUPS } from "@/utils/accountGroups";
 import { toNumber } from "@/utils/numbers";
 import { getTotalAssetsValue } from "@/utils/assets";
 import { getNetWorthExtrasFromSettings } from "@/utils/settings";
-import { filterTransactionsByPeriod, filterSnapshotsByPeriod } from "@/utils/analytics";
+import { filterTransactionsByPeriod } from "@/utils/analytics";
+import { toDateKey } from "@/utils/date";
 import { TRANSACTION_TYPES } from "./transactionTypes";
 
 type TrendDirection = "up" | "down" | "neutral";
@@ -44,12 +45,10 @@ export type AnalyticsKPIs = {
 };
 
 function getPeriodMonthCount(period: AnalyticsPeriod): number {
+  if (period === "1m") return 1;
   if (period === "3m") return 3;
   if (period === "6m") return 6;
-  if (period === "12m") return 12;
-
-  const now = new Date();
-  return now.getMonth() + 1;
+  return 12;
 }
 
 function calculateTrend(
@@ -95,54 +94,25 @@ function sumExpenses(transactions: Transaction[]): number {
     .reduce((sum, tx) => sum + toNumber(tx.amount), 0);
 }
 
-function splitTransactionsForTrend(
-  transactions: Transaction[]
-): { current: Transaction[]; previous: Transaction[] } {
-  const sorted = [...transactions].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-
-  if (sorted.length === 0) {
-    return { current: [], previous: [] };
-  }
-
-  const midpoint = Math.floor(sorted.length / 2);
-
-  return {
-    previous: sorted.slice(0, midpoint),
-    current: sorted.slice(midpoint),
-  };
-}
-
-function splitSnapshotsForTrend(
-  snapshots: Snapshot[]
-): { current: Snapshot[]; previous: Snapshot[] } {
-  const sorted = [...snapshots].sort((a, b) => {
-    if (a.year !== b.year) return a.year - b.year;
-    return a.month - b.month;
+function txInRange(
+  transactions: Transaction[],
+  startKey: string,
+  endKeyExclusive: string,
+): Transaction[] {
+  return transactions.filter((tx) => {
+    const key = String(tx.date).slice(0, 10);
+    return key >= startKey && key < endKeyExclusive;
   });
-
-  if (sorted.length === 0) {
-    return { current: [], previous: [] };
-  }
-
-  const midpoint = Math.floor(sorted.length / 2);
-
-  return {
-    previous: sorted.slice(0, midpoint),
-    current: sorted.slice(midpoint),
-  };
 }
 
-function getLatestSnapshotNetWorth(snapshots: Snapshot[]): number {
-  if (!snapshots.length) return 0;
-
-  const latest = [...snapshots].sort((a, b) => {
-    if (a.year !== b.year) return b.year - a.year;
-    return b.month - a.month;
-  })[0];
-
-  return toNumber(latest.net_worth_ars);
+/** Net worth registrado en un mes puntual (año/mes), o null si no hay snapshot. */
+function getSnapshotNetWorthAt(
+  snapshots: Snapshot[],
+  year: number,
+  month: number,
+): number | null {
+  const match = snapshots.find((s) => s.year === year && s.month === month);
+  return match ? toNumber(match.net_worth_ars) : null;
 }
 
 export function calculateAnalyticsKPIs(params: {
@@ -163,7 +133,6 @@ export function calculateAnalyticsKPIs(params: {
   } = params;
 
   const filteredTransactions = filterTransactionsByPeriod(period, transactions);
-  const filteredSnapshots = filterSnapshotsByPeriod(period, snapshots);
 
   let liquidity = 0;
   let debt = 0;
@@ -194,19 +163,32 @@ export function calculateAnalyticsKPIs(params: {
   const averageMonthlyExpenses = periodExpenses / monthCount;
   const averageMonthlySavings = periodSavings / monthCount;
 
-  const txSplit = splitTransactionsForTrend(filteredTransactions);
-  const currentIncome = sumIncome(txSplit.current);
-  const previousIncome = sumIncome(txSplit.previous);
+  // Ventana actual = últimos N meses; ventana anterior = los N meses previos.
+  const now = new Date();
+  const currentStart = new Date(now.getFullYear(), now.getMonth() - (monthCount - 1), 1);
+  const previousStart = new Date(now.getFullYear(), now.getMonth() - (2 * monthCount - 1), 1);
 
-  const currentExpenses = sumExpenses(txSplit.current);
-  const previousExpenses = sumExpenses(txSplit.previous);
+  const currentStartKey = toDateKey(currentStart);
+  const previousStartKey = toDateKey(previousStart);
+  // fin de la ventana actual: mañana (para incluir hoy)
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const currentEndKey = toDateKey(tomorrow);
+
+  const currentTx = txInRange(transactions, currentStartKey, currentEndKey);
+  const previousTx = txInRange(transactions, previousStartKey, currentStartKey);
+
+  const currentIncome = sumIncome(currentTx);
+  const previousIncome = sumIncome(previousTx);
+
+  const currentExpenses = sumExpenses(currentTx);
+  const previousExpenses = sumExpenses(previousTx);
 
   const currentSavings = currentIncome - currentExpenses;
   const previousSavings = previousIncome - previousExpenses;
 
-  const snapshotSplit = splitSnapshotsForTrend(filteredSnapshots);
-  const currentNetWorth = getLatestSnapshotNetWorth(snapshotSplit.current);
-  const previousNetWorth = getLatestSnapshotNetWorth(snapshotSplit.previous);
+  // Patrimonio: actual vs snapshot del inicio del período (hace N meses).
+  const previousNetWorth =
+    getSnapshotNetWorthAt(snapshots, currentStart.getFullYear(), currentStart.getMonth() + 1) ?? 0;
 
   return {
     netWorth,
@@ -223,11 +205,7 @@ export function calculateAnalyticsKPIs(params: {
     averageMonthlySavings,
 
     trends: {
-      netWorth: calculateTrend(
-        currentNetWorth || netWorth,
-        previousNetWorth,
-        "up"
-      ),
+      netWorth: calculateTrend(netWorth, previousNetWorth, "up"),
       income: calculateTrend(currentIncome, previousIncome, "up"),
       expenses: calculateTrend(currentExpenses, previousExpenses, "down"),
       savings: calculateTrend(currentSavings, previousSavings, "up"),

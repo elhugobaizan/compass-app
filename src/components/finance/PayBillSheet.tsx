@@ -66,12 +66,10 @@ export default function PayBillSheet({
   }, [bill, selectedMonth, selectedYear]);
 
   const initialDate = useMemo(() => {
-    return toDateKey(
-      billPayment?.paid_at ??
-      billPayment?.due_date ??
-      defaultDate,
-    );
-  }, [billPayment?.due_date, billPayment?.paid_at, defaultDate]);
+    // La fecha de pago default es HOY (no el vencimiento). Si se está editando
+    // un pago ya registrado, se usa su paid_at.
+    return toDateKey(billPayment?.paid_at ?? new Date());
+  }, [billPayment?.paid_at]);
 
   const initialAmount = useMemo(() => {
     const paidAmount =

@@ -8,10 +8,10 @@ type AnalyticsFiltersProps = {
 };
 
 const PERIOD_OPTIONS: Array<{ value: AnalyticsPeriod; label: string }> = [
+  { value: "1m", label: "1M" },
   { value: "3m", label: "3M" },
   { value: "6m", label: "6M" },
   { value: "12m", label: "12M" },
-  { value: "ytd", label: "Año" },
 ];
 
 export default function AnalyticsFilters({

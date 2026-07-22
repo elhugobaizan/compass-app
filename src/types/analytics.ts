@@ -1,1 +1,1 @@
-export type AnalyticsPeriod = "3m" | "6m" | "12m" | "ytd";
+export type AnalyticsPeriod = "1m" | "3m" | "6m" | "12m";

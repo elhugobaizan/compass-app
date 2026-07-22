@@ -3,7 +3,7 @@ import { apiFetch } from "./api";
 import type { Account } from "@/types/account";
 
 type AccountInput = Pick<Account,
-  'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method'
+  'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method' | 'interest_rate'
 >;
 
 export type CreateAccountInput = AccountInput;

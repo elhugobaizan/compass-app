@@ -10,7 +10,7 @@ import { Account } from "@/types/account";
 import { useUpdateAccount } from "@/hooks/mutations/useUpdateAccount";
 
 type AccountFormValues = Pick<Account,
-  'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method'
+  'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method' | 'interest_rate'
 >;
 
 type AccountFormProps = {
@@ -66,6 +66,9 @@ export default function AccountForm({
   const [openingBalance, setOpeningBalance] = useState(initialValues?.opening_balance || 0);
   const [openingDate, setOpeningDate] = useState(initialValues?.opening_date || todayDate());
   const [isPaymentMethod, setIsPaymentMethod] = useState(initialValues?.is_payment_method || false);
+  const [interestRate, setInterestRate] = useState(
+    initialValues?.interest_rate != null ? String(initialValues.interest_rate) : "",
+  );
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const parsedOpeningBalance =
@@ -94,6 +97,8 @@ export default function AccountForm({
           : undefined,
       opening_date: openingDate + "T00:00:00.000Z",
       is_payment_method: isPaymentMethod,
+      interest_rate:
+        interestRate.trim() === "" ? null : String(Number(interestRate)),
     };
 
     try {
@@ -116,6 +121,7 @@ export default function AccountForm({
         setOpeningBalance(0);
         setOpeningDate(todayDate());
         setIsPaymentMethod(false);
+        setInterestRate("");
       }
 
       onSuccess?.();
@@ -231,17 +237,38 @@ export default function AccountForm({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="date" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-          Fecha inicial
-        </label>
-        <input
-          name="date"
-          type="date"
-          value={openingDate}
-          onChange={(e) => setOpeningDate(e.target.value)}
-          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
-        />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="date" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
+            Fecha inicial
+          </label>
+          <input
+            name="date"
+            type="date"
+            value={openingDate}
+            onChange={(e) => setOpeningDate(e.target.value)}
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
+            TNA (%)
+          </label>
+          <input
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            value={interestRate}
+            onChange={(e) => setInterestRate(e.target.value)}
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
+            placeholder="Ej: 22 (cuentas remuneradas)"
+          />
+          <p className="mt-1 text-xs text-[var(--color-muted)]">
+            Para que devengue interés diario. Dejalo vacío si no es remunerada.
+          </p>
+        </div>
       </div>
 
       <label className="flex items-center gap-2 text-sm text-[var(--color-ink)]">

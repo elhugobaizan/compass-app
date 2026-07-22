@@ -10,6 +10,7 @@ import {
 } from "@/utils/accountBalance";
 import { formatCurrency } from "@/utils/formatters";
 import { toNumber } from "@/utils/numbers";
+import { parseLocalDate } from "@/utils/date";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 
@@ -21,7 +22,7 @@ type AccountMovementsModalProps = {
 };
 
 function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString("es-AR", {
+  return parseLocalDate(date).toLocaleDateString("es-AR", {
     day: "2-digit",
     month: "short",
     year: "numeric",

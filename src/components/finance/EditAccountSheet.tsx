@@ -53,6 +53,7 @@ export default function EditAccountSheet({
             opening_balance: account.opening_balance,
             opening_date: account.opening_date?.slice(0, 10),
             is_payment_method: account.is_payment_method ?? false,
+            interest_rate: account.interest_rate,
           }}
           onSuccess={onClose}
         />
