@@ -51,12 +51,23 @@ export default function AnalyticsSummarySection({
           isLoading={isLoading}
           tone="info"
         />
-        <KPICard
-          label="Deuda"
-          value={hasAccounts ? formatCurrency(summary.debt) : null}
-          isLoading={isLoading}
-          tone="negative"
-        />
+        {summary.debt !== 0 && (
+          <KPICard
+            label="Deuda"
+            value={hasAccounts ? formatCurrency(summary.debt) : null}
+            isLoading={isLoading}
+            tone="negative"
+          />
+        )}
+        {summary.receivables > 0 && (
+          <KPICard
+            label="Me deben"
+            value={formatCurrency(summary.receivables)}
+            subvalue="No cuenta como liquidez"
+            isLoading={isLoading}
+            tone="info"
+          />
+        )}
         <KPICard
           label="Ingresos del periodo"
           value={hasTransactions ? formatCurrency(summary.periodIncome) : null}
@@ -82,6 +93,11 @@ export default function AnalyticsSummarySection({
           trend={summary.trends.savings}
         />
       </div>
+
+      <p className="mt-3 text-xs text-[var(--color-muted)]">
+        Nota: acá la Liquidez es el saldo total disponible (no descuenta la reserva,
+        a diferencia del Home).
+      </p>
     </SectionBlock>
   );
 }

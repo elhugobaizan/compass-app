@@ -19,6 +19,16 @@ type EditableSettings = {
   deuda?: string;
 };
 
+const EDITABLE_SETTING_KEYS = [
+  "sueldo",
+  "dolares",
+  "reserva",
+  "casa",
+  "auto",
+  "efectivo",
+  "deuda",
+] as const;
+
 export default function SettingsPage(): JSX.Element {
   const { isMobile } = useBreakpoint();
   const { data: settings = [] } = useSettingsQuery();
@@ -30,11 +40,7 @@ export default function SettingsPage(): JSX.Element {
   useEffect(() => {
     const newValues: EditableSettings = {};
     settings.forEach((s) => {
-      if (
-        ["sueldo", "dolares", "reserva", "casa", "auto", "efectivo", "deuda"].includes(
-          s.key,
-        )
-      ) {
+      if ((EDITABLE_SETTING_KEYS as readonly string[]).includes(s.key)) {
         newValues[s.key as keyof EditableSettings] = String(toNumber(s.value));
       }
     });
@@ -162,7 +168,7 @@ export default function SettingsPage(): JSX.Element {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-              Deuda
+              Deuda (me deben)
             </label>
             <input
               type="number"
@@ -171,6 +177,9 @@ export default function SettingsPage(): JSX.Element {
               className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
               placeholder="0"
             />
+            <p className="mt-1 text-xs text-[var(--color-muted)]">
+              Lo que te deben. Suma al patrimonio, no a la liquidez. Acordate de bajar el saldo de la cuenta de la que salió.
+            </p>
           </div>
         </div>
       </SectionBlock>

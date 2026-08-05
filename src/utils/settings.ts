@@ -5,7 +5,8 @@ const NET_WORTH_SETTING_KEYS = new Set([
   "casa",
   "auto",
   "efectivo",
-  "dolares"
+  "dolares",
+  "deuda", // en este modelo, "deuda" = dinero que te deben (suma al patrimonio, no a la liquidez)
 ]);
 
 export function getNetWorthExtrasFromSettings(
@@ -19,3 +20,9 @@ export function getNetWorthExtrasFromSettings(
     return sum;
   }, 0);
 };
+
+/** Total que te deben (registrado en el setting "deuda"). Suma al patrimonio, no a la liquidez. */
+export function getReceivablesFromSettings(settings: Setting[] = []): number {
+  const setting = settings.find((s) => s.key === "deuda");
+  return toNumber(setting?.value);
+}

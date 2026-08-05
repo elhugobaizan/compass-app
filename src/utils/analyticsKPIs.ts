@@ -8,7 +8,8 @@ import type { AnalyticsPeriod } from "@/types/analytics";
 import { ACCOUNT_GROUPS } from "@/utils/accountGroups";
 import { toNumber } from "@/utils/numbers";
 import { getTotalAssetsValue } from "@/utils/assets";
-import { getNetWorthExtrasFromSettings } from "@/utils/settings";
+import { getNetWorthExtrasFromSettings, getReceivablesFromSettings } from "@/utils/settings";
+import { buildAccountBalanceMap } from "@/utils/accountBalance";
 import { filterTransactionsByPeriod } from "@/utils/analytics";
 import { toDateKey } from "@/utils/date";
 import { TRANSACTION_TYPES } from "./transactionTypes";
@@ -27,6 +28,7 @@ export type AnalyticsKPIs = {
   liquidity: number;
   investments: number;
   debt: number;
+  receivables: number;
 
   periodIncome: number;
   periodExpenses: number;
@@ -105,14 +107,33 @@ function txInRange(
   });
 }
 
-/** Net worth registrado en un mes puntual (año/mes), o null si no hay snapshot. */
-function getSnapshotNetWorthAt(
+/**
+ * Net worth de referencia para el inicio del período: el snapshot más reciente
+ * en o antes del mes objetivo; si no hay ninguno anterior, el más viejo disponible.
+ * Devuelve null si no hay snapshots.
+ */
+function getSnapshotNetWorthNear(
   snapshots: Snapshot[],
   year: number,
   month: number,
 ): number | null {
-  const match = snapshots.find((s) => s.year === year && s.month === month);
-  return match ? toNumber(match.net_worth_ars) : null;
+  if (!snapshots.length) return null;
+
+  const targetKey = year * 12 + (month - 1);
+  const sorted = [...snapshots].sort(
+    (a, b) => a.year * 12 + a.month - (b.year * 12 + b.month),
+  );
+
+  // último snapshot con (año/mes) <= objetivo
+  let chosen: Snapshot | null = null;
+  for (const s of sorted) {
+    if (s.year * 12 + (s.month - 1) <= targetKey) chosen = s;
+  }
+
+  // si no hay ninguno anterior, usar el más viejo disponible
+  if (!chosen) chosen = sorted[0];
+
+  return toNumber(chosen.net_worth_ars);
 }
 
 export function calculateAnalyticsKPIs(params: {
@@ -134,11 +155,15 @@ export function calculateAnalyticsKPIs(params: {
 
   const filteredTransactions = filterTransactionsByPeriod(period, transactions);
 
+  // Saldo real por cuenta (opening + movimientos + interés devengado),
+  // igual que en el Home, para que el patrimonio coincida.
+  const balanceByAccount = buildAccountBalanceMap(accounts, transactions);
+
   let liquidity = 0;
   let debt = 0;
 
   for (const account of accounts) {
-    const balance = toNumber(account.opening_balance);
+    const balance = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       liquidity += balance;
@@ -151,6 +176,7 @@ export function calculateAnalyticsKPIs(params: {
 
   const investments = getTotalAssetsValue(assets);
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
+  const receivables = getReceivablesFromSettings(settings);
   const netWorth = liquidity + investments + netWorthExtras;
 
   const periodIncome = sumIncome(filteredTransactions);
@@ -188,13 +214,14 @@ export function calculateAnalyticsKPIs(params: {
 
   // Patrimonio: actual vs snapshot del inicio del período (hace N meses).
   const previousNetWorth =
-    getSnapshotNetWorthAt(snapshots, currentStart.getFullYear(), currentStart.getMonth() + 1) ?? 0;
+    getSnapshotNetWorthNear(snapshots, currentStart.getFullYear(), currentStart.getMonth() + 1) ?? 0;
 
   return {
     netWorth,
     liquidity,
     investments,
     debt,
+    receivables,
 
     periodIncome,
     periodExpenses,
