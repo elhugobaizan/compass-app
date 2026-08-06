@@ -1,0 +1,75 @@
+import { JSX } from "react";
+import Modal from "@/components/ui/Modal";
+import type { ForeignAccountDetail } from "@/utils/analyticsKPIs";
+import { formatCurrency } from "@/utils/formatters";
+
+type ForeignCurrencyModalProps = {
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly accounts: ForeignAccountDetail[];
+  readonly total: number;
+  readonly rates?: { usd?: number; eur?: number };
+};
+
+export default function ForeignCurrencyModal({
+  open,
+  onClose,
+  accounts,
+  total,
+  rates,
+}: ForeignCurrencyModalProps): JSX.Element {
+  return (
+    <Modal open={open} onClose={onClose} title="Divisas">
+      <div className="space-y-4">
+        <p className="text-sm text-[var(--color-muted)]">
+          Cuentas líquidas en moneda extranjera. Suman al patrimonio, pero no se
+          cuentan como liquidez.
+        </p>
+
+        {accounts.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-paper)] px-3 py-4 text-center text-sm text-[var(--color-muted)]">
+            No hay cuentas en moneda extranjera.
+          </div>
+        ) : (
+          <ul className="divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)]">
+            {accounts.map((account) => (
+              <li
+                key={account.id}
+                className="flex items-center justify-between gap-3 px-3 py-2.5"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-[var(--color-ink)]">
+                    {account.name}
+                  </p>
+                  <p className="text-xs text-[var(--color-muted)]">
+                    {formatCurrency(account.nativeBalance, account.currency)}
+                  </p>
+                </div>
+                <span className="shrink-0 font-serif text-sm font-semibold text-[var(--color-ink)]">
+                  {formatCurrency(account.arsBalance)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="flex items-center justify-between border-t border-[var(--color-border)] pt-3">
+          <span className="text-sm font-medium text-[var(--color-ink)]">Total</span>
+          <span className="font-serif text-base font-semibold text-[var(--color-ink)]">
+            {formatCurrency(total)}
+          </span>
+        </div>
+
+        {(rates?.usd || rates?.eur) && (
+          <p className="text-xs text-[var(--color-muted)]">
+            Cotizaciones usadas:{" "}
+            {rates.usd ? `USD ${formatCurrency(rates.usd)}` : ""}
+            {rates.usd && rates.eur ? " · " : ""}
+            {rates.eur ? `EUR ${formatCurrency(rates.eur)}` : ""} — promedio
+            compra/venta.
+          </p>
+        )}
+      </div>
+    </Modal>
+  );
+}

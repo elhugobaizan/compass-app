@@ -18,6 +18,14 @@ import { TRANSACTION_TYPES } from "./transactionTypes";
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
 
+export type ForeignAccountDetail = {
+  id: string;
+  name: string;
+  currency: string;
+  nativeBalance: number;
+  arsBalance: number;
+};
+
 export type AnalyticsTrend = {
   value: string;
   direction: TrendDirection;
@@ -30,6 +38,10 @@ export type AnalyticsKPIs = {
   investments: number;
   debt: number;
   receivables: number;
+  /** Cuentas líquidas en moneda extranjera (reserva, no cuenta como liquidez). */
+  foreignCurrency: number;
+  /** Detalle de esas cuentas, para el modal de Divisas. */
+  foreignAccounts: ForeignAccountDetail[];
 
   periodIncome: number;
   periodExpenses: number;
@@ -165,13 +177,27 @@ export function calculateAnalyticsKPIs(params: {
   let liquidity = 0;
   let debt = 0;
   let investmentAccounts = 0;
+  // Cuentas líquidas en moneda extranjera: reserva, no cuentan como liquidez
+  let foreignCurrency = 0;
+  const foreignAccounts: ForeignAccountDetail[] = [];
 
   for (const account of accounts) {
     const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
     const balance = toArs(account.currency, raw, rates);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
-      liquidity += balance;
+      if (account.currency === "ARS") {
+        liquidity += balance;
+      } else {
+        foreignCurrency += balance;
+        foreignAccounts.push({
+          id: account.id,
+          name: account.name,
+          currency: account.currency,
+          nativeBalance: raw,
+          arsBalance: balance,
+        });
+      }
     }
 
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
@@ -186,7 +212,7 @@ export function calculateAnalyticsKPIs(params: {
   const investments = getTotalAssetsValue(assets) + investmentAccounts;
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
   const receivables = getReceivablesFromSettings(settings);
-  const netWorth = liquidity + investments + netWorthExtras;
+  const netWorth = liquidity + foreignCurrency + investments + netWorthExtras;
 
   const periodIncome = sumIncome(filteredTransactions);
   const periodExpenses = sumExpenses(filteredTransactions);
@@ -231,6 +257,8 @@ export function calculateAnalyticsKPIs(params: {
     investments,
     debt,
     receivables,
+    foreignCurrency,
+    foreignAccounts: foreignAccounts.sort((a, b) => b.arsBalance - a.arsBalance),
 
     periodIncome,
     periodExpenses,

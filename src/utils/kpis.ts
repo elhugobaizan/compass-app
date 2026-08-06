@@ -126,12 +126,20 @@ export function calculateSummaryKPIs(
 
   const balanceByAccount = buildAccountBalanceMap(accounts, transactions);
 
+  // Las cuentas líquidas en moneda extranjera no cuentan como liquidez
+  // (son reserva), pero sí suman al patrimonio.
+  let foreignCurrency = 0;
+
   const withAccounts = accounts.reduce((acc, account) => {
     const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
     const balance = toArs(account.currency, raw, rates);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
-      acc.liquidity += balance;
+      if (account.currency === "ARS") {
+        acc.liquidity += balance;
+      } else {
+        foreignCurrency += balance;
+      }
     }
 
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
@@ -148,7 +156,8 @@ export function calculateSummaryKPIs(
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
 
   withAccounts.investments += totalAssetsValue;
-  withAccounts.netWorth = withAccounts.liquidity + withAccounts.investments + netWorthExtras;
+  withAccounts.netWorth =
+    withAccounts.liquidity + foreignCurrency + withAccounts.investments + netWorthExtras;
   
   const income = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.INGRESO);
   const expenses = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.GASTO);

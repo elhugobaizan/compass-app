@@ -19,6 +19,8 @@ import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useDeleteAccount } from "@/hooks/mutations/useDeleteAccount";
 import { buildAccountBalanceMap } from "@/utils/accountBalance";
+import { toArs } from "@/utils/currency";
+import { useExchangeRates } from "@/hooks/queries/useDollarRate";
 
 import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";
@@ -68,6 +70,7 @@ export default function AccountsPage(): JSX.Element {
   } = useAccountsQuery();
 
   const { data: transactions } = useTransactionsQuery();
+  const rates = useExchangeRates();
 
   const { mutateAsync: deleteAccount, isPending: isDeleting } =
     useDeleteAccount();
@@ -79,9 +82,15 @@ export default function AccountsPage(): JSX.Element {
     [sortedAccounts, transactions],
   );
 
+  // Total en pesos: las cuentas en USD/EUR se convierten con la cotización
   const totalBalance = useMemo(
-    () => sortedAccounts.reduce((sum, account) => sum + (balanceByAccount[account.id] ?? 0), 0),
-    [sortedAccounts, balanceByAccount],
+    () =>
+      sortedAccounts.reduce(
+        (sum, account) =>
+          sum + toArs(account.currency, balanceByAccount[account.id] ?? 0, rates),
+        0,
+      ),
+    [sortedAccounts, balanceByAccount, rates],
   );
   const paymentMethods = useMemo(
     () => sortedAccounts.filter((account) => account.is_payment_method).length,

@@ -1,8 +1,10 @@
 import KPICard from "@/components/finance/KPICard";
 import SectionBlock from "@/components/ui/SectionBlock";
+import ForeignCurrencyModal from "@/components/finance/ForeignCurrencyModal";
 import { AnalyticsKPIs } from "@/utils/analyticsKPIs";
 import { formatCurrency } from "@/utils/formatters";
-import { JSX } from "react";
+import { useExchangeRates } from "@/hooks/queries/useDollarRate";
+import { JSX, useState } from "react";
 
 type AnalyticsSummaryProps = {
   readonly isMobile: boolean;
@@ -21,6 +23,9 @@ export default function AnalyticsSummarySection({
   hasTransactions,
   summary
 }: AnalyticsSummaryProps): JSX.Element {
+  const [isForeignOpen, setIsForeignOpen] = useState(false);
+  const rates = useExchangeRates();
+
   return (
     <SectionBlock
       title="Resumen ampliado"
@@ -45,6 +50,16 @@ export default function AnalyticsSummarySection({
           isLoading={isLoading}
           tone="positive"
         />
+        {summary.foreignCurrency > 0 && (
+          <KPICard
+            label="Divisas"
+            value={formatCurrency(summary.foreignCurrency)}
+            subvalue="Reserva · tocá para ver el detalle"
+            isLoading={isLoading}
+            tone="info"
+            onClick={() => setIsForeignOpen(true)}
+          />
+        )}
         <KPICard
           label="Inversiones"
           value={hasAccounts ? formatCurrency(summary.investments) : null}
@@ -95,9 +110,17 @@ export default function AnalyticsSummarySection({
       </div>
 
       <p className="mt-3 text-xs text-[var(--color-muted)]">
-        Nota: acá la Liquidez es el saldo total disponible (no descuenta la reserva,
-        a diferencia del Home).
+        Nota: la Liquidez cuenta solo cuentas en pesos (las divisas van aparte, como
+        reserva) y acá no descuenta la reserva de ahorro, a diferencia del Home.
       </p>
+
+      <ForeignCurrencyModal
+        open={isForeignOpen}
+        onClose={() => setIsForeignOpen(false)}
+        accounts={summary.foreignAccounts}
+        total={summary.foreignCurrency}
+        rates={rates}
+      />
     </SectionBlock>
   );
 }

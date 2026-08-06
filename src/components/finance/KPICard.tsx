@@ -19,6 +19,7 @@ type KPICardProps = {
     direction: TrendDirection;
     sentiment?: TrendSentiment;
   };
+  onClick?: () => void;
 };
 
 function getToneStyles(tone: Tone) {
@@ -80,6 +81,7 @@ export default function KPICard({
   size = "default",
   tone = "neutral",
   trend,
+  onClick,
 }: KPICardProps): JSX.Element {
   const alignment =
     align === "center"
@@ -102,8 +104,12 @@ export default function KPICard({
 
   const trendColor = trend ? getTrendColor(trend.sentiment) : "";
 
-  return (
-    <Card className={`h-full border ${accent}`}>
+  const card = (
+    <Card
+      className={`h-full border ${accent}${
+        onClick ? " cursor-pointer transition-shadow hover:shadow-md" : ""
+      }`}
+    >
       <div className={`flex h-full flex-col ${alignment}`}>
         <span className={labelClass}>{label}</span>
 
@@ -129,5 +135,18 @@ export default function KPICard({
         )}
       </div>
     </Card>
+  );
+
+  if (!onClick) return card;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="block h-full w-full text-left"
+      aria-label={`Ver detalle de ${label}`}
+    >
+      {card}
+    </button>
   );
 }
