@@ -6,6 +6,7 @@ import type { Asset } from "@/types/asset";
 import { calculateSummaryKPIs } from "@/utils/kpis";
 import { Setting } from "@/types/settings";
 import { toNumber } from "@/utils/numbers";
+import { useDollarRate } from "@/hooks/queries/useDollarRate";
 
 type DashboardSummary = {
   hasAccounts: boolean;
@@ -21,6 +22,9 @@ export function useDashboardSummary(
   assets?: Asset[],
   settings?: Setting[]
 ): DashboardSummary {
+  const { data: dollar } = useDollarRate();
+  const usdRate = dollar ? (dollar.compra + dollar.venta) / 2 : undefined;
+
   return useMemo(() => {
     const hasAccounts = !!accounts?.length;
     const hasTransactions = !!transactions?.length;
@@ -36,7 +40,8 @@ export function useDashboardSummary(
       assets ?? [],
       settings ?? [],
       salaryValue ? toNumber(salaryValue) : undefined,
-      reserveValue ? toNumber(reserveValue) : undefined
+      reserveValue ? toNumber(reserveValue) : undefined,
+      usdRate
     );
 
     return {
@@ -45,5 +50,5 @@ export function useDashboardSummary(
       hasFinancialData,
       summary,
     };
-  }, [accounts, transactions, snapshots, assets, settings]);
+  }, [accounts, transactions, snapshots, assets, settings, usdRate]);
 }

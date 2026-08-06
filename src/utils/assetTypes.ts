@@ -1,6 +1,6 @@
-import { Bitcoin, Landmark, TrendingUp, Wallet, type LucideIcon } from "lucide-react";
+import { Bitcoin, Landmark, PiggyBank, TrendingUp, Wallet, type LucideIcon } from "lucide-react";
 
-export type AssetType = "CRYPTO" | "STOCK" | "FIXED_DEPOSIT" | "OTHER";
+export type AssetType = "CRYPTO" | "STOCK" | "FIXED_DEPOSIT" | "INVESTMENT" | "OTHER";
 
 type AssetTypeConfig = {
   readonly label: string;
@@ -9,6 +9,7 @@ type AssetTypeConfig = {
   readonly iconClassName: string;
   readonly showsQuantityPrice: boolean;
   readonly showsCapitalInterest: boolean;
+  readonly showsValue: boolean;
   readonly showsSymbol: boolean;
 };
 
@@ -20,6 +21,7 @@ export const ASSET_TYPE_CONFIG: Record<AssetType, AssetTypeConfig> = {
     iconClassName: "text-amber-600",
     showsQuantityPrice: true,
     showsCapitalInterest: false,
+    showsValue: false,
     showsSymbol: true,
   },
   STOCK: {
@@ -29,6 +31,7 @@ export const ASSET_TYPE_CONFIG: Record<AssetType, AssetTypeConfig> = {
     iconClassName: "text-violet-700",
     showsQuantityPrice: true,
     showsCapitalInterest: false,
+    showsValue: false,
     showsSymbol: true,
   },
   FIXED_DEPOSIT: {
@@ -38,6 +41,17 @@ export const ASSET_TYPE_CONFIG: Record<AssetType, AssetTypeConfig> = {
     iconClassName: "text-sky-700",
     showsQuantityPrice: false,
     showsCapitalInterest: true,
+    showsValue: false,
+    showsSymbol: false,
+  },
+  INVESTMENT: {
+    label: "FCI / Fondo",
+    Icon: PiggyBank,
+    containerClassName: "bg-emerald-50 border border-emerald-100",
+    iconClassName: "text-emerald-700",
+    showsQuantityPrice: false,
+    showsCapitalInterest: false,
+    showsValue: true,
     showsSymbol: false,
   },
   OTHER: {
@@ -47,6 +61,7 @@ export const ASSET_TYPE_CONFIG: Record<AssetType, AssetTypeConfig> = {
     iconClassName: "text-gray-600",
     showsQuantityPrice: false,
     showsCapitalInterest: false,
+    showsValue: true,
     showsSymbol: false,
   },
 };

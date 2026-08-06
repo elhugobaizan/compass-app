@@ -23,7 +23,6 @@ export default function TransferForm({
   const [originAccountId, setOriginAccountId] = useState("");
   const [destinationAccountId, setDestinationAccountId] = useState("");
   const [concept, setConcept] = useState("");
-  const [location, setLocation] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const parsedAmount = Number(amount);
@@ -68,7 +67,6 @@ export default function TransferForm({
         origin_account_id: originAccountId,
         destination_account_id: destinationAccountId,
         concept: concept.trim() || undefined,
-        location: location.trim() || undefined,
       });
 
       setAmount("");
@@ -76,7 +74,6 @@ export default function TransferForm({
       setOriginAccountId("");
       setDestinationAccountId("");
       setConcept("");
-      setLocation("");
 
       onSuccess?.();
     } catch (error) {
@@ -186,20 +183,6 @@ export default function TransferForm({
           onChange={(e) => setConcept(e.target.value)}
           className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
           placeholder="Ej: Transferencia a ahorro"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="location" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-          Ubicación
-        </label>
-        <input
-          name="location"
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
-          placeholder="Opcional"
         />
       </div>
 

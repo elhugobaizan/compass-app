@@ -44,6 +44,7 @@ export default function AssetForm({
   const assetTypeConfig = getAssetTypeConfig(assetType);
   const isMarketAsset = assetTypeConfig.showsQuantityPrice;
   const isFixedDeposit = assetTypeConfig.showsCapitalInterest;
+  const showsValue = assetTypeConfig.showsValue;
 
   const isValid = accountId.trim().length > 0 && name.trim().length > 0;
 
@@ -208,6 +209,25 @@ export default function AssetForm({
             />
           </div>
         </>
+      )}
+
+      {showsValue && (
+        <div>
+          <label htmlFor="value" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
+            Valor actual
+          </label>
+          <input
+            name="value"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            value={capital}
+            onChange={(e) => setCapital(e.target.value)}
+            className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
+            placeholder="Ej: 261671.11"
+          />
+        </div>
       )}
 
       {isFixedDeposit && (

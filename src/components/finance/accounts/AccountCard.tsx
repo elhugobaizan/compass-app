@@ -16,6 +16,7 @@ type AccountCardProps = {
   readonly balance?: number | string;
   readonly logo?: string | null;
   readonly isPaymentMethod?: boolean;
+  readonly isBestRate?: boolean;
   readonly compact?: boolean;
   readonly unstyled?: boolean;
 };
@@ -71,6 +72,7 @@ export default function AccountCard({
   balance,
   logo,
   isPaymentMethod = false,
+  isBestRate = false,
   compact = false,
   unstyled = false,
 }: AccountCardProps): JSX.Element {
@@ -78,7 +80,7 @@ export default function AccountCard({
   const { Icon } = visual;
   const logoUrl = getLogoUrl(logo);
   const formattedBalance =
-    typeof balance === "number" ? formatCurrency(balance) : balance;
+    typeof balance === "number" ? formatCurrency(balance, currency) : balance;
 
   const content = (
     <>
@@ -115,6 +117,12 @@ export default function AccountCard({
               {isPaymentMethod && (
                 <Badge tone="success">
                   Método de pago
+                </Badge>
+              )}
+
+              {isBestRate && (
+                <Badge tone="warning">
+                  ★ Mejor tasa
                 </Badge>
               )}
             </div>

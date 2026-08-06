@@ -1,10 +1,13 @@
 import { parseLocalDate } from "./date";
 
 export function formatCurrency(value: number, currency = "ARS"): string {
+  // ARS sin decimales; otras monedas (USD, EUR) con 2 decimales
+  const fractionDigits = currency === "ARS" ? 0 : 2;
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(value);
 }
 

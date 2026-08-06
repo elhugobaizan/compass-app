@@ -19,6 +19,7 @@ function mapAccountType(accountType: string): AccountType {
 type AccountListItemProps = {
   readonly account: Account;
   readonly balance?: number;
+  readonly isBestRate?: boolean;
   readonly compact?: boolean;
   readonly onEdit: (account: Account) => void;
   readonly onDelete: (account: Account) => void;
@@ -28,6 +29,7 @@ type AccountListItemProps = {
 export function AccountListItem({
   account,
   balance,
+  isBestRate = false,
   compact = false,
   onEdit,
   onDelete,
@@ -50,6 +52,7 @@ export function AccountListItem({
           balance={displayBalance}
           logo={account.logo}
           isPaymentMethod={account.is_payment_method}
+          isBestRate={isBestRate}
           compact
         />
       </button>
@@ -71,6 +74,7 @@ export function AccountListItem({
           balance={displayBalance}
           logo={account.logo}
           isPaymentMethod={account.is_payment_method}
+          isBestRate={isBestRate}
           unstyled
         />
       </button>

@@ -12,6 +12,7 @@ import { TRANSACTION_TYPES } from "./transactionTypes";
 import { getTotalAssetsValue } from "./assets";
 import { getNetWorthExtrasFromSettings } from "./settings";
 import { buildAccountBalanceMap } from "./accountBalance";
+import { toArs } from "./currency";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -104,7 +105,8 @@ export function calculateSummaryKPIs(
   assets: Asset[] = [],
   settings: Setting[] = [],
   salary?: number | string,
-  reserve?: number | string
+  reserve?: number | string,
+  usdRate?: number
 ): SummaryKPIs {
   const base: SummaryKPIs = {
     netWorth: 0,
@@ -125,7 +127,8 @@ export function calculateSummaryKPIs(
   const balanceByAccount = buildAccountBalanceMap(accounts, transactions);
 
   const withAccounts = accounts.reduce((acc, account) => {
-    const balance = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
+    const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
+    const balance = toArs(account.currency, raw, usdRate);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       acc.liquidity += balance;
@@ -135,13 +138,17 @@ export function calculateSummaryKPIs(
       acc.debt += balance;
     }
 
+    if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
+      acc.investments += balance;
+    }
+
     return acc;
   }, base);
   const totalAssetsValue = getTotalAssetsValue(assets);
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
-  
+
   withAccounts.investments += totalAssetsValue;
-  withAccounts.netWorth = withAccounts.liquidity + totalAssetsValue + netWorthExtras;
+  withAccounts.netWorth = withAccounts.liquidity + withAccounts.investments + netWorthExtras;
   
   const income = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.INGRESO);
   const expenses = calculateMonthlyAmounts(transactions, TRANSACTION_TYPES.GASTO);

@@ -60,7 +60,9 @@ export default function AccountForm({
 
   const [name, setName] = useState(initialValues?.name || "");
   const [accountType, setAccountType] = useState(initialValues?.account_type || "WALLET");
-  const [accountGroupId, setAccountGroupId] = useState(initialValues?.account_group_id || "");
+  const [accountGroupId, setAccountGroupId] = useState(
+    initialValues?.account_group_id || ACCOUNT_GROUP_OPTIONS[0]?.id || "",
+  );
   const [currency, setCurrency] = useState(initialValues?.currency || "ARS");
   const [institution, setInstitution] = useState(initialValues?.institution || "");
   const [openingBalance, setOpeningBalance] = useState(initialValues?.opening_balance || 0);
@@ -71,8 +73,7 @@ export default function AccountForm({
   );
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const parsedOpeningBalance =
-    openingBalance === 0 ? undefined : Number(openingBalance);
+  const parsedOpeningBalance = Number(openingBalance);
 
   const isValid =
     name.trim().length > 0 &&
@@ -90,11 +91,9 @@ export default function AccountForm({
       account_group_id: accountGroupId,
       currency,
       institution: institution.trim() || undefined,
-      opening_balance:
-        parsedOpeningBalance !== undefined &&
-          Number.isFinite(parsedOpeningBalance)
-          ? parsedOpeningBalance
-          : undefined,
+      opening_balance: Number.isFinite(parsedOpeningBalance)
+        ? parsedOpeningBalance
+        : 0,
       opening_date: openingDate + "T00:00:00.000Z",
       is_payment_method: isPaymentMethod,
       interest_rate:
@@ -115,7 +114,7 @@ export default function AccountForm({
 
         setName("");
         setAccountType("WALLET");
-        setAccountGroupId("");
+        setAccountGroupId(ACCOUNT_GROUP_OPTIONS[0]?.id || "");
         setCurrency("ARS");
         setInstitution("");
         setOpeningBalance(0);

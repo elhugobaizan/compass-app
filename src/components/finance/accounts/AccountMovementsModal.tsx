@@ -94,13 +94,13 @@ export default function AccountMovementsModal({
           <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-paper)] p-3">
             <p className="text-xs text-[var(--color-muted)]">Saldo inicial</p>
             <p className="mt-1 font-serif text-base font-semibold text-[var(--color-ink)]">
-              {formatCurrency(openingBalance)}
+              {formatCurrency(openingBalance, account.currency)}
             </p>
           </div>
           <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-paper)] p-3">
             <p className="text-xs text-[var(--color-muted)]">Saldo actual</p>
             <p className="mt-1 font-serif text-base font-semibold text-[var(--color-ink)]">
-              {formatCurrency(currentBalance)}
+              {formatCurrency(currentBalance, account.currency)}
             </p>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function AccountMovementsModal({
                           : "shrink-0 text-sm font-semibold text-[var(--color-expense)]"
                       }
                     >
-                      {isPositive ? "+" : "-"} {formatCurrency(Math.abs(impact))}
+                      {isPositive ? "+" : "-"} {formatCurrency(Math.abs(impact), account.currency)}
                     </span>
                   </li>
                 );
@@ -160,7 +160,7 @@ export default function AccountMovementsModal({
                 </p>
               </div>
               <span className="shrink-0 text-sm font-semibold text-[#8A5A2E]">
-                {accruedInterest >= 0 ? "+" : "-"} {formatCurrency(Math.abs(accruedInterest))}
+                {accruedInterest >= 0 ? "+" : "-"} {formatCurrency(Math.abs(accruedInterest), account.currency)}
               </span>
             </div>
           )}
@@ -197,7 +197,7 @@ export default function AccountMovementsModal({
                           : "font-semibold text-[var(--color-expense)]"
                       }
                     >
-                      {delta > 0 ? "+" : "-"} {formatCurrency(Math.abs(delta))}
+                      {delta > 0 ? "+" : "-"} {formatCurrency(Math.abs(delta), account.currency)}
                     </span>
                   </p>
                 )}

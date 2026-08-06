@@ -10,6 +10,7 @@ import { toNumber } from "@/utils/numbers";
 import { getTotalAssetsValue } from "@/utils/assets";
 import { getNetWorthExtrasFromSettings, getReceivablesFromSettings } from "@/utils/settings";
 import { buildAccountBalanceMap } from "@/utils/accountBalance";
+import { toArs } from "@/utils/currency";
 import { filterTransactionsByPeriod } from "@/utils/analytics";
 import { toDateKey } from "@/utils/date";
 import { TRANSACTION_TYPES } from "./transactionTypes";
@@ -143,6 +144,7 @@ export function calculateAnalyticsKPIs(params: {
   assets?: Asset[];
   settings?: Setting[];
   period: AnalyticsPeriod;
+  usdRate?: number;
 }): AnalyticsKPIs {
   const {
     accounts = [],
@@ -151,6 +153,7 @@ export function calculateAnalyticsKPIs(params: {
     assets = [],
     settings = [],
     period,
+    usdRate,
   } = params;
 
   const filteredTransactions = filterTransactionsByPeriod(period, transactions);
@@ -161,9 +164,11 @@ export function calculateAnalyticsKPIs(params: {
 
   let liquidity = 0;
   let debt = 0;
+  let investmentAccounts = 0;
 
   for (const account of accounts) {
-    const balance = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
+    const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
+    const balance = toArs(account.currency, raw, usdRate);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       liquidity += balance;
@@ -172,9 +177,13 @@ export function calculateAnalyticsKPIs(params: {
     if (account.account_group.name === ACCOUNT_GROUPS.DEBT) {
       debt += balance;
     }
+
+    if (account.account_group.name === ACCOUNT_GROUPS.INVESTMENT) {
+      investmentAccounts += balance;
+    }
   }
 
-  const investments = getTotalAssetsValue(assets);
+  const investments = getTotalAssetsValue(assets) + investmentAccounts;
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
   const receivables = getReceivablesFromSettings(settings);
   const netWorth = liquidity + investments + netWorthExtras;

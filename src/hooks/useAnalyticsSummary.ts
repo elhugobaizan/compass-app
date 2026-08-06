@@ -7,6 +7,7 @@ import type { Snapshot } from "@/services/snapshots";
 import type { AnalyticsPeriod } from "@/types/analytics";
 
 import { calculateAnalyticsKPIs } from "@/utils/analyticsKPIs";
+import { useDollarRate } from "@/hooks/queries/useDollarRate";
 
 type UseAnalyticsSummaryParams = {
   accounts?: Account[];
@@ -25,6 +26,9 @@ export function useAnalyticsSummary({
   settings,
   period,
 }: UseAnalyticsSummaryParams) {
+  const { data: dollar } = useDollarRate();
+  const usdRate = dollar ? (dollar.compra + dollar.venta) / 2 : undefined;
+
   return useMemo(() => {
     return calculateAnalyticsKPIs({
       accounts,
@@ -32,8 +36,9 @@ export function useAnalyticsSummary({
       snapshots,
       assets,
       settings,
-      period
+      period,
+      usdRate,
     });
 
-  }, [accounts, transactions, snapshots, assets, settings, period]);
+  }, [accounts, transactions, snapshots, assets, settings, period, usdRate]);
 }

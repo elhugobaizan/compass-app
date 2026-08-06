@@ -68,7 +68,7 @@ export default function AccountsSection({
               institution={account.institution}
               currency={account.currency}
               accountType={account.account_type as AccountType}
-              balance={formatCurrency(balanceByAccount[account.id] ?? 0)}
+              balance={formatCurrency(balanceByAccount[account.id] ?? 0, account.currency)}
               logo={account.logo}
               isPaymentMethod={account.is_payment_method}
             />

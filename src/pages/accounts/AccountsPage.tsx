@@ -8,6 +8,8 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import AccountCardSkeleton from "@/components/finance/accounts/AccountCardSkeleton";
 import CreateAccountSheet from "@/components/finance/CreateAccountSheet";
 import EditAccountSheet from "@/components/finance/EditAccountSheet";
+import HeaderAlert from "@/components/ui/HeaderAlert";
+import { getStaleRemuneratedAccounts } from "@/utils/accounts";
 
 import LayoutMobile from "@/layouts/LayoutMobile";
 import LayoutWeb from "@/layouts/LayoutWeb";
@@ -86,6 +88,26 @@ export default function AccountsPage(): JSX.Element {
     [sortedAccounts],
   );
 
+  // Cuentas remuneradas sin ajustar hace +30 días
+  const staleRemunerated = useMemo(
+    () => getStaleRemuneratedAccounts(sortedAccounts, transactions ?? [], 30),
+    [sortedAccounts, transactions],
+  );
+
+  // Cuenta con la TNA más alta (para destacarla)
+  const bestRateAccountId = useMemo(() => {
+    let bestId: string | null = null;
+    let bestRate = 0;
+    for (const account of sortedAccounts) {
+      const rate = toNumber(account.interest_rate);
+      if (rate > bestRate) {
+        bestRate = rate;
+        bestId = account.id;
+      }
+    }
+    return bestId;
+  }, [sortedAccounts]);
+
   const filteredAccounts = useMemo(() => {
     if (accountTypeFilter === "all") return sortedAccounts;
 
@@ -121,6 +143,20 @@ export default function AccountsPage(): JSX.Element {
         title={isMobile ? "Cuentas" : ""}
         description={
           isMobile ? undefined : "Administrá wallets, bancos y brokers."
+        }
+        alert={
+          staleRemunerated.length > 0 ? (
+            <HeaderAlert
+              title={
+                staleRemunerated.length === 1
+                  ? "1 cuenta remunerada sin ajustar hace +30 días"
+                  : `${staleRemunerated.length} cuentas remuneradas sin ajustar hace +30 días`
+              }
+              description={`Ajustá el saldo real de ${staleRemunerated
+                .map((a) => a.name)
+                .join(", ")} para que el interés devengado no se desfase.`}
+            />
+          ) : undefined
         }
         summary={
           (sortedAccounts.length > 0 && !isMobile) ? (
@@ -202,6 +238,7 @@ export default function AccountsPage(): JSX.Element {
               key={account.id}
               account={account}
               balance={balanceByAccount[account.id]}
+              isBestRate={account.id === bestRateAccountId}
               compact={isMobile}
               onEdit={setAccountToEdit}
               onDelete={setAccountToDelete}
