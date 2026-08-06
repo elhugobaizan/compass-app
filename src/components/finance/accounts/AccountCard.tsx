@@ -1,12 +1,12 @@
 import { JSX } from "react";
-import { Landmark, Wallet, LineChart, LucideIcon } from "lucide-react";
+import { Landmark, Wallet, LineChart, Banknote, LucideIcon } from "lucide-react";
 
 import Card from "../../ui/Card";
 import { formatCurrency } from "@/utils/formatters";
 import { getLogoUrl } from "@/utils/logos";
 import Badge from "@/components/ui/Badge";
 
-export type AccountType = "BANK" | "WALLET" | "BROKER";
+export type AccountType = "BANK" | "WALLET" | "BROKER" | "CASH";
 
 type AccountCardProps = {
   readonly name: string;
@@ -52,6 +52,14 @@ function getAccountVisualConfig(assetType: string): AssetVisualConfig {
         Icon: LineChart,
         containerClassName: "bg-violet-50 border border-violet-100",
         iconClassName: "text-violet-700",
+      };
+
+    case "CASH":
+      return {
+        label: "Efectivo",
+        Icon: Banknote,
+        containerClassName: "bg-emerald-50 border border-emerald-100",
+        iconClassName: "text-emerald-700",
       };
 
     default:

@@ -15,7 +15,6 @@ type EditableSettings = {
   reserva?: string;
   casa?: string;
   auto?: string;
-  efectivo?: string;
   deuda?: string;
 };
 
@@ -25,7 +24,6 @@ const EDITABLE_SETTING_KEYS = [
   "reserva",
   "casa",
   "auto",
-  "efectivo",
   "deuda",
 ] as const;
 
@@ -148,19 +146,6 @@ export default function SettingsPage(): JSX.Element {
               type="number"
               value={values.auto || ""}
               onChange={(e) => setValues({ ...values, auto: e.target.value })}
-              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
-              placeholder="0"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-              Efectivo
-            </label>
-            <input
-              type="number"
-              value={values.efectivo || ""}
-              onChange={(e) => setValues({ ...values, efectivo: e.target.value })}
               className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
               placeholder="0"
             />

@@ -1,14 +1,26 @@
+export type ExchangeRates = {
+  usd?: number;
+  eur?: number;
+};
+
 /**
  * Convierte un monto a ARS según la moneda de la cuenta.
- * Hoy solo se convierte USD (con la cotización provista); el resto se deja igual.
+ * Si no hay cotización disponible para esa moneda, devuelve el monto sin convertir.
  */
 export function toArs(
   currency: string | null | undefined,
   amount: number,
-  usdRate?: number,
+  rates?: ExchangeRates,
 ): number {
-  if (currency === "USD" && usdRate && usdRate > 0) {
-    return amount * usdRate;
+  if (!rates) return amount;
+
+  if (currency === "USD" && rates.usd && rates.usd > 0) {
+    return amount * rates.usd;
   }
+
+  if (currency === "EUR" && rates.eur && rates.eur > 0) {
+    return amount * rates.eur;
+  }
+
   return amount;
 }

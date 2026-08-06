@@ -10,6 +10,7 @@ function mapAccountType(accountType: string): AccountType {
     case "BANK":
     case "WALLET":
     case "BROKER":
+    case "CASH":
       return accountType;
     default:
       return "BANK";

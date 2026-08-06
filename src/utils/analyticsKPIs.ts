@@ -10,7 +10,7 @@ import { toNumber } from "@/utils/numbers";
 import { getTotalAssetsValue } from "@/utils/assets";
 import { getNetWorthExtrasFromSettings, getReceivablesFromSettings } from "@/utils/settings";
 import { buildAccountBalanceMap } from "@/utils/accountBalance";
-import { toArs } from "@/utils/currency";
+import { toArs, type ExchangeRates } from "@/utils/currency";
 import { filterTransactionsByPeriod } from "@/utils/analytics";
 import { toDateKey } from "@/utils/date";
 import { TRANSACTION_TYPES } from "./transactionTypes";
@@ -144,7 +144,7 @@ export function calculateAnalyticsKPIs(params: {
   assets?: Asset[];
   settings?: Setting[];
   period: AnalyticsPeriod;
-  usdRate?: number;
+  rates?: ExchangeRates;
 }): AnalyticsKPIs {
   const {
     accounts = [],
@@ -153,7 +153,7 @@ export function calculateAnalyticsKPIs(params: {
     assets = [],
     settings = [],
     period,
-    usdRate,
+    rates,
   } = params;
 
   const filteredTransactions = filterTransactionsByPeriod(period, transactions);
@@ -168,7 +168,7 @@ export function calculateAnalyticsKPIs(params: {
 
   for (const account of accounts) {
     const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
-    const balance = toArs(account.currency, raw, usdRate);
+    const balance = toArs(account.currency, raw, rates);
 
     if (account.account_group.name === ACCOUNT_GROUPS.LIQUID) {
       liquidity += balance;

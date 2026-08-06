@@ -4,9 +4,9 @@ import { toNumber } from "./numbers";
 const NET_WORTH_SETTING_KEYS = new Set([
   "casa",
   "auto",
-  "efectivo",
   "dolares",
   "deuda", // en este modelo, "deuda" = dinero que te deben (suma al patrimonio, no a la liquidez)
+  // "efectivo" ya no va acá: el efectivo se maneja como cuentas (Efectivo ARS/USD/EUR)
 ]);
 
 export function getNetWorthExtrasFromSettings(

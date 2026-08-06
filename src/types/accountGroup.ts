@@ -8,6 +8,7 @@ export const ACCOUNT_TYPE_OPTIONS = [
   { value: "WALLET", label: "Wallet" },
   { value: "BANK", label: "Banco" },
   { value: "BROKER", label: "Broker" },
+  { value: "CASH", label: "Efectivo" },
   { value: "CRYPTO", label: "Cripto" },
   { value: "CARD", label: "Tarjeta" },
   { value: "OTHER", label: "Otro" },
