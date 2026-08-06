@@ -8,12 +8,15 @@ type EditAccountSheetProps = {
   readonly open: boolean;
   readonly onClose: () => void;
   readonly account?: Account | null;
+  /** Saldo actual real (inicial + movimientos + interés devengado). */
+  readonly currentBalance?: number;
 };
 
 export default function EditAccountSheet({
   open,
   onClose,
   account,
+  currentBalance,
 }: EditAccountSheetProps): JSX.Element {
   const isLoading = false;
   const isError = false;
@@ -44,6 +47,7 @@ export default function EditAccountSheet({
         <AccountForm
           mode="edit"
           accountId={account.id}
+          currentBalance={currentBalance}
           initialValues={{
             name: account.name,
             account_type: account.account_type,

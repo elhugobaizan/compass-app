@@ -17,6 +17,8 @@ type AccountFormProps = {
   readonly mode?: "create" | "edit";
   readonly accountId?: string;
   readonly initialValues?: AccountFormValues
+  /** Saldo actual real (inicial + movimientos + interés devengado). */
+  readonly currentBalance?: number;
   readonly onSuccess?: () => void;
 };
 
@@ -51,6 +53,7 @@ export default function AccountForm({
   mode = "create",
   accountId,
   initialValues,
+  currentBalance,
   onSuccess,
 }: AccountFormProps): JSX.Element {
   const { mutateAsync: createMutate, isPending: isCreating } = useCreateAccount();
@@ -85,15 +88,28 @@ export default function AccountForm({
     event.preventDefault();
     if (!isValid) return;
 
+    const safeOpeningBalance = Number.isFinite(parsedOpeningBalance)
+      ? parsedOpeningBalance
+      : 0;
+
+    // Al cambiar la TNA, congelamos el interés ya devengado con la tasa vieja:
+    // el saldo actual (inicial + movimientos + interés) pasa a ser el nuevo
+    // saldo inicial, y la tasa nueva rige desde hoy. Así no se reescribe el pasado.
+    const previousRate = Number(initialValues?.interest_rate ?? 0);
+    const nextRate = interestRate.trim() === "" ? 0 : Number(interestRate);
+    const rateChanged = mode === "edit" && nextRate !== previousRate;
+    const balanceUntouched =
+      safeOpeningBalance === Number(initialValues?.opening_balance ?? 0);
+    const shouldFreezeInterest =
+      rateChanged && balanceUntouched && typeof currentBalance === "number";
+
     const payload = {
       name: name.trim(),
       account_type: accountType,
       account_group_id: accountGroupId,
       currency,
       institution: institution.trim() || undefined,
-      opening_balance: Number.isFinite(parsedOpeningBalance)
-        ? parsedOpeningBalance
-        : 0,
+      opening_balance: shouldFreezeInterest ? currentBalance : safeOpeningBalance,
       opening_date: openingDate + "T00:00:00.000Z",
       is_payment_method: isPaymentMethod,
       interest_rate:
@@ -265,7 +281,10 @@ export default function AccountForm({
             placeholder="Ej: 22 (cuentas remuneradas)"
           />
           <p className="mt-1 text-xs text-[var(--color-muted)]">
-            Para que devengue interés diario. Dejalo vacío si no es remunerada.
+            {mode === "edit" &&
+            interestRate.trim() !== String(initialValues?.interest_rate ?? "")
+              ? "Al cambiar la tasa, el interés ya devengado se congela en el saldo y la nueva tasa rige desde hoy."
+              : "Para que devengue interés diario. Dejalo vacío si no es remunerada."}
           </p>
         </div>
       </div>

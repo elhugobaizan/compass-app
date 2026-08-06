@@ -270,6 +270,9 @@ export default function AccountsPage(): JSX.Element {
         open={!!accountToEdit}
         onClose={() => setAccountToEdit(null)}
         account={accountToEdit}
+        currentBalance={
+          accountToEdit ? balanceByAccount[accountToEdit.id] : undefined
+        }
       />
 
       <ConfirmDialog
