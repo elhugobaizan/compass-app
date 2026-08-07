@@ -1,5 +1,7 @@
 import { JSX } from "react";
 
+import { MapPin } from "lucide-react";
+
 import Badge from "@/components/ui/Badge";
 import { formatRelativeDate } from "@/utils/formatters";
 
@@ -19,6 +21,8 @@ type TransactionCardProps = {
   readonly typeLabel?: string;
   readonly categoryLabel?: string;
   readonly location?: string | null;
+  /** Link a Maps si el lugar tiene coordenadas. */
+  readonly locationUrl?: string | null;
 };
 
 export default function TransactionCard({
@@ -28,6 +32,7 @@ export default function TransactionCard({
   typeLabel,
   categoryLabel,
   location,
+  locationUrl,
 }: TransactionCardProps): JSX.Element {
   return (
     <div className="px-4 py-3">
@@ -51,7 +56,21 @@ export default function TransactionCard({
                 {categoryLabel && <Badge>{categoryLabel}</Badge>}
 
                 {location && (
-                  <span className="truncate text-[var(--color-muted)]">{location}</span>
+                  locationUrl ? (
+                    <a
+                      href={locationUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(event) => event.stopPropagation()}
+                      className="inline-flex items-center gap-1 truncate text-[var(--color-accent-text)] hover:underline"
+                      title="Ver en Google Maps"
+                    >
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      {location}
+                    </a>
+                  ) : (
+                    <span className="truncate text-[var(--color-muted)]">{location}</span>
+                  )
                 )}
               </div>
             </div>

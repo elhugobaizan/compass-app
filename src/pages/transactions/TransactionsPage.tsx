@@ -18,6 +18,7 @@ import {
   type TransactionTypeFilterValue,
 } from "@/utils/transactionTypes";
 import FilterChips from "@/components/ui/FilterChips";
+import { getMapsUrl } from "@/utils/geo";
 import { useBreakpoint } from "@/utils/utils";
 
 import type { Transaction } from "@/types/transaction";
@@ -271,7 +272,11 @@ export default function TransactionsPage(): JSX.Element {
                 date={transaction.date}
                 typeLabel={transaction.type.name}
                 categoryLabel={transaction.category?.name}
-                location={transaction.location_ref?.name ?? transaction.location}
+                location={transaction.location_ref?.name}
+                locationUrl={getMapsUrl(
+                  transaction.location_ref?.latitude,
+                  transaction.location_ref?.longitude,
+                )}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
               />)

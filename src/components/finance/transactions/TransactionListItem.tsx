@@ -19,6 +19,7 @@ type RegularTransactionItemProps = BaseItemProps & {
   readonly typeLabel?: string;
   readonly categoryLabel?: string;
   readonly location?: string | null;
+  readonly locationUrl?: string | null;
   readonly onEdit?: () => void;
   readonly onDelete?: () => void;
 };
@@ -109,6 +110,7 @@ export default function TransactionListItem(
             typeLabel={props.typeLabel}
             categoryLabel={props.categoryLabel}
             location={props.location}
+            locationUrl={props.locationUrl}
           />
         </DesktopItemFrame>
       );
@@ -123,6 +125,7 @@ export default function TransactionListItem(
           typeLabel={props.typeLabel}
           categoryLabel={props.categoryLabel}
           location={props.location}
+          locationUrl={props.locationUrl}
         />
 
         <TransactionActions

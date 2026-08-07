@@ -36,6 +36,23 @@ export function getCurrentPosition(): Promise<Coordinates> {
   });
 }
 
+/**
+ * Link a Google Maps para un lugar con coordenadas.
+ * Devuelve null si el lugar no las tiene cargadas.
+ */
+export function getMapsUrl(
+  latitude?: string | number | null,
+  longitude?: string | number | null,
+): string | null {
+  if (latitude == null || longitude == null) return null;
+
+  const lat = toNumber(latitude);
+  const lng = toNumber(longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+}
+
 /** Distancia en metros entre dos coordenadas (fórmula de Haversine). */
 export function distanceInMeters(a: Coordinates, b: Coordinates): number {
   const EARTH_RADIUS = 6_371_000;
