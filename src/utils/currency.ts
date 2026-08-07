@@ -17,3 +17,17 @@ export function toArs(
   const rate = rates?.[currency];
   return rate && rate > 0 ? amount * rate : amount;
 }
+
+/**
+ * Si hay cotización para convertir esa moneda a la base.
+ * Sirve para no sumar en silencio montos que no se pudieron convertir.
+ */
+export function canConvert(
+  currency: string | null | undefined,
+  rates?: ExchangeRates,
+): boolean {
+  if (!currency || currency === BASE_CURRENCY) return true;
+
+  const rate = rates?.[currency];
+  return Boolean(rate && rate > 0);
+}

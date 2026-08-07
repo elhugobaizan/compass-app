@@ -8,7 +8,14 @@
 export type CurrencyConfig = {
   readonly code: string;
   readonly label: string;
+  /** Ruta en dolarapi.com/v1/ (null si esa API no publica la moneda). */
   readonly ratePath: string | null;
+  /**
+   * Para monedas que dolarapi no publica: se deriva cruzando por el dólar
+   * (unidades por USD desde open.er-api) y valuando ese dólar al blue, para
+   * mantener el mismo criterio que el resto.
+   */
+  readonly usdCross?: boolean;
 };
 
 export const BASE_CURRENCY = "ARS";
@@ -17,14 +24,21 @@ export const CURRENCIES: readonly CurrencyConfig[] = [
   { code: "ARS", label: "ARS", ratePath: null },
   { code: "USD", label: "USD", ratePath: "dolares/blue" },
   { code: "EUR", label: "EUR", ratePath: "cotizaciones/eur" },
-  // Ejemplos para sumar en el futuro (la API ya los publica):
+  { code: "CLP", label: "CLP", ratePath: "cotizaciones/clp" },
+  { code: "UYU", label: "UYU", ratePath: "cotizaciones/uyu" },
+  // dolarapi no publica el sol peruano: se cruza por dólar
+  { code: "PEN", label: "PEN", ratePath: null, usdCross: true },
+  // Otra que publica dolarapi, por si hace falta:
   // { code: "BRL", label: "BRL", ratePath: "cotizaciones/brl" },
-  // { code: "CLP", label: "CLP", ratePath: "cotizaciones/clp" },
-  // { code: "UYU", label: "UYU", ratePath: "cotizaciones/uyu" },
 ];
 
-/** Monedas que requieren cotización (todas menos la base). */
+/** Monedas con cotización directa en dolarapi. */
 export const CONVERTIBLE_CURRENCIES = CURRENCIES.filter(
   (currency): currency is CurrencyConfig & { ratePath: string } =>
     currency.ratePath !== null,
+);
+
+/** Monedas que se derivan cruzando por el dólar. */
+export const CROSS_CURRENCIES = CURRENCIES.filter(
+  (currency) => currency.usdCross === true,
 );

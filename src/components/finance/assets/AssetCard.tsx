@@ -11,6 +11,8 @@ type AssetCardProps = {
   readonly asset: Asset;
   readonly accountName?: string;
   readonly logo?: string | null;
+  /** Moneda del activo (heredada de su cuenta). */
+  readonly currency?: string;
 };
 
 type MaturityLabel = {
@@ -43,8 +45,12 @@ export default function AssetCard({
   asset,
   accountName,
   logo,
+  currency,
 }: AssetCardProps): JSX.Element {
-  const { formattedValue, formattedProjectedValue, formattedInterest } = useAssetCard(asset);
+  const { formattedValue, formattedProjectedValue, formattedInterest } = useAssetCard(
+    asset,
+    currency,
+  );
   const formattedQuantity = getFormattedQuantity(asset);
   const visual = getAssetTypeConfig(asset.asset_type);
   const { Icon } = visual;

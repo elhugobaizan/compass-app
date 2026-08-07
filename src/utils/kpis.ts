@@ -12,7 +12,7 @@ import { TRANSACTION_TYPES } from "./transactionTypes";
 import { getTotalAssetsValue } from "./assets";
 import { getNetWorthExtrasFromSettings } from "./settings";
 import { buildAccountBalanceMap } from "./accountBalance";
-import { toArs, type ExchangeRates } from "./currency";
+import { toArs, canConvert, type ExchangeRates } from "./currency";
 
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
@@ -130,7 +130,15 @@ export function calculateSummaryKPIs(
   // (son reserva), pero sí suman al patrimonio.
   let foreignCurrency = 0;
 
+  // Monedas sin cotización: no se suman (mejor faltar que contar mal)
+  const missingRateCurrencies = new Set<string>();
+
   const withAccounts = accounts.reduce((acc, account) => {
+    if (!canConvert(account.currency, rates)) {
+      missingRateCurrencies.add(account.currency);
+      return acc;
+    }
+
     const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
     const balance = toArs(account.currency, raw, rates);
 
@@ -152,7 +160,12 @@ export function calculateSummaryKPIs(
 
     return acc;
   }, base);
-  const totalAssetsValue = getTotalAssetsValue(assets);
+  const totalAssetsValue = getTotalAssetsValue(
+    assets,
+    accounts,
+    rates,
+    missingRateCurrencies,
+  );
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
 
   withAccounts.investments += totalAssetsValue;

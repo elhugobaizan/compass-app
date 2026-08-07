@@ -10,6 +10,7 @@ type AssetListItemProps = {
   readonly isMobile: boolean;
   readonly accountName?: string;
   readonly accountLogo?: string | null;
+  readonly currency?: string;
   readonly onEdit?: () => void;
   readonly onRenew?: () => void;
   readonly onDelete?: () => void;
@@ -22,6 +23,7 @@ export function AssetListItem({
   isMobile,
   accountName,
   accountLogo,
+  currency,
   onEdit,
   onRenew,
   onDelete,
@@ -35,7 +37,12 @@ export function AssetListItem({
     <div id={id} className={["flex h-full flex-col scroll-mt-24 overflow-hidden rounded-xl transition-shadow border border-[var(--color-border)] bg-[var(--color-card)]",
       isHighlighted ? "ring-2 ring-[var(--color-accent)] shadow-sm" : ""].join(" ")}>
       <div className="flex-1">
-        <AssetCard asset={asset} accountName={accountName} logo={accountLogo} />
+        <AssetCard
+          asset={asset}
+          accountName={accountName}
+          logo={accountLogo}
+          currency={currency}
+        />
       </div>
 
       {hasActions && !isMobile && (

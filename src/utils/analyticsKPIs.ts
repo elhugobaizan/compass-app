@@ -10,7 +10,7 @@ import { toNumber } from "@/utils/numbers";
 import { getTotalAssetsValue } from "@/utils/assets";
 import { getNetWorthExtrasFromSettings, getReceivablesFromSettings } from "@/utils/settings";
 import { buildAccountBalanceMap } from "@/utils/accountBalance";
-import { toArs, type ExchangeRates } from "@/utils/currency";
+import { toArs, canConvert, type ExchangeRates } from "@/utils/currency";
 import { filterTransactionsByPeriod } from "@/utils/analytics";
 import { toDateKey } from "@/utils/date";
 import { TRANSACTION_TYPES } from "./transactionTypes";
@@ -50,6 +50,8 @@ export type AnalyticsKPIs = {
   foreignAccounts: ForeignAccountDetail[];
   /** Cómo se compone el patrimonio neto, por bloque. */
   netWorthBreakdown: NetWorthBlock[];
+  /** Monedas sin cotización: sus saldos quedaron fuera de los totales. */
+  missingRateCurrencies: string[];
 
   periodIncome: number;
   periodExpenses: number;
@@ -189,7 +191,15 @@ export function calculateAnalyticsKPIs(params: {
   let foreignCurrency = 0;
   const foreignAccounts: ForeignAccountDetail[] = [];
 
+  // Monedas sin cotización: no se suman (mejor faltar que contar mal)
+  const missingRateCurrencies = new Set<string>();
+
   for (const account of accounts) {
+    if (!canConvert(account.currency, rates)) {
+      missingRateCurrencies.add(account.currency);
+      continue;
+    }
+
     const raw = balanceByAccount[account.id] ?? toNumber(account.opening_balance);
     const balance = toArs(account.currency, raw, rates);
 
@@ -217,7 +227,9 @@ export function calculateAnalyticsKPIs(params: {
     }
   }
 
-  const investments = getTotalAssetsValue(assets) + investmentAccounts;
+  const investments =
+    getTotalAssetsValue(assets, accounts, rates, missingRateCurrencies) +
+    investmentAccounts;
   const netWorthExtras = getNetWorthExtrasFromSettings(settings);
   const receivables = getReceivablesFromSettings(settings);
   const netWorth = liquidity + foreignCurrency + investments + netWorthExtras;
@@ -288,6 +300,7 @@ export function calculateAnalyticsKPIs(params: {
     foreignCurrency,
     foreignAccounts: foreignAccounts.sort((a, b) => b.arsBalance - a.arsBalance),
     netWorthBreakdown,
+    missingRateCurrencies: [...missingRateCurrencies],
 
     periodIncome,
     periodExpenses,

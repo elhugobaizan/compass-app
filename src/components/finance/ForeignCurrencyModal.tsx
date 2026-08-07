@@ -13,6 +13,19 @@ type ForeignCurrencyModalProps = {
   readonly rates?: ExchangeRates;
 };
 
+/**
+ * Las cotizaciones se muestran con decimales: monedas de valor bajo (CLP ~1,64)
+ * quedarían engañosas redondeadas a pesos enteros.
+ */
+function formatRate(rate: number): string {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: rate < 10 ? 4 : 2,
+  }).format(rate);
+}
+
 export default function ForeignCurrencyModal({
   open,
   onClose,
@@ -72,7 +85,7 @@ export default function ForeignCurrencyModal({
           <p className="text-xs text-[var(--color-muted)]">
             Cotizaciones usadas:{" "}
             {usedRates
-              .map(([code, rate]) => `${code} ${formatCurrency(rate)}`)
+              .map(([code, rate]) => `${code} ${formatRate(rate)}`)
               .join(" · ")}{" "}
             — promedio compra/venta.
           </p>

@@ -23,7 +23,13 @@ import type { Asset } from "@/types/asset";
 import type { Account } from "@/types/account";
 import HeaderAlert from "@/components/ui/HeaderAlert";
 import { isTodayDateString } from "@/utils/date";
-import { getAssetValue, getAssetsDueInNextDays, sortAssetsByPriority } from "@/utils/assets";
+import {
+  getAssetCurrency,
+  getAssetsDueInNextDays,
+  getTotalAssetsValue,
+  sortAssetsByPriority,
+} from "@/utils/assets";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 import AssetSummary from "@/components/finance/assets/AssetSummary";
 import AssetYieldSection from "@/components/finance/assets/AssetYieldSection";
 import { formatCurrency } from "@/utils/formatters";
@@ -65,6 +71,8 @@ export default function AssetsPage(): JSX.Element {
 
   const { mutateAsync: deleteAsset, isPending: isDeleting } = useDeleteAsset();
 
+  const rates = useExchangeRates();
+
   const sortedAssets = useMemo(() => sortAssetsByPriority(assets ?? []), [assets]);
   const accountMap = useMemo(() => buildAccountMap(accounts ?? []), [accounts]);
   const accountLogoMap = useMemo(() => buildAccountLogoMap(accounts ?? []), [accounts]);
@@ -81,11 +89,11 @@ export default function AssetsPage(): JSX.Element {
 
   const totalAssets = sortedAssets.length;
 
-  const totalValue = useMemo(() => {
-    return sortedAssets.reduce((sum, asset) => {
-      return sum + getAssetValue(asset);
-    }, 0);
-  }, [sortedAssets]);
+  // Total en pesos: cada activo se convierte según la moneda de su cuenta
+  const totalValue = useMemo(
+    () => getTotalAssetsValue(sortedAssets, accounts ?? [], rates),
+    [sortedAssets, accounts, rates],
+  );
 
   const totalValueLabel = useMemo(() => {
     return formatCurrency(totalValue);
@@ -189,7 +197,11 @@ export default function AssetsPage(): JSX.Element {
 
       {!isLoadingAssets && !isErrorAssets && sortedAssets.length > 0 && (
         <>
-          <AssetYieldSection assets={sortedAssets} isMobile={isMobile} />
+          <AssetYieldSection
+            assets={sortedAssets}
+            accounts={accounts}
+            isMobile={isMobile}
+          />
 
           <div className={listClassName}>
             {sortedAssets.map((asset) => (
@@ -199,6 +211,7 @@ export default function AssetsPage(): JSX.Element {
                 isMobile={isMobile}
                 accountName={accountMap[asset.account_id]}
                 accountLogo={accountLogoMap[asset.account_id]}
+                currency={getAssetCurrency(asset, accounts ?? [])}
                 onEdit={() => setAssetToEdit(asset)}
                 onRenew={() => setAssetToRenew(asset)}
                 onDelete={() => setAssetToDelete(asset)}

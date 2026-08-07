@@ -1,6 +1,9 @@
 import type { Asset } from "@/types/asset";
+import type { Account } from "@/types/account";
 import { toNumber } from "@/utils/numbers";
 import { getDaysFromToday, parseLocalDate } from "./date";
+import { toArs, canConvert, type ExchangeRates } from "./currency";
+import { BASE_CURRENCY } from "@/config/currencies";
 
 export function getAssetValue(asset: Asset): number {
   const quantity = toNumber(asset.quantity);
@@ -14,8 +17,39 @@ export function getAssetValue(asset: Asset): number {
   return 0;
 }
 
-export function getTotalAssetsValue(assets: Asset[] = []): number {
-  return assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+/**
+ * Moneda del activo: se hereda de la cuenta donde está.
+ * Un activo en una cuenta en USD se valúa en USD.
+ */
+export function getAssetCurrency(
+  asset: Asset,
+  accounts: Account[] = [],
+): string {
+  const account = accounts.find((a) => a.id === asset.account_id);
+  return account?.currency ?? BASE_CURRENCY;
+}
+
+/**
+ * Valor total de los activos convertido a la moneda base (ARS).
+ * Sin cuentas o sin cotizaciones, devuelve la suma sin convertir.
+ */
+export function getTotalAssetsValue(
+  assets: Asset[] = [],
+  accounts: Account[] = [],
+  rates?: ExchangeRates,
+  missingRateCurrencies?: Set<string>,
+): number {
+  return assets.reduce((sum, asset) => {
+    const currency = getAssetCurrency(asset, accounts);
+
+    // Sin cotización no se suma: mejor faltar que contar mal
+    if (!canConvert(currency, rates)) {
+      missingRateCurrencies?.add(currency);
+      return sum;
+    }
+
+    return sum + toArs(currency, getAssetValue(asset), rates);
+  }, 0);
 }
 
 function getAssetPriority(asset: Asset): number {

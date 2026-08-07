@@ -1,5 +1,7 @@
 import { JSX, useMemo, useState } from "react";
 import type { Asset } from "@/types/asset";
+import type { Account } from "@/types/account";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 import SectionBlock from "@/components/ui/SectionBlock";
 import Button from "@/components/ui/Button";
 import { calculateTotalYield } from "@/utils/assetYield";
@@ -7,17 +9,22 @@ import { formatCurrency } from "@/utils/formatters";
 
 type AssetYieldSectionProps = {
   readonly assets: Asset[];
+  readonly accounts?: Account[];
   readonly isMobile: boolean;
 };
 
 export default function AssetYieldSection({
   assets,
+  accounts,
   isMobile,
 }: AssetYieldSectionProps): JSX.Element | null {
   const [isExpanded, setIsExpanded] = useState(false);
+  const rates = useExchangeRates();
+  const ratesKey = JSON.stringify(rates);
   const { totalDaily, totalMonthly, yields } = useMemo(
-    () => calculateTotalYield(assets),
-    [assets]
+    () => calculateTotalYield(assets, accounts ?? [], rates),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [assets, accounts, ratesKey]
   );
 
   if (yields.length === 0) return null;
@@ -71,10 +78,10 @@ export default function AssetYieldSection({
                     </div>
                     <div className="text-right">
                       <p className="text-[var(--color-income-text)]">
-                        {formatCurrency(y.dailyYield)} / día
+                        {formatCurrency(y.dailyYield, y.currency)} / día
                       </p>
                       <p className="text-xs text-[var(--color-muted)]">
-                        {formatCurrency(y.monthlyYield)} / mes
+                        {formatCurrency(y.monthlyYield, y.currency)} / mes
                       </p>
                     </div>
                   </div>
