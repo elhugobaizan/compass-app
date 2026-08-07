@@ -226,8 +226,14 @@ export function calculateAnalyticsKPIs(params: {
   const settingValue = (key: string) =>
     toNumber(settings.find((s) => s.key === key)?.value);
 
+  // La reserva es parte de la liquidez, "apartada" como ahorro: se muestra
+  // como bloque propio para verla, sin alterar el total.
+  const reserve = Math.min(Math.max(settingValue("reserva"), 0), Math.max(liquidity, 0));
+  const availableLiquidity = liquidity - reserve;
+
   const netWorthBreakdown: NetWorthBlock[] = [
-    { key: "liquidity", label: "Liquidez (pesos)", value: liquidity },
+    { key: "liquidity", label: "Liquidez disponible", value: availableLiquidity },
+    { key: "reserve", label: "Reserva (ahorro)", value: reserve },
     { key: "foreign", label: "Divisas", value: foreignCurrency },
     { key: "investments", label: "Inversiones", value: investments },
     { key: "casa", label: "Casa", value: settingValue("casa") },
