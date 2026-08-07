@@ -67,7 +67,7 @@ export default function EditTransactionSheet({
             account_id: transaction.account_id,
             category_id: transaction.category_id ?? "",
             type_id: transaction.type_id ?? "",
-            location: transaction.location ?? "",
+            location_id: transaction.location_id ?? "",
           }}
           onSuccess={onClose}
         />

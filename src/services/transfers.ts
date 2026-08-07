@@ -7,7 +7,6 @@ export type CreateTransferInput = {
   origin_account_id: string;
   destination_account_id: string;
   concept?: string;
-  location?: string;
 };
 
 type CreateTransferPayload = {
@@ -16,7 +15,6 @@ type CreateTransferPayload = {
   origin_account_id: string;
   destination_account_id: string;
   concept?: string;
-  location?: string;
 };
 
 export type CreateTransferResponse = {
@@ -34,7 +32,6 @@ function mapCreateTransferInput(
     origin_account_id: input.origin_account_id,
     destination_account_id: input.destination_account_id,
     concept: input.concept || undefined,
-    location: input.location || undefined,
   };
 }
 

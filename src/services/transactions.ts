@@ -3,7 +3,7 @@ import { apiFetch } from "./api";
 import type { Transaction } from "@/types/transaction";
 
 type TransactionInput = Pick<Transaction,
-  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location'>;
+  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location_id'>;
 // Despues deberia ser Omit<Transaction, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
 export type CreateTransactionInput = TransactionInput;
@@ -67,7 +67,7 @@ function mapUpdateTransactionInput(
     account_id: input.account_id,
     category_id: input.category_id,
     type_id: input.type_id,
-    location: input.location,
+    location_id: input.location_id,
   };
 }
 

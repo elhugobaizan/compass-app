@@ -271,7 +271,7 @@ export default function TransactionsPage(): JSX.Element {
                 date={transaction.date}
                 typeLabel={transaction.type.name}
                 categoryLabel={transaction.category?.name}
-                location={transaction.location}
+                location={transaction.location_ref?.name ?? transaction.location}
                 onDelete={() => setTransactionToDelete(transaction)}
                 onEdit={() => setTransactionToEdit(transaction)}
               />)

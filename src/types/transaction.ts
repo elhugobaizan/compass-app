@@ -1,4 +1,5 @@
 import { Account } from "./account";
+import { Location } from "./location";
 
 // src/types/transaction.ts
 export type Transaction = {
@@ -10,12 +11,14 @@ export type Transaction = {
   category_id?: string | null;
   type_id: string | null;
   transfer_group?: string | null;
-  location?: string | null;
+  location_id?: string | null;
   created_at: string;
   updated_at?: string | null;
   deleted_at?: string | null;
-  
+
   account: Account;
+  /** Lugar asociado (relación con la tabla locations). */
+  location_ref?: Location | null;
   category?: TransactionCategory | null;
   type: TransactionType;
 };

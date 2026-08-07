@@ -4,11 +4,21 @@ import type { Account } from "@/types/account";
 import type { Category } from "@/types/category";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 import { useUpdateTransaction } from "@/hooks/mutations/useUpdateTransaction";
+import { useLocationsQuery } from "@/hooks/queries/useLocationsQuery";
+import { useCreateLocation } from "@/hooks/mutations/useCreateLocation";
 import { Transaction } from "@/types/transaction";
+import {
+  getCurrentPosition,
+  findNearbyLocation,
+  type Coordinates,
+} from "@/utils/geo";
+import { MapPin } from "lucide-react";
 
 
 type TransactionFormValues = Pick<Transaction,
-  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location'>;
+  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location' | 'location_id'>;
+
+const NEW_LOCATION = "__new__";
 
 type TransactionFormProps = {
   readonly accounts: Account[];
@@ -47,8 +57,48 @@ export default function TransactionForm({
   const [typeId, setTypeId] = useState(initialValues?.type_id ?? "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
   const [accountId, setAccountId] = useState(initialValues?.account_id ?? "");
   const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? "");
-  const [location, setLocation] = useState(initialValues?.location ?? "");
+  const [locationId, setLocationId] = useState(initialValues?.location_id ?? "");
+  const [newLocationName, setNewLocationName] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { data: locations = [] } = useLocationsQuery();
+  const { mutateAsync: createLocation } = useCreateLocation();
+  const isCreatingLocation = locationId === NEW_LOCATION;
+
+  // Geolocalización: coordenadas capturadas para el lugar nuevo
+  const [coords, setCoords] = useState<Coordinates | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [geoMessage, setGeoMessage] = useState<string | null>(null);
+
+  async function handleUseCurrentPosition() {
+    setIsLocating(true);
+    setGeoMessage(null);
+
+    try {
+      const position = await getCurrentPosition();
+      const nearby = findNearbyLocation(locations, position);
+
+      if (nearby) {
+        // Ya tenés un lugar guardado acá: se selecciona
+        setLocationId(nearby.location.id);
+        setCoords(null);
+        setGeoMessage(
+          `Estás en ${nearby.location.name} (a ${Math.round(nearby.distance)} m).`,
+        );
+      } else {
+        // Lugar nuevo: se guardan las coordenadas y falta el nombre
+        setLocationId(NEW_LOCATION);
+        setCoords(position);
+        setGeoMessage("Lugar nuevo: ponele un nombre y se guarda con tus coordenadas.");
+      }
+    } catch (error) {
+      setGeoMessage(
+        error instanceof Error ? error.message : "No pudimos obtener tu ubicación.",
+      );
+    } finally {
+      setIsLocating(false);
+    }
+  }
 
   const filteredCategories = useMemo(() => {
     const type = typeId === "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d" ? "EXPENSE" : "INCOME";
@@ -67,18 +117,35 @@ export default function TransactionForm({
     event.preventDefault();
     if (!isValid) return;
 
-    const payload = {
-      amount: parsedAmount,
-      concept: concept.trim() || undefined,
-      date: date + "T00:00:00.000Z",
-      account_id: accountId,
-      category_id: categoryId || undefined,
-      type_id: typeId,
-      location: location.trim() || undefined,
-    };
-
     try {
       setSubmitError(null);
+
+      // Si eligió "nuevo lugar", se crea primero y se usa su id
+      let resolvedLocationId: string | undefined = locationId || undefined;
+
+      if (isCreatingLocation) {
+        const name = newLocationName.trim();
+        if (!name) {
+          setSubmitError("Poné un nombre para el lugar nuevo.");
+          return;
+        }
+        const created = await createLocation({
+          name,
+          latitude: coords?.latitude ?? null,
+          longitude: coords?.longitude ?? null,
+        });
+        resolvedLocationId = created.id;
+      }
+
+      const payload = {
+        amount: parsedAmount,
+        concept: concept.trim() || undefined,
+        date: date + "T00:00:00.000Z",
+        account_id: accountId,
+        category_id: categoryId || undefined,
+        type_id: typeId,
+        location_id: resolvedLocationId ?? null,
+      };
 
       if (mode === "edit") {
         if (!transactionId) {
@@ -95,7 +162,10 @@ export default function TransactionForm({
         setTypeId("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
         setAccountId("");
         setCategoryId("");
-        setLocation("");
+        setLocationId("");
+        setNewLocationName("");
+        setCoords(null);
+        setGeoMessage(null);
       }
 
       onSuccess?.();
@@ -219,17 +289,57 @@ export default function TransactionForm({
       </div>
 
       <div>
-        <label htmlFor="location" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-          Ubicación
-        </label>
-        <input
-          type="text"
+        <div className="mb-1 flex items-center justify-between gap-2">
+          <label htmlFor="location" className="block text-sm font-medium text-[var(--color-ink)]">
+            Lugar
+          </label>
+
+          <button
+            type="button"
+            onClick={handleUseCurrentPosition}
+            disabled={isLocating}
+            className="inline-flex items-center gap-1 rounded-lg border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-bg)] disabled:opacity-50"
+          >
+            <MapPin className="h-3.5 w-3.5" />
+            {isLocating ? "Ubicando..." : "Usar mi ubicación"}
+          </button>
+        </div>
+
+        <select
           name="location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={locationId ?? ""}
+          onChange={(e) => setLocationId(e.target.value)}
           className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
-          placeholder="Opcional"
-        />
+        >
+          <option value="">Sin lugar</option>
+          {locations.map((place) => (
+            <option key={place.id} value={place.id}>
+              {place.name}
+            </option>
+          ))}
+          <option value={NEW_LOCATION}>+ Agregar lugar nuevo...</option>
+        </select>
+
+        {isCreatingLocation && (
+          <input
+            type="text"
+            value={newLocationName}
+            onChange={(e) => setNewLocationName(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
+            placeholder="Nombre del lugar (ej: Chango Más Chacras)"
+            autoFocus
+          />
+        )}
+
+        {geoMessage && (
+          <p className="mt-1 text-xs text-[var(--color-muted)]">{geoMessage}</p>
+        )}
+
+        {isCreatingLocation && coords && (
+          <p className="mt-1 text-xs text-[var(--color-muted)]">
+            Coordenadas: {coords.latitude.toFixed(5)}, {coords.longitude.toFixed(5)}
+          </p>
+        )}
       </div>
 
       <Button type="submit" fullWidth disabled={!isValid || isPending}>
