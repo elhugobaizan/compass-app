@@ -16,7 +16,7 @@ import { MapPin } from "lucide-react";
 
 
 type TransactionFormValues = Pick<Transaction,
-  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location' | 'location_id'>;
+  'concept' | 'amount' | 'date' | 'account_id' | 'category_id' | 'type_id' | 'location_id'>;
 
 const NEW_LOCATION = "__new__";
 
