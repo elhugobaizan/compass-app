@@ -1,3 +1,5 @@
+import { CURRENCIES } from "@/config/currencies";
+
 export const ACCOUNT_GROUP_OPTIONS = [
   { id: "f0245c9f-1377-4852-a912-b049910838b0", label: "Liquidez" },
   { id: "01e11fd3-9ee4-468f-a16c-b793341fb696", label: "Inversión" },
@@ -14,9 +16,8 @@ export const ACCOUNT_TYPE_OPTIONS = [
   { value: "OTHER", label: "Otro" },
 ];
 
-export const CURRENCY_OPTIONS = [
-  { value: "ARS", label: "ARS" },
-  { value: "USD", label: "USD" },
-  { value: "EUR", label: "EUR" },
-  { value: "MULTI", label: "MULTI" },
-];
+// Derivado del registro central: agregar una divisa allá la habilita acá
+export const CURRENCY_OPTIONS = CURRENCIES.map((currency) => ({
+  value: currency.code,
+  label: currency.label,
+}));

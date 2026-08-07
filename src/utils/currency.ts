@@ -1,26 +1,19 @@
-export type ExchangeRates = {
-  usd?: number;
-  eur?: number;
-};
+import { BASE_CURRENCY } from "@/config/currencies";
+
+/** Cotización a la moneda base, por código de moneda. */
+export type ExchangeRates = Record<string, number>;
 
 /**
- * Convierte un monto a ARS según la moneda de la cuenta.
- * Si no hay cotización disponible para esa moneda, devuelve el monto sin convertir.
+ * Convierte un monto a la moneda base (ARS) según la moneda de la cuenta.
+ * Si no hay cotización disponible, devuelve el monto sin convertir.
  */
 export function toArs(
   currency: string | null | undefined,
   amount: number,
   rates?: ExchangeRates,
 ): number {
-  if (!rates) return amount;
+  if (!currency || currency === BASE_CURRENCY) return amount;
 
-  if (currency === "USD" && rates.usd && rates.usd > 0) {
-    return amount * rates.usd;
-  }
-
-  if (currency === "EUR" && rates.eur && rates.eur > 0) {
-    return amount * rates.eur;
-  }
-
-  return amount;
+  const rate = rates?.[currency];
+  return rate && rate > 0 ? amount * rate : amount;
 }

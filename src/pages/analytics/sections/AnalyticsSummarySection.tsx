@@ -1,9 +1,10 @@
 import KPICard from "@/components/finance/KPICard";
 import SectionBlock from "@/components/ui/SectionBlock";
 import ForeignCurrencyModal from "@/components/finance/ForeignCurrencyModal";
+import NetWorthBreakdownModal from "@/components/finance/NetWorthBreakdownModal";
 import { AnalyticsKPIs } from "@/utils/analyticsKPIs";
 import { formatCurrency } from "@/utils/formatters";
-import { useExchangeRates } from "@/hooks/queries/useDollarRate";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 import { JSX, useState } from "react";
 
 type AnalyticsSummaryProps = {
@@ -24,6 +25,7 @@ export default function AnalyticsSummarySection({
   summary
 }: AnalyticsSummaryProps): JSX.Element {
   const [isForeignOpen, setIsForeignOpen] = useState(false);
+  const [isNetWorthOpen, setIsNetWorthOpen] = useState(false);
   const rates = useExchangeRates();
 
   return (
@@ -40,9 +42,11 @@ export default function AnalyticsSummarySection({
         <KPICard
           label="Patrimonio neto"
           value={hasAccounts ? formatCurrency(summary.netWorth) : null}
+          subvalue="Tocá para ver la composición"
           isLoading={isLoading}
           tone="neutral"
           trend={summary.trends.netWorth}
+          onClick={() => setIsNetWorthOpen(true)}
         />
         <KPICard
           label="Liquidez"
@@ -120,6 +124,13 @@ export default function AnalyticsSummarySection({
         accounts={summary.foreignAccounts}
         total={summary.foreignCurrency}
         rates={rates}
+      />
+
+      <NetWorthBreakdownModal
+        open={isNetWorthOpen}
+        onClose={() => setIsNetWorthOpen(false)}
+        blocks={summary.netWorthBreakdown}
+        total={summary.netWorth}
       />
     </SectionBlock>
   );

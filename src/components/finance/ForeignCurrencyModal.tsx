@@ -1,6 +1,8 @@
 import { JSX } from "react";
 import Modal from "@/components/ui/Modal";
 import type { ForeignAccountDetail } from "@/utils/analyticsKPIs";
+import type { ExchangeRates } from "@/utils/currency";
+import { BASE_CURRENCY } from "@/config/currencies";
 import { formatCurrency } from "@/utils/formatters";
 
 type ForeignCurrencyModalProps = {
@@ -8,7 +10,7 @@ type ForeignCurrencyModalProps = {
   readonly onClose: () => void;
   readonly accounts: ForeignAccountDetail[];
   readonly total: number;
-  readonly rates?: { usd?: number; eur?: number };
+  readonly rates?: ExchangeRates;
 };
 
 export default function ForeignCurrencyModal({
@@ -18,6 +20,12 @@ export default function ForeignCurrencyModal({
   total,
   rates,
 }: ForeignCurrencyModalProps): JSX.Element {
+  // Solo las monedas que realmente aparecen en el detalle (excluye la base)
+  const usedCurrencies = new Set(accounts.map((account) => account.currency));
+  const usedRates = Object.entries(rates ?? {}).filter(
+    ([code, rate]) => code !== BASE_CURRENCY && rate > 0 && usedCurrencies.has(code),
+  );
+
   return (
     <Modal open={open} onClose={onClose} title="Divisas">
       <div className="space-y-4">
@@ -60,13 +68,13 @@ export default function ForeignCurrencyModal({
           </span>
         </div>
 
-        {(rates?.usd || rates?.eur) && (
+        {usedRates.length > 0 && (
           <p className="text-xs text-[var(--color-muted)]">
             Cotizaciones usadas:{" "}
-            {rates.usd ? `USD ${formatCurrency(rates.usd)}` : ""}
-            {rates.usd && rates.eur ? " · " : ""}
-            {rates.eur ? `EUR ${formatCurrency(rates.eur)}` : ""} — promedio
-            compra/venta.
+            {usedRates
+              .map(([code, rate]) => `${code} ${formatCurrency(rate)}`)
+              .join(" · ")}{" "}
+            — promedio compra/venta.
           </p>
         )}
       </div>

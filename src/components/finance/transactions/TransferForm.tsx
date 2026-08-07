@@ -63,7 +63,9 @@ export default function TransferForm({
 
       await mutateAsync({
         amount: parsedAmount,
-        date,
+        // ISO explícito en UTC, igual que los movimientos normales, para que no
+        // se corra el día al guardar (columna timestamp without time zone)
+        date: date + "T00:00:00.000Z",
         origin_account_id: originAccountId,
         destination_account_id: destinationAccountId,
         concept: concept.trim() || undefined,

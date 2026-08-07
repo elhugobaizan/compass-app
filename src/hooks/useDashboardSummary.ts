@@ -6,7 +6,7 @@ import type { Asset } from "@/types/asset";
 import { calculateSummaryKPIs } from "@/utils/kpis";
 import { Setting } from "@/types/settings";
 import { toNumber } from "@/utils/numbers";
-import { useExchangeRates } from "@/hooks/queries/useDollarRate";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 
 type DashboardSummary = {
   hasAccounts: boolean;
@@ -23,7 +23,8 @@ export function useDashboardSummary(
   settings?: Setting[]
 ): DashboardSummary {
   const rates = useExchangeRates();
-  const { usd: usdRate, eur: eurRate } = rates;
+  // clave estable para el useMemo (las cotizaciones cambian de referencia en cada render)
+  const ratesKey = JSON.stringify(rates);
 
   return useMemo(() => {
     const hasAccounts = !!accounts?.length;
@@ -41,7 +42,7 @@ export function useDashboardSummary(
       settings ?? [],
       salaryValue ? toNumber(salaryValue) : undefined,
       reserveValue ? toNumber(reserveValue) : undefined,
-      { usd: usdRate, eur: eurRate }
+      rates
     );
 
     return {
@@ -50,5 +51,6 @@ export function useDashboardSummary(
       hasFinancialData,
       summary,
     };
-  }, [accounts, transactions, snapshots, assets, settings, usdRate, eurRate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts, transactions, snapshots, assets, settings, ratesKey]);
 }

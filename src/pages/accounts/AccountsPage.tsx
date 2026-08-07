@@ -20,7 +20,7 @@ import { useTransactionsQuery } from "@/hooks/queries/useTransactionsQuery";
 import { useDeleteAccount } from "@/hooks/mutations/useDeleteAccount";
 import { buildAccountBalanceMap } from "@/utils/accountBalance";
 import { toArs } from "@/utils/currency";
-import { useExchangeRates } from "@/hooks/queries/useDollarRate";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 
 import type { Account, AccountTypeFilterValue } from "@/types/account";
 import { AccountListItem } from "@/components/finance/accounts/AccountListItem";

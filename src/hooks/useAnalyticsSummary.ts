@@ -7,7 +7,7 @@ import type { Snapshot } from "@/services/snapshots";
 import type { AnalyticsPeriod } from "@/types/analytics";
 
 import { calculateAnalyticsKPIs } from "@/utils/analyticsKPIs";
-import { useExchangeRates } from "@/hooks/queries/useDollarRate";
+import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 
 type UseAnalyticsSummaryParams = {
   accounts?: Account[];
@@ -26,7 +26,8 @@ export function useAnalyticsSummary({
   settings,
   period,
 }: UseAnalyticsSummaryParams) {
-  const { usd: usdRate, eur: eurRate } = useExchangeRates();
+  const rates = useExchangeRates();
+  const ratesKey = JSON.stringify(rates);
 
   return useMemo(() => {
     return calculateAnalyticsKPIs({
@@ -36,8 +37,8 @@ export function useAnalyticsSummary({
       assets,
       settings,
       period,
-      rates: { usd: usdRate, eur: eurRate },
+      rates,
     });
-
-  }, [accounts, transactions, snapshots, assets, settings, period, usdRate, eurRate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts, transactions, snapshots, assets, settings, period, ratesKey]);
 }

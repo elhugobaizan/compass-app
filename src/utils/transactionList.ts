@@ -14,14 +14,11 @@ function isTransfer(transaction: Transaction): boolean {
      && !!transaction.transfer_group;
 }
 
-function looksLikeOrigin(transaction: Transaction): boolean {
-  return (transaction.concept ?? "").toLowerCase().includes(" a ");
-}
-
-function looksLikeDestination(transaction: Transaction): boolean {
-  return (transaction.concept ?? "").toLowerCase().includes("desde");
-}
-
+/**
+ * Origen y destino se resuelven por el TIPO de movimiento (dato confiable),
+ * no por el texto del concepto ni por el orden del array: dos filas de la misma
+ * transferencia comparten fecha, así que el orden que devuelve la DB es arbitrario.
+ */
 function resolveTransferPair(grouped: Transaction[]): {
   originTransaction: Transaction;
   destinationTransaction: Transaction;
@@ -34,12 +31,14 @@ function resolveTransferPair(grouped: Transaction[]): {
   }
 
   const origin =
-    grouped.find(looksLikeOrigin) ??
-    grouped.find((tx) => !looksLikeDestination(tx)) ??
-    grouped[0];
+    grouped.find(
+      (tx) => tx.type?.name === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA,
+    ) ?? grouped[0];
 
   const destination =
-    grouped.find((tx) => tx.id !== origin.id) ?? grouped[1];
+    grouped.find(
+      (tx) => tx.type?.name === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA,
+    ) ?? grouped.find((tx) => tx.id !== origin.id) ?? grouped[1];
 
   return {
     originTransaction: origin,

@@ -12,7 +12,12 @@ import { useAccountsQuery } from "@/hooks/queries/useAccountsQuery";
 import { useCategoriesQuery } from "@/hooks/queries/useCategoriesQuery";
 import { useTransactionsByMonthQuery } from "@/hooks/queries/useTransactionsByMonthQuery";
 import { buildTransactionListItems } from "@/utils/transactionList";
-import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
+import {
+  TRANSACTION_TYPES,
+  TRANSACTION_TYPE_FILTERS,
+  type TransactionTypeFilterValue,
+} from "@/utils/transactionTypes";
+import FilterChips from "@/components/ui/FilterChips";
 import { useBreakpoint } from "@/utils/utils";
 
 import type { Transaction } from "@/types/transaction";
@@ -85,6 +90,7 @@ export default function TransactionsPage(): JSX.Element {
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date>(() => startOfMonth(new Date()));
+  const [typeFilter, setTypeFilter] = useState<TransactionTypeFilterValue>("all");
 
   const {
     data: transactions,
@@ -106,19 +112,34 @@ export default function TransactionsPage(): JSX.Element {
 
   const { mutateAsync: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
-  // El backend ya filtra por mes (useTransactionsByMonthQuery), así que acá
-  // solo normalizamos el caso sin datos.
-  const filteredTransactions = useMemo(
-    () => transactions ?? [],
-    [transactions]
-  );
+  // El backend ya filtra por mes (useTransactionsByMonthQuery); acá filtramos por tipo.
+  // Las transferencias son dos filas (SALIDA + ENTRADA): se incluyen ambas para
+  // que después se emparejen en un solo item.
+  const filteredTransactions = useMemo(() => {
+    const all = transactions ?? [];
+    if (typeFilter === "all") return all;
+
+    if (typeFilter === "TRANSFERENCIA") {
+      return all.filter(
+        (tx) =>
+          tx.type?.name === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA ||
+          tx.type?.name === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA,
+      );
+    }
+
+    return all.filter((tx) => tx.type?.name === typeFilter);
+  }, [transactions, typeFilter]);
 
   const transactionListItems = useMemo(
     () => buildTransactionListItems(filteredTransactions ?? []),
     [filteredTransactions]
   );
 
-  const summary = useMemo(() => getTransactionSummaryValues(filteredTransactions), [filteredTransactions]);
+  // El resumen es del mes completo, no del filtro de tipo aplicado a la lista
+  const summary = useMemo(
+    () => getTransactionSummaryValues(transactions ?? []),
+    [transactions],
+  );
 
   function handlePreviousMonth() {
     setSelectedMonth((prev) => addMonths(prev, -1));
@@ -177,6 +198,12 @@ export default function TransactionsPage(): JSX.Element {
         onPrevious={handlePreviousMonth}
         onNext={handleNextMonth}
         onResetToCurrentMonth={handleResetToCurrentMonth}
+      />
+
+      <FilterChips
+        value={typeFilter}
+        onChange={setTypeFilter}
+        options={TRANSACTION_TYPE_FILTERS}
       />
 
       {!isMobile && (<div className="flex items-center gap-3">

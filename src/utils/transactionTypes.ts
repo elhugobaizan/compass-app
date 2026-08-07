@@ -6,6 +6,24 @@ export const TRANSACTION_TYPES = {
   AJUSTE: "AJUSTE"
 } as const;
 
+export type TransactionTypeFilterValue =
+  | "all"
+  | "INGRESO"
+  | "GASTO"
+  | "TRANSFERENCIA"
+  | "AJUSTE";
+
+export const TRANSACTION_TYPE_FILTERS: ReadonlyArray<{
+  readonly label: string;
+  readonly value: TransactionTypeFilterValue;
+}> = [
+  { label: "Todos", value: "all" },
+  { label: "Ingresos", value: "INGRESO" },
+  { label: "Gastos", value: "GASTO" },
+  { label: "Transferencias", value: "TRANSFERENCIA" },
+  { label: "Ajustes", value: "AJUSTE" },
+];
+
 // IDs de la tabla transaction_types (DB)
 export const TRANSACTION_TYPE_IDS = {
   GASTO: "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d",

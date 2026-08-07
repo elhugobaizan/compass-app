@@ -18,6 +18,12 @@ import { TRANSACTION_TYPES } from "./transactionTypes";
 type TrendDirection = "up" | "down" | "neutral";
 type TrendSentiment = "positive" | "negative" | "neutral";
 
+export type NetWorthBlock = {
+  key: string;
+  label: string;
+  value: number;
+};
+
 export type ForeignAccountDetail = {
   id: string;
   name: string;
@@ -42,6 +48,8 @@ export type AnalyticsKPIs = {
   foreignCurrency: number;
   /** Detalle de esas cuentas, para el modal de Divisas. */
   foreignAccounts: ForeignAccountDetail[];
+  /** Cómo se compone el patrimonio neto, por bloque. */
+  netWorthBreakdown: NetWorthBlock[];
 
   periodIncome: number;
   periodExpenses: number;
@@ -214,6 +222,20 @@ export function calculateAnalyticsKPIs(params: {
   const receivables = getReceivablesFromSettings(settings);
   const netWorth = liquidity + foreignCurrency + investments + netWorthExtras;
 
+  // Composición del patrimonio, por bloque (para el modal de detalle)
+  const settingValue = (key: string) =>
+    toNumber(settings.find((s) => s.key === key)?.value);
+
+  const netWorthBreakdown: NetWorthBlock[] = [
+    { key: "liquidity", label: "Liquidez (pesos)", value: liquidity },
+    { key: "foreign", label: "Divisas", value: foreignCurrency },
+    { key: "investments", label: "Inversiones", value: investments },
+    { key: "casa", label: "Casa", value: settingValue("casa") },
+    { key: "auto", label: "Auto", value: settingValue("auto") },
+    { key: "dolares", label: "Dólares (ajustes)", value: settingValue("dolares") },
+    { key: "deuda", label: "Me deben", value: receivables },
+  ].filter((block) => block.value !== 0);
+
   const periodIncome = sumIncome(filteredTransactions);
   const periodExpenses = sumExpenses(filteredTransactions);
   const periodSavings = periodIncome - periodExpenses;
@@ -259,6 +281,7 @@ export function calculateAnalyticsKPIs(params: {
     receivables,
     foreignCurrency,
     foreignAccounts: foreignAccounts.sort((a, b) => b.arsBalance - a.arsBalance),
+    netWorthBreakdown,
 
     periodIncome,
     periodExpenses,

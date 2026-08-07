@@ -11,7 +11,6 @@ import { toNumber } from "@/utils/numbers";
 
 type EditableSettings = {
   sueldo?: string;
-  dolares?: string;
   reserva?: string;
   casa?: string;
   auto?: string;
@@ -20,7 +19,6 @@ type EditableSettings = {
 
 const EDITABLE_SETTING_KEYS = [
   "sueldo",
-  "dolares",
   "reserva",
   "casa",
   "auto",
@@ -85,23 +83,6 @@ export default function SettingsPage(): JSX.Element {
             />
             <p className="mt-1 text-xs text-[var(--color-muted)]">
               Se usa para calcular el disponible
-            </p>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-              Tipo de cambio USD
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={values.dolares || ""}
-              onChange={(e) => setValues({ ...values, dolares: e.target.value })}
-              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2"
-              placeholder="27.793.168,19"
-            />
-            <p className="mt-1 text-xs text-[var(--color-muted)]">
-              Para convertir montos a USD
             </p>
           </div>
 
