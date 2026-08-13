@@ -7,6 +7,8 @@ import NetWorthHistoryChart from "@/components/finance/NetWorthHistoryChart";
 import IncomeExpenseChart from "@/components/finance/IncomeExpenseChart";
 import CategoryBreakdownChart from "@/components/finance/CategoryBreakdownChart";
 import DailyExpensesChart from "@/components/finance/DailyExpensesChart";
+import LocationBreakdownChart from "@/components/finance/LocationBreakdownChart";
+import { getExpenseBreakdownByLocation } from "@/utils/locationBreakdown";
 
 import type { Transaction } from "@/types/transaction";
 import type { Snapshot } from "@/services/snapshots";
@@ -41,6 +43,7 @@ export default function AnalyticsChartsSection({
   const monthlyIncomeExpense = useMonthlyIncomeExpense(transactions);
   const expenseBreakdown = useExpenseBreakdown(transactions).slice(0, 6);
   const dailyExpenses = getDailyExpensesForMonth(transactions);
+  const locationBreakdown = getExpenseBreakdownByLocation(transactions).slice(0, 8);
 
   return (
     <SectionBlock
@@ -173,6 +176,39 @@ export default function AnalyticsChartsSection({
             !isErrorTransactions &&
             expenseBreakdown.length > 0 && (
               <CategoryBreakdownChart items={expenseBreakdown} />
+            )}
+        </PanelCard>
+
+        <PanelCard
+          title="Gastos por lugar"
+          subtitle={isMobile ? undefined : "Dónde gastás en el período"}
+          className="h-72 xl:col-span-2"
+        >
+          {isLoadingTransactions && (
+            <p className="text-sm text-[var(--color-muted)]">Cargando lugares...</p>
+          )}
+
+          {isErrorTransactions && (
+            <EmptyState
+              title="No pudimos calcular los gastos por lugar"
+              description="Revisá la conexión o el backend."
+              variant="error"
+            />
+          )}
+
+          {!isLoadingTransactions &&
+            !isErrorTransactions &&
+            locationBreakdown.length === 0 && (
+              <EmptyState
+                title="Todavía no hay gastos con lugar"
+                description="Asigná un lugar al cargar tus movimientos y vas a ver el ranking acá."
+              />
+            )}
+
+          {!isLoadingTransactions &&
+            !isErrorTransactions &&
+            locationBreakdown.length > 0 && (
+              <LocationBreakdownChart items={locationBreakdown} />
             )}
         </PanelCard>
       </div>

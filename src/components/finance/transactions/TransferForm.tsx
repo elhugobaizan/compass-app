@@ -2,6 +2,8 @@ import { useMemo, useState, JSX } from "react";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import { useCreateTransfer } from "@/hooks/mutations/useCreateTransfer";
+import AmountField from "@/components/ui/AmountField";
+import { evaluateExpression } from "@/utils/calculator";
 
 type TransferFormProps = {
   readonly accounts: Account[];
@@ -25,7 +27,8 @@ export default function TransferForm({
   const [concept, setConcept] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const parsedAmount = Number(amount);
+  // El monto admite operaciones simples (ej. "1200+800")
+  const parsedAmount = evaluateExpression(amount) ?? NaN;
 
   const originAccount = useMemo(
     () => accounts.find((account) => account.id === originAccountId),
@@ -96,22 +99,7 @@ export default function TransferForm({
         </div>
       )}
 
-      <div>
-        <label htmlFor="amount" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-          Monto
-        </label>
-        <input
-          name="amount"
-          type="number"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-lg"
-          placeholder="0"
-        />
-      </div>
+      <AmountField value={amount} onChange={setAmount} />
 
       <div>
         <label htmlFor="originAccount" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">

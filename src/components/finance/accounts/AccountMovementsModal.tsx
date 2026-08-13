@@ -13,6 +13,8 @@ import { toNumber } from "@/utils/numbers";
 import { parseLocalDate } from "@/utils/date";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
+import AmountField from "@/components/ui/AmountField";
+import { evaluateExpression } from "@/utils/calculator";
 
 type AccountMovementsModalProps = {
   readonly account: Account | null;
@@ -64,7 +66,8 @@ export default function AccountMovementsModal({
   const accruedInterest = breakdown?.accruedInterest ?? 0;
   const interestDays = breakdown?.interestDays ?? 0;
 
-  const parsedReal = Number(realBalance);
+  // Admite operaciones simples (ej. "50000+1200")
+  const parsedReal = evaluateExpression(realBalance) ?? NaN;
   const hasValidReal = realBalance.trim() !== "" && Number.isFinite(parsedReal);
   const delta = hasValidReal ? parsedReal - currentBalance : 0;
 
@@ -174,17 +177,13 @@ export default function AccountMovementsModal({
           ) : (
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-                  Saldo real de la cuenta
-                </label>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
+                <AmountField
                   value={realBalance}
-                  onChange={(e) => setRealBalance(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-lg"
-                  placeholder={String(currentBalance)}
+                  onChange={setRealBalance}
+                  label="Saldo real de la cuenta"
+                  name="realBalance"
+                  placeholder={String(Math.round(currentBalance))}
+                  currency={account.currency}
                   autoFocus
                 />
                 {hasValidReal && delta !== 0 && (

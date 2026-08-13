@@ -13,6 +13,8 @@ import {
   type Coordinates,
 } from "@/utils/geo";
 import { MapPin } from "lucide-react";
+import AmountField from "@/components/ui/AmountField";
+import { evaluateExpression } from "@/utils/calculator";
 
 
 type TransactionFormValues = Pick<Transaction,
@@ -105,7 +107,8 @@ export default function TransactionForm({
     return categories.filter((category) => category.type === type);
   }, [categories, typeId]);
 
-  const parsedAmount = Number(amount);
+  // El monto admite operaciones simples (ej. "1200+800")
+  const parsedAmount = evaluateExpression(amount) ?? NaN;
 
   const isValid =
     Number.isFinite(parsedAmount) &&
@@ -185,22 +188,7 @@ export default function TransactionForm({
         </div>
       )}
 
-      <div>
-        <label htmlFor="amount" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
-          Monto
-        </label>
-        <input
-          type="number"
-          name="amount"
-          inputMode="decimal"
-          step="0.01"
-          min="0"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-lg"
-          placeholder="0"
-        />
-      </div>
+      <AmountField value={amount} onChange={setAmount} />
 
       <div>
         <label htmlFor="type" className="mb-1 block text-sm font-medium text-[var(--color-ink)]">
