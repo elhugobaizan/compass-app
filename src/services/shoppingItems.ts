@@ -4,6 +4,7 @@ import type { ShoppingItem } from "@/types/shoppingItem";
 export type CreateShoppingItemInput = {
   name: string;
   is_done?: boolean;
+  is_recurring?: boolean;
 };
 
 export type UpdateShoppingItemInput = Partial<CreateShoppingItemInput>;

@@ -1,5 +1,5 @@
 import { JSX, useMemo, useState } from "react";
-import { Check, Plus, Trash2 } from "lucide-react";
+import { Check, Pin, Plus, Trash2 } from "lucide-react";
 
 import SectionBlock from "@/components/ui/SectionBlock";
 import Button from "@/components/ui/Button";
@@ -25,10 +25,11 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
   const { mutateAsync: deleteItem } = useDeleteShoppingItem();
 
   // Pendientes primero; los comprados van al final
-  const { pending, done } = useMemo(() => {
+  const { pending, done, recurringCount } = useMemo(() => {
     return {
       pending: items.filter((item) => !item.is_done),
       done: items.filter((item) => item.is_done),
+      recurringCount: items.filter((item) => item.is_recurring).length,
     };
   }, [items]);
 
@@ -45,18 +46,39 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
     await updateItem({ id: item.id, data: { is_done: !item.is_done } });
   }
 
-  async function handleClearDone() {
-    await Promise.all(done.map((item) => deleteItem(item.id)));
+  async function handleToggleRecurring(item: ShoppingItem) {
+    await updateItem({
+      id: item.id,
+      data: { is_recurring: !item.is_recurring },
+    });
+  }
+
+  /**
+   * Cierra la compra: los productos habituales vuelven a pendiente para la
+   * próxima, y los ocasionales ya comprados se eliminan.
+   */
+  async function handleFinishShopping() {
+    await Promise.all(
+      done.map((item) =>
+        item.is_recurring
+          ? updateItem({ id: item.id, data: { is_done: false } })
+          : deleteItem(item.id),
+      ),
+    );
   }
 
   return (
     <SectionBlock
       title="Lista de compras"
-      subtitle={isMobile ? undefined : "Lo que tenés que comprar"}
+      subtitle={
+        isMobile
+          ? undefined
+          : "Marcá con el pin los productos habituales: vuelven solos tras cada compra"
+      }
       action={
         done.length > 0 && !isMobile ? (
-          <Button variant="secondary" onClick={handleClearDone}>
-            Limpiar comprados ({done.length})
+          <Button variant="secondary" onClick={handleFinishShopping}>
+            Terminé la compra ({done.length})
           </Button>
         ) : undefined
       }
@@ -124,6 +146,28 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
 
                   <button
                     type="button"
+                    onClick={() => handleToggleRecurring(item)}
+                    aria-label={
+                      item.is_recurring
+                        ? `Quitar ${item.name} de habituales`
+                        : `Marcar ${item.name} como habitual`
+                    }
+                    title={
+                      item.is_recurring
+                        ? "Habitual: vuelve a la lista tras cada compra"
+                        : "Marcar como habitual"
+                    }
+                    className={
+                      item.is_recurring
+                        ? "shrink-0 rounded-md p-1.5 text-[var(--color-accent-text)]"
+                        : "shrink-0 rounded-md p-1.5 text-[var(--color-border)] transition-colors hover:text-[var(--color-muted)]"
+                    }
+                  >
+                    <Pin className="h-4 w-4" />
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => deleteItem(item.id)}
                     aria-label={`Eliminar ${item.name}`}
                     className="shrink-0 rounded-md p-1.5 text-[var(--color-muted)] transition-colors hover:bg-[var(--color-expense-bg)] hover:text-[var(--color-expense-text)]"
@@ -138,11 +182,12 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
               <p className="text-xs text-[var(--color-muted)]">
                 {pending.length} pendiente{pending.length === 1 ? "" : "s"}
                 {done.length > 0 && ` · ${done.length} comprado${done.length === 1 ? "" : "s"}`}
+                {recurringCount > 0 && ` · ${recurringCount} habitual${recurringCount === 1 ? "" : "es"}`}
               </p>
 
               {done.length > 0 && isMobile && (
-                <Button variant="secondary" size="sm" onClick={handleClearDone}>
-                  Limpiar comprados
+                <Button variant="secondary" size="sm" onClick={handleFinishShopping}>
+                  Terminé la compra
                 </Button>
               )}
             </div>
