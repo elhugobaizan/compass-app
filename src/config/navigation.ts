@@ -8,6 +8,7 @@ import {
   Settings,
   BanknoteArrowUp,
   MapPin,
+  Wrench,
 } from "lucide-react";
 
 export type NavigationItem = {
@@ -81,6 +82,15 @@ export const navigationItems: NavigationItem[] = [
     label: "Lugares",
     title: "Lugares",
     icon: MapPin,
+    mobile: "secondary",
+    showInWeb: true,
+  },
+  {
+    id: "tools",
+    route: "/tools",
+    label: "Herramientas",
+    title: "Herramientas",
+    icon: Wrench,
     mobile: "secondary",
     showInWeb: true,
   },

@@ -7,6 +7,7 @@ import AnalyticsPage from "@/pages/analytics/AnalyticsPage";
 import BillsPage from "@/pages/bills/BillsPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import LocationsPage from "@/pages/locations/LocationsPage";
+import ToolsPage from "@/pages/tools/ToolsPage";
 
 export default function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ export default function AppRoutes() {
       <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="/bills" element={<BillsPage />} />
       <Route path="/locations" element={<LocationsPage />} />
+      <Route path="/tools" element={<ToolsPage />} />
       <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
