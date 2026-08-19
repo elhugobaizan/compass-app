@@ -18,7 +18,6 @@ type ShoppingListProps = {
 
 export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Element {
   const [newItem, setNewItem] = useState("");
-  const [newQuantity, setNewQuantity] = useState("");
 
   const { data: items = [], isLoading, isError } = useShoppingItemsQuery();
   const { mutateAsync: createItem, isPending: isCreating } = useCreateShoppingItem();
@@ -38,9 +37,8 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
     const name = newItem.trim();
     if (!name) return;
 
-    await createItem({ name, quantity: newQuantity.trim() || null });
+    await createItem({ name });
     setNewItem("");
-    setNewQuantity("");
   }
 
   async function handleToggle(item: ShoppingItem) {
@@ -71,13 +69,6 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
             onChange={(e) => setNewItem(e.target.value)}
             placeholder="Agregar producto..."
             className="min-w-0 flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2"
-          />
-          <input
-            type="text"
-            value={newQuantity}
-            onChange={(e) => setNewQuantity(e.target.value)}
-            placeholder="Cant."
-            className="w-20 shrink-0 rounded-lg border border-[var(--color-border)] px-3 py-2"
           />
           <Button type="submit" disabled={!newItem.trim() || isCreating}>
             <Plus className="h-4 w-4" />
@@ -129,11 +120,6 @@ export default function ShoppingList({ isMobile }: ShoppingListProps): JSX.Eleme
                     }
                   >
                     {item.name}
-                    {item.quantity && (
-                      <span className="ml-2 text-xs text-[var(--color-muted)]">
-                        ×{item.quantity}
-                      </span>
-                    )}
                   </span>
 
                   <button

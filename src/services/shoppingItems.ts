@@ -3,7 +3,6 @@ import type { ShoppingItem } from "@/types/shoppingItem";
 
 export type CreateShoppingItemInput = {
   name: string;
-  quantity?: string | null;
   is_done?: boolean;
 };
 
