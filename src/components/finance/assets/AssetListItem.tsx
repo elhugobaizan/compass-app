@@ -11,6 +11,7 @@ type AssetListItemProps = {
   readonly accountName?: string;
   readonly accountLogo?: string | null;
   readonly currency?: string;
+  readonly onSelect?: (asset: Asset) => void;
   readonly onEdit?: () => void;
   readonly onRenew?: () => void;
   readonly onDelete?: () => void;
@@ -24,6 +25,7 @@ export function AssetListItem({
   accountName,
   accountLogo,
   currency,
+  onSelect,
   onEdit,
   onRenew,
   onDelete,
@@ -36,14 +38,18 @@ export function AssetListItem({
   return (
     <div id={id} className={["flex h-full flex-col scroll-mt-24 overflow-hidden rounded-xl transition-shadow border border-[var(--color-border)] bg-[var(--color-card)]",
       isHighlighted ? "ring-2 ring-[var(--color-accent)] shadow-sm" : ""].join(" ")}>
-      <div className="flex-1">
+      <button
+        type="button"
+        onClick={() => onSelect?.(asset)}
+        className="flex-1 text-left transition-colors hover:bg-[var(--color-paper)]"
+      >
         <AssetCard
           asset={asset}
           accountName={accountName}
           logo={accountLogo}
           currency={currency}
         />
-      </div>
+      </button>
 
       {hasActions && !isMobile && (
         <div className="flex items-center justify-end gap-2 border-t border-[var(--color-border)] bg-[var(--color-paper)] px-4 py-3">

@@ -32,6 +32,7 @@ import {
 import { useExchangeRates } from "@/hooks/queries/useExchangeRates";
 import AssetSummary from "@/components/finance/assets/AssetSummary";
 import AssetYieldSection from "@/components/finance/assets/AssetYieldSection";
+import AssetDetailModal from "@/components/finance/assets/AssetDetailModal";
 import { formatCurrency } from "@/utils/formatters";
 
 function buildAccountMap(accounts: Account[] = []): Record<string, string> {
@@ -55,6 +56,7 @@ export default function AssetsPage(): JSX.Element {
   const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
   const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
   const [assetToRenew, setAssetToRenew] = useState<Asset | null>(null);
+  const [assetToView, setAssetToView] = useState<Asset | null>(null);
   const [highlightedAssetId, setHighlightedAssetId] = useState<string | null>(null);
 
   const {
@@ -212,6 +214,7 @@ export default function AssetsPage(): JSX.Element {
                 accountName={accountMap[asset.account_id]}
                 accountLogo={accountLogoMap[asset.account_id]}
                 currency={getAssetCurrency(asset, accounts ?? [])}
+                onSelect={setAssetToView}
                 onEdit={() => setAssetToEdit(asset)}
                 onRenew={() => setAssetToRenew(asset)}
                 onDelete={() => setAssetToDelete(asset)}
@@ -222,6 +225,13 @@ export default function AssetsPage(): JSX.Element {
           </div>
         </>
       )}
+
+      <AssetDetailModal
+        asset={assetToView}
+        accounts={accounts}
+        accountName={assetToView ? accountMap[assetToView.account_id] : undefined}
+        onClose={() => setAssetToView(null)}
+      />
 
       <CreateAssetSheet
         open={isCreateAssetOpen}
