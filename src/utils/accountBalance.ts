@@ -13,9 +13,11 @@ export function signedAmount(tx: Transaction): number {
   switch (tx.type?.name) {
     case TRANSACTION_TYPES.INGRESO:
     case TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA:
+    case TRANSACTION_TYPES.INVERSION_ENTRADA:
       return amount;
     case TRANSACTION_TYPES.GASTO:
     case TRANSACTION_TYPES.TRANSFERENCIA_SALIDA:
+    case TRANSACTION_TYPES.INVERSION_SALIDA:
       return -amount;
     case TRANSACTION_TYPES.AJUSTE:
       // Ajuste: se aplica tal cual (asume monto con su propio signo/positivo)

@@ -5,6 +5,8 @@ import { useCreateAsset } from "@/hooks/mutations/useCreateAsset";
 import { Asset } from "@/types/asset";
 import { useUpdateAsset } from "@/hooks/mutations/useUpdateAsset";
 import { ASSET_TYPES, getAssetTypeConfig } from "@/utils/assetTypes";
+import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
+import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
 
 type AssetFormValues = Pick<Asset,
   'name' | 'symbol' | 'asset_type' | 'quantity' | 'price' | 'capital' | 'interest' | 'start_date' | 'maturity' | 'account_id'>;
@@ -40,6 +42,10 @@ export default function AssetForm({
   const [startDate, setStartDate] = useState(initialValues?.start_date || "");
   const [maturity, setMaturity] = useState(initialValues?.maturity || "");
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Registrar la salida de plata de la cuenta al invertirla
+  const [registerMovement, setRegisterMovement] = useState(true);
+
+  const { mutateAsync: createTransaction } = useCreateTransaction();
 
   const assetTypeConfig = getAssetTypeConfig(assetType);
   const isMarketAsset = assetTypeConfig.showsQuantityPrice;
@@ -47,6 +53,14 @@ export default function AssetForm({
   const showsValue = assetTypeConfig.showsValue;
 
   const isValid = accountId.trim().length > 0 && name.trim().length > 0;
+
+  // Plata que sale de la cuenta hacia la inversión al darla de alta
+  const investedAmount = isFixedDeposit
+    ? Number(capital) || 0
+    : (Number(quantity) || 0) * (Number(price) || 0);
+
+  // Solo al crear: editar un activo no vuelve a mover plata de la cuenta
+  const shouldOfferMovement = mode === "create" && investedAmount > 0;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,6 +92,18 @@ export default function AssetForm({
         await updateMutate({ id: assetId, data: payload });
       } else {
         await createMutate(payload);
+
+        // La plata sale de la cuenta hacia la inversión: no es un gasto,
+        // así que se registra con el tipo "A inversión".
+        if (shouldOfferMovement && registerMovement) {
+          await createTransaction({
+            account_id: accountId,
+            type_id: TRANSACTION_TYPE_IDS.INVERSION_SALIDA,
+            amount: investedAmount,
+            date: (startDate || new Date().toISOString().slice(0, 10)) + "T00:00:00.000Z",
+            concept: name.trim(),
+          });
+        }
 
         setAccountId("");
         setName("");
@@ -290,6 +316,28 @@ export default function AssetForm({
             />
           </div>
         </>
+      )}
+
+      {shouldOfferMovement && (
+        <label className="flex items-start gap-2 rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-ink)]">
+          <input
+            type="checkbox"
+            checked={registerMovement}
+            onChange={(e) => setRegisterMovement(e.target.checked)}
+            className="mt-0.5"
+          />
+          <span>
+            Descontar de la cuenta
+            <span className="block text-xs text-[var(--color-muted)]">
+              Registra un movimiento &quot;A inversión&quot; por{" "}
+              {new Intl.NumberFormat("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(investedAmount)}
+              . No cuenta como gasto.
+            </span>
+          </span>
+        </label>
       )}
 
       <Button type="submit" fullWidth disabled={!isValid || isPending}>

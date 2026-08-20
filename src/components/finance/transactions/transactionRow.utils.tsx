@@ -4,6 +4,7 @@ import {
   ArrowRightLeft,
   ArrowUpRight,
   SlidersHorizontal,
+  PiggyBank,
 } from "lucide-react";
 import { TRANSACTION_TYPES } from "@/utils/transactionTypes";
 import type { BadgeTone } from "../../ui/Badge";
@@ -16,6 +17,13 @@ export function getTransactionTone(typeLabel?: string): BadgeTone {
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_SALIDA
   ) {
     return "info";
+  }
+
+  if (
+    typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA ||
+    typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA
+  ) {
+    return "subtle";
   }
 
   if (typeLabel === TRANSACTION_TYPES.AJUSTE) return "warning";
@@ -34,6 +42,9 @@ export function getTransactionDisplayLabel(typeLabel?: string): string {
   }
 
   if (typeLabel === TRANSACTION_TYPES.GASTO) return "Gasto";
+
+  if (typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA) return "A inversión";
+  if (typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA) return "De inversión";
 
   if (typeLabel === TRANSACTION_TYPES.AJUSTE) return "Ajuste";
 
@@ -56,6 +67,13 @@ export function getTransactionAmountClass(typeLabel?: string): string {
     return "text-[var(--color-accent)]";
   }
 
+  if (
+    typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA ||
+    typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA
+  ) {
+    return "text-[#4A5A7A]";
+  }
+
   if (typeLabel === TRANSACTION_TYPES.AJUSTE) {
     return "text-[#8A5A2E]";
   }
@@ -66,6 +84,8 @@ export function getTransactionAmountClass(typeLabel?: string): string {
 export function getTransactionAmountPrefix(typeLabel?: string): string {
   if (typeLabel === TRANSACTION_TYPES.INGRESO) return "+";
   if (typeLabel === TRANSACTION_TYPES.GASTO) return "-";
+  if (typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA) return "+";
+  if (typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA) return "-";
 
   if (
     typeLabel === TRANSACTION_TYPES.TRANSFERENCIA_ENTRADA ||
@@ -115,6 +135,13 @@ export function getTransactionIcon(typeLabel?: string): JSX.Element {
     return <ArrowRightLeft className="h-4 w-4 text-[var(--color-accent)]" />;
   }
 
+  if (
+    typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA ||
+    typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA
+  ) {
+    return <PiggyBank className="h-4 w-4 text-[#4A5A7A]" />;
+  }
+
   if (typeLabel === TRANSACTION_TYPES.AJUSTE) {
     return <SlidersHorizontal className="h-4 w-4 text-[#8A5A2E]" />;
   }
@@ -125,6 +152,13 @@ export function getTransactionIcon(typeLabel?: string): JSX.Element {
 export function getTransactionIconContainerClass(typeLabel?: string): string {
   if (typeLabel === TRANSACTION_TYPES.INGRESO) {
     return "bg-[var(--color-income-bg)]";
+  }
+
+  if (
+    typeLabel === TRANSACTION_TYPES.INVERSION_ENTRADA ||
+    typeLabel === TRANSACTION_TYPES.INVERSION_SALIDA
+  ) {
+    return "bg-[#E4E9F2]";
   }
 
   if (typeLabel === TRANSACTION_TYPES.AJUSTE) {

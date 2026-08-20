@@ -15,6 +15,7 @@ import {
 import { MapPin } from "lucide-react";
 import AmountField from "@/components/ui/AmountField";
 import { evaluateExpression } from "@/utils/calculator";
+import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
 
 
 type TransactionFormValues = Pick<Transaction,
@@ -32,8 +33,10 @@ type TransactionFormProps = {
 };
 
 const TRANSACTION_TYPES = [
-  { id: "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d", label: "Gasto" },
-  { id: "e0c36d0a-85ef-4fb6-a1f6-9480a17ed68f", label: "Ingreso" },
+  { id: TRANSACTION_TYPE_IDS.GASTO, label: "Gasto" },
+  { id: TRANSACTION_TYPE_IDS.INGRESO, label: "Ingreso" },
+  { id: TRANSACTION_TYPE_IDS.INVERSION_SALIDA, label: "A inversión" },
+  { id: TRANSACTION_TYPE_IDS.INVERSION_ENTRADA, label: "De inversión" },
 ];
 
 function todayDate(): string {
@@ -56,7 +59,7 @@ export default function TransactionForm({
   const [amount, setAmount] = useState(initialValues?.amount.toString() ?? "");
   const [concept, setConcept] = useState(initialValues?.concept ?? "");
   const [date, setDate] = useState(initialValues?.date ?? todayDate());
-  const [typeId, setTypeId] = useState(initialValues?.type_id ?? "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
+  const [typeId, setTypeId] = useState(initialValues?.type_id ?? TRANSACTION_TYPE_IDS.GASTO);
   const [accountId, setAccountId] = useState(initialValues?.account_id ?? "");
   const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? "");
   const [locationId, setLocationId] = useState(initialValues?.location_id ?? "");
@@ -103,7 +106,7 @@ export default function TransactionForm({
   }
 
   const filteredCategories = useMemo(() => {
-    const type = typeId === "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d" ? "EXPENSE" : "INCOME";
+    const type = typeId === TRANSACTION_TYPE_IDS.GASTO ? "EXPENSE" : "INCOME";
     return categories.filter((category) => category.type === type);
   }, [categories, typeId]);
 
@@ -162,7 +165,7 @@ export default function TransactionForm({
         setAmount("");
         setConcept("");
         setDate(todayDate());
-        setTypeId("2bc1382d-90b2-45ae-b91f-e7d3fd155b2d");
+        setTypeId(TRANSACTION_TYPE_IDS.GASTO);
         setAccountId("");
         setCategoryId("");
         setLocationId("");

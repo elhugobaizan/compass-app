@@ -128,6 +128,14 @@ export default function TransactionsPage(): JSX.Element {
       );
     }
 
+    if (typeFilter === "INVERSION") {
+      return all.filter(
+        (tx) =>
+          tx.type?.name === TRANSACTION_TYPES.INVERSION_SALIDA ||
+          tx.type?.name === TRANSACTION_TYPES.INVERSION_ENTRADA,
+      );
+    }
+
     return all.filter((tx) => tx.type?.name === typeFilter);
   }, [transactions, typeFilter]);
 
