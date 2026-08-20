@@ -5,7 +5,7 @@ export function useDeleteBill() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteBill(id),
+    mutationFn: (id: number) => deleteBill(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
       queryClient.invalidateQueries({ queryKey: ["bill_payments"] });

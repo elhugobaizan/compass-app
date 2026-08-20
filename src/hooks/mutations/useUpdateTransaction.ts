@@ -5,7 +5,7 @@ import {
 } from "@/services/transactions";
 
 type UpdateTransactionArgs = {
-  id: string;
+  id: number;
   data: UpdateTransactionInput;
 };
 

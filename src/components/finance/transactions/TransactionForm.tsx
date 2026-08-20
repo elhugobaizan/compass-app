@@ -16,6 +16,7 @@ import { MapPin } from "lucide-react";
 import AmountField from "@/components/ui/AmountField";
 import { evaluateExpression } from "@/utils/calculator";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
+import { toIdValue, toId } from "@/utils/ids";
 
 
 type TransactionFormValues = Pick<Transaction,
@@ -27,7 +28,7 @@ type TransactionFormProps = {
   readonly accounts: Account[];
   readonly categories: Category[];
   readonly mode?: "create" | "edit";
-  readonly transactionId?: string;
+  readonly transactionId?: number;
   readonly initialValues?: TransactionFormValues;
   readonly onSuccess?: () => void;
 };
@@ -59,10 +60,10 @@ export default function TransactionForm({
   const [amount, setAmount] = useState(initialValues?.amount.toString() ?? "");
   const [concept, setConcept] = useState(initialValues?.concept ?? "");
   const [date, setDate] = useState(initialValues?.date ?? todayDate());
-  const [typeId, setTypeId] = useState(initialValues?.type_id ?? TRANSACTION_TYPE_IDS.GASTO);
-  const [accountId, setAccountId] = useState(initialValues?.account_id ?? "");
-  const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? "");
-  const [locationId, setLocationId] = useState(initialValues?.location_id ?? "");
+  const [typeId, setTypeId] = useState(toIdValue(initialValues?.type_id ?? TRANSACTION_TYPE_IDS.GASTO));
+  const [accountId, setAccountId] = useState(toIdValue(initialValues?.account_id));
+  const [categoryId, setCategoryId] = useState(toIdValue(initialValues?.category_id));
+  const [locationId, setLocationId] = useState(toIdValue(initialValues?.location_id));
   const [newLocationName, setNewLocationName] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -85,7 +86,7 @@ export default function TransactionForm({
 
       if (nearby) {
         // Ya tenés un lugar guardado acá: se selecciona
-        setLocationId(nearby.location.id);
+        setLocationId(toIdValue(nearby.location.id));
         setCoords(null);
         setGeoMessage(
           `Estás en ${nearby.location.name} (a ${Math.round(nearby.distance)} m).`,
@@ -106,7 +107,7 @@ export default function TransactionForm({
   }
 
   const filteredCategories = useMemo(() => {
-    const type = typeId === TRANSACTION_TYPE_IDS.GASTO ? "EXPENSE" : "INCOME";
+    const type = toId(typeId) === TRANSACTION_TYPE_IDS.GASTO ? "EXPENSE" : "INCOME";
     return categories.filter((category) => category.type === type);
   }, [categories, typeId]);
 
@@ -127,7 +128,7 @@ export default function TransactionForm({
       setSubmitError(null);
 
       // Si eligió "nuevo lugar", se crea primero y se usa su id
-      let resolvedLocationId: string | undefined = locationId || undefined;
+      let resolvedLocationId: number | null = toId(locationId);
 
       if (isCreatingLocation) {
         const name = newLocationName.trim();
@@ -147,10 +148,10 @@ export default function TransactionForm({
         amount: parsedAmount,
         concept: concept.trim() || undefined,
         date: date + "T00:00:00.000Z",
-        account_id: accountId,
-        category_id: categoryId || undefined,
-        type_id: typeId,
-        location_id: resolvedLocationId ?? null,
+        account_id: Number(accountId),
+        category_id: toId(categoryId) ?? undefined,
+        type_id: Number(typeId),
+        location_id: resolvedLocationId,
       };
 
       if (mode === "edit") {
@@ -165,7 +166,7 @@ export default function TransactionForm({
         setAmount("");
         setConcept("");
         setDate(todayDate());
-        setTypeId(TRANSACTION_TYPE_IDS.GASTO);
+        setTypeId(toIdValue(TRANSACTION_TYPE_IDS.GASTO));
         setAccountId("");
         setCategoryId("");
         setLocationId("");

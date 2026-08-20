@@ -3,7 +3,7 @@ import { TRANSACTION_TYPES } from "./transactionTypes";
 import { toNumber } from "./numbers";
 
 export type LocationBreakdownItem = {
-  locationId: string;
+  locationId: number;
   locationName: string;
   total: number;
   count: number;
@@ -17,7 +17,7 @@ export type LocationBreakdownItem = {
 export function getExpenseBreakdownByLocation(
   transactions: Transaction[] = [],
 ): LocationBreakdownItem[] {
-  const totals = new Map<string, { name: string; total: number; count: number }>();
+  const totals = new Map<number, { name: string; total: number; count: number }>();
 
   for (const tx of transactions) {
     if (tx.type?.name !== TRANSACTION_TYPES.GASTO) continue;

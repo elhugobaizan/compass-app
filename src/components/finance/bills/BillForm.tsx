@@ -1,4 +1,5 @@
 import { JSX, useState } from "react";
+import { toIdValue, toId } from "@/utils/ids";
 
 import Button from "@/components/ui/Button";
 
@@ -23,7 +24,7 @@ type BillFormProps = {
   readonly accounts: Account[];
   readonly categories?: Category[];
   readonly mode?: "create" | "edit";
-  readonly billId?: string;
+  readonly billId?: number;
   readonly initialValues?: BillFormValues;
   readonly onSuccess?: () => void;
 };
@@ -41,7 +42,7 @@ export default function BillForm({
 
   const isPending = isCreating || isUpdating;
 
-  const [accountId, setAccountId] = useState(initialValues?.account_id || "");
+  const [accountId, setAccountId] = useState(toIdValue(initialValues?.account_id));
   const [name, setName] = useState(initialValues?.name || "");
   const [dueDay, setDueDay] = useState(
     initialValues?.due_day?.toString() || "",
@@ -55,7 +56,7 @@ export default function BillForm({
   const [notes, setNotes] = useState(initialValues?.notes || "");
   const [logo, setLogo] = useState(initialValues?.logo || "");
   const [url, setUrl] = useState(initialValues?.url || "");
-  const [categoryId, setCategoryId] = useState(initialValues?.category_id || "");
+  const [categoryId, setCategoryId] = useState(toIdValue(initialValues?.category_id));
   const [isActive, setIsActive] = useState(initialValues?.is_active ?? true);
   const [provider, setProvider] = useState(initialValues?.provider || "");
   const [referenceNumber, setReferenceNumber] = useState(initialValues?.reference_number || "");
@@ -77,11 +78,11 @@ export default function BillForm({
     const payload: BillInput = {
       name: name.trim(),
       due_day: parsedDueDay,
-      account_id: accountId,
+      account_id: Number(accountId),
       notes: notes.trim() || null,
       logo: logo.trim() || null,
       url: url.trim() || null,
-      category_id: categoryId || null,
+      category_id: toId(categoryId),
       customer_number: customerNumber.trim() || null,
       default_amount: parsedDefaultAmount,
       is_active: isActive,

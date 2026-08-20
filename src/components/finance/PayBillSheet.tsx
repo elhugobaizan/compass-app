@@ -11,6 +11,8 @@ import type { Bill, UpdateBillPaymentInput } from "@/types/bill";
 import type { BillPayment } from "@/types/bill";
 import type { Account } from "@/types/account";
 import { toDateKey } from "@/utils/date";
+import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
+import { toIdValue } from "@/utils/ids";
 
 type PayBillSheetProps = {
   readonly open: boolean;
@@ -58,7 +60,7 @@ export default function PayBillSheet({
     useUpdateBillPayment();
 
   const initialAccountId = useMemo(() => {
-    return bill?.account_id ?? "";
+    return toIdValue(bill?.account_id);
   }, [bill]);
 
   const initialConcept = useMemo(() => {
@@ -134,12 +136,12 @@ export default function PayBillSheet({
         : defaultDate ? defaultDate + "T00:00:00.000Z" : null;
 
       const transaction = await createTransaction({
-        account_id: accountId,
+        account_id: Number(accountId),
         concept: concept.trim(),
         amount: parsedAmount,
         date: date + "T00:00:00.000Z",
         category_id: bill.category_id,
-        type_id: "2bc1382d-90b2-45ae-b91f-e7d3fd155b2d"
+        type_id: TRANSACTION_TYPE_IDS.GASTO
       });
 
       const paymentPayload: UpdateBillPaymentInput = {

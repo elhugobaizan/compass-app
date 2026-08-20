@@ -2,8 +2,8 @@ import { apiFetch } from "./api";
 import type { Asset } from "@/types/asset";
 
 type AssetInput = {
-  account_id: string;
-  origin_account_id?: string;
+  account_id: number;
+  origin_account_id?: number;
   name: string;
   symbol?: string;
   asset_type: string;
@@ -29,14 +29,14 @@ export function createAsset(data: CreateAssetInput): Promise<Asset> {
   });
 }
 
-export function deleteAsset(id: string): Promise<{ success?: boolean }> {
+export function deleteAsset(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/assets/${id}`, {
     method: "DELETE",
   });
 }
 
 export function updateAsset(
-  id: string,
+  id: number,
   data: UpdateAssetInput
 ): Promise<Asset> {
   return apiFetch<Asset>(`/assets/${id}`, {

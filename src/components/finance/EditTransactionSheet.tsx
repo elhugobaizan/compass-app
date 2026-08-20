@@ -65,9 +65,9 @@ export default function EditTransactionSheet({
             amount: transaction.amount,
             date: transaction.date.slice(0, 10),
             account_id: transaction.account_id,
-            category_id: transaction.category_id ?? "",
-            type_id: transaction.type_id ?? "",
-            location_id: transaction.location_id ?? "",
+            category_id: transaction.category_id ?? null,
+            type_id: transaction.type_id ?? null,
+            location_id: transaction.location_id ?? null,
           }}
           onSuccess={onClose}
         />

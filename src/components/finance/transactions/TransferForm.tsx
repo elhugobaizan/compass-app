@@ -1,4 +1,5 @@
 import { useMemo, useState, JSX } from "react";
+import { toId } from "@/utils/ids";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import { useCreateTransfer } from "@/hooks/mutations/useCreateTransfer";
@@ -31,14 +32,14 @@ export default function TransferForm({
   const parsedAmount = evaluateExpression(amount) ?? NaN;
 
   const originAccount = useMemo(
-    () => accounts.find((account) => account.id === originAccountId),
+    () => accounts.find((account) => account.id === toId(originAccountId)),
     [accounts, originAccountId]
   );
 
   const destinationOptions = useMemo(() => {
     if (!originAccountId) return accounts;
 
-    return accounts.filter((account) => account.id !== originAccountId);
+    return accounts.filter((account) => account.id !== toId(originAccountId));
   }, [accounts, originAccountId]);
 
   const sameCurrencyDestinationOptions = useMemo(() => {
@@ -69,8 +70,8 @@ export default function TransferForm({
         // ISO explícito en UTC, igual que los movimientos normales, para que no
         // se corra el día al guardar (columna timestamp without time zone)
         date: date + "T00:00:00.000Z",
-        origin_account_id: originAccountId,
-        destination_account_id: destinationAccountId,
+        origin_account_id: Number(originAccountId),
+        destination_account_id: Number(destinationAccountId),
         concept: concept.trim() || undefined,
       });
 

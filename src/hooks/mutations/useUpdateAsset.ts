@@ -5,7 +5,7 @@ import {
 } from "@/services/assets";
 
 type UpdateAssetArgs = {
-  id: string;
+  id: number;
   data: UpdateAssetInput;
 };
 

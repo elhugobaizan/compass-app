@@ -105,7 +105,7 @@ export default function AccountsPage(): JSX.Element {
 
   // Cuenta con la TNA más alta (para destacarla)
   const bestRateAccountId = useMemo(() => {
-    let bestId: string | null = null;
+    let bestId: number | null = null;
     let bestRate = 0;
     for (const account of sortedAccounts) {
       const rate = toNumber(account.interest_rate);

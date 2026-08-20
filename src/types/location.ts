@@ -1,5 +1,5 @@
 export type Location = {
-  id: string;
+  id: number;
   name: string;
   /** Coordenadas opcionales: un lugar puede existir sin ubicación en el mapa. */
   latitude?: string | number | null;

@@ -3,15 +3,15 @@ import { Location } from "./location";
 
 // src/types/transaction.ts
 export type Transaction = {
-  id: string;
+  id: number;
   concept?: string | null;
   date: string;
   amount: number;
-  account_id: string;
-  category_id?: string | null;
-  type_id: string | null;
+  account_id: number;
+  category_id?: number | null;
+  type_id: number | null;
   transfer_group?: string | null;
-  location_id?: string | null;
+  location_id?: number | null;
   created_at: string;
   updated_at?: string | null;
   deleted_at?: string | null;
@@ -24,12 +24,12 @@ export type Transaction = {
 };
 
 export type TransactionType = {
-  id: string;
+  id: number;
   name: string;
 };
 
 export type TransactionCategory = {
-  id: string;
+  id: number;
   name: string;
   type: "INGRESO" | "GASTO" | "TRANSFERENCIA_ENTRADA" | "TRANSFERENCIA_SALIDA" | "AJUSTE";
   created_at: string;

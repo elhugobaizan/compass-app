@@ -51,7 +51,7 @@ export function createTransaction(
   });
 }
 
-export function deleteTransaction(id: string): Promise<{ success?: boolean }> {
+export function deleteTransaction(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/transactions/${id}`, {
     method: "DELETE",
   });
@@ -72,7 +72,7 @@ function mapUpdateTransactionInput(
 }
 
 export function updateTransaction(
-  id: string,
+  id: number,
   data: UpdateTransactionInput
 ): Promise<Transaction> {
   return apiFetch<Transaction>(`/transactions/${id}`, {

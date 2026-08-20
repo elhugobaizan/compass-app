@@ -5,7 +5,7 @@ export function useUpdateLocation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateLocationInput }) =>
+    mutationFn: ({ id, data }: { id: number; data: UpdateLocationInput }) =>
       updateLocation(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["locations"] });

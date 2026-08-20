@@ -4,16 +4,16 @@ import type { Transaction } from "@/types/transaction";
 export type CreateTransferInput = {
   amount: number;
   date: string;
-  origin_account_id: string;
-  destination_account_id: string;
+  origin_account_id: number;
+  destination_account_id: number;
   concept?: string;
 };
 
 type CreateTransferPayload = {
   amount: string;
   date: string;
-  origin_account_id: string;
-  destination_account_id: string;
+  origin_account_id: number;
+  destination_account_id: number;
   concept?: string;
 };
 

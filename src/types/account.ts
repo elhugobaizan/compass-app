@@ -1,9 +1,9 @@
 // src/types/account.ts
 export type Account = {
-  id: string;
+  id: number;
   name: string;
   account_type: string;
-  account_group_id: string;
+  account_group_id: number;
   account_group: AccountGroup;
   currency: string;
   institution?: string | null;

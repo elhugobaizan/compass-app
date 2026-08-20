@@ -57,7 +57,7 @@ export default function AssetsPage(): JSX.Element {
   const [assetToEdit, setAssetToEdit] = useState<Asset | null>(null);
   const [assetToRenew, setAssetToRenew] = useState<Asset | null>(null);
   const [assetToView, setAssetToView] = useState<Asset | null>(null);
-  const [highlightedAssetId, setHighlightedAssetId] = useState<string | null>(null);
+  const [highlightedAssetId, setHighlightedAssetId] = useState<number | null>(null);
 
   const {
     data: assets,

@@ -24,7 +24,7 @@ export function useUpdateShoppingItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateShoppingItemInput }) =>
+    mutationFn: ({ id, data }: { id: number; data: UpdateShoppingItemInput }) =>
       updateShoppingItem(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
@@ -36,7 +36,7 @@ export function useDeleteShoppingItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteShoppingItem(id),
+    mutationFn: (id: number) => deleteShoppingItem(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
     },

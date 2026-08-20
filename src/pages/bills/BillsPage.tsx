@@ -123,7 +123,7 @@ export default function BillsPage(): JSX.Element {
   const deleteBillMutation = useDeleteBill();
 
   const paymentsByBillId = useMemo(() => {
-    return new Map<string, BillPayment>(
+    return new Map<number, BillPayment>(
       billPayments.map((billPayment: BillPayment) => [billPayment.bill_id, billPayment]),
     );
   }, [billPayments]);

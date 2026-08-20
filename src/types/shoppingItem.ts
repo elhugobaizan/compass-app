@@ -1,5 +1,5 @@
 export type ShoppingItem = {
-  id: string;
+  id: number;
   name: string;
   is_done: boolean;
   /** Producto habitual: sobrevive al cierre de la compra. */

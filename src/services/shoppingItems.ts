@@ -25,7 +25,7 @@ export function createShoppingItem(
 }
 
 export function updateShoppingItem(
-  id: string,
+  id: number,
   data: UpdateShoppingItemInput,
 ): Promise<ShoppingItem> {
   return apiFetch<ShoppingItem>(`/shopping_items/${id}`, {
@@ -34,7 +34,7 @@ export function updateShoppingItem(
   });
 }
 
-export function deleteShoppingItem(id: string): Promise<{ success?: boolean }> {
+export function deleteShoppingItem(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/shopping_items/${id}`, {
     method: "DELETE",
   });

@@ -5,7 +5,7 @@ import {
 import type { UpdateBillPaymentInput } from "@/types/bill";
 
 type UpdateBillPaymentArgs = {
-  id: string;
+  id: number;
   data: UpdateBillPaymentInput;
 };
 

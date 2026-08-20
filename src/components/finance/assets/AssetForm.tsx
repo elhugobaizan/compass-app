@@ -7,6 +7,7 @@ import { useUpdateAsset } from "@/hooks/mutations/useUpdateAsset";
 import { ASSET_TYPES, getAssetTypeConfig } from "@/utils/assetTypes";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
+import { toIdValue } from "@/utils/ids";
 
 type AssetFormValues = Pick<Asset,
   'name' | 'symbol' | 'asset_type' | 'quantity' | 'price' | 'capital' | 'interest' | 'start_date' | 'maturity' | 'account_id'>;
@@ -14,7 +15,7 @@ type AssetFormValues = Pick<Asset,
 type AssetFormProps = {
   readonly accounts: Account[];
   readonly mode?: "create" | "edit";
-  readonly assetId?: string;
+  readonly assetId?: number;
   readonly initialValues?: AssetFormValues;
   readonly onSuccess?: () => void;
 };
@@ -31,7 +32,7 @@ export default function AssetForm({
 
   const isPending = isCreating || isUpdating;
 
-  const [accountId, setAccountId] = useState(initialValues?.account_id || "");
+  const [accountId, setAccountId] = useState(toIdValue(initialValues?.account_id));
   const [name, setName] = useState(initialValues?.name || "");
   const [symbol, setSymbol] = useState(initialValues?.symbol || "");
   const [assetType, setAssetType] = useState(initialValues?.asset_type || "CRYPTO");
@@ -67,7 +68,7 @@ export default function AssetForm({
     if (!isValid) return;
 
     const payload = {
-      account_id: accountId,
+      account_id: Number(accountId),
       name: name.trim(),
       symbol: symbol.trim() || undefined,
       asset_type: assetType,
@@ -78,7 +79,7 @@ export default function AssetForm({
       start_date: startDate || undefined,
       maturity: maturity || undefined,
       // TODO: permitir seleccionar origin_account_id distinto al account_id al renovar
-      origin_account_id: assetType === "FIXED_DEPOSIT" ? accountId : undefined,
+      origin_account_id: assetType === "FIXED_DEPOSIT" ? Number(accountId) : undefined,
     };
 
     try {
@@ -97,7 +98,7 @@ export default function AssetForm({
         // así que se registra con el tipo "A inversión".
         if (shouldOfferMovement && registerMovement) {
           await createTransaction({
-            account_id: accountId,
+            account_id: Number(accountId),
             type_id: TRANSACTION_TYPE_IDS.INVERSION_SALIDA,
             amount: investedAmount,
             date: (startDate || new Date().toISOString().slice(0, 10)) + "T00:00:00.000Z",

@@ -1,7 +1,7 @@
 import { apiFetch } from "./api";
 
 export type Snapshot = {
-  id: string;
+  id: number;
   year: number;
   month: number;
   period?: string | null;

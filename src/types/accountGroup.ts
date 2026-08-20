@@ -1,9 +1,10 @@
 import { CURRENCIES } from "@/config/currencies";
 
+// IDs de la tabla account_groups (DB): LIQUID / INVESTMENT / DEBT
 export const ACCOUNT_GROUP_OPTIONS = [
-  { id: "f0245c9f-1377-4852-a912-b049910838b0", label: "Liquidez" },
-  { id: "01e11fd3-9ee4-468f-a16c-b793341fb696", label: "Inversión" },
-  { id: "5148497c-ad65-4845-9812-1164fe6a6598", label: "Deuda" },
+  { id: 1, label: "Liquidez" },
+  { id: 2, label: "Inversión" },
+  { id: 3, label: "Deuda" },
 ];
 
 export const ACCOUNT_TYPE_OPTIONS = [

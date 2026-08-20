@@ -14,7 +14,7 @@ export function getAccounts(): Promise<Account[]> {
   return apiFetch<Account[]>("/accounts");
 }
 
-export function getAccountById(id: string): Promise<Account> {
+export function getAccountById(id: number): Promise<Account> {
   return apiFetch<Account>(`/accounts/${id}`);
 }
 
@@ -27,14 +27,14 @@ export function createAccount(
   });
 }
 
-export function deleteAccount(id: string): Promise<{ success?: boolean }> {
+export function deleteAccount(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/accounts/${id}`, {
     method: "DELETE",
   });
 }
 
 export function updateAccount(
-  id: string,
+  id: number,
   data: UpdateAccountInput
 ): Promise<Account> {
   return apiFetch<Account>(`/accounts/${id}`, {

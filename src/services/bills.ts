@@ -12,14 +12,14 @@ export function createBill(data: CreateBillInput): Promise<Bill> {
   });
 }
 
-export function deleteBill(id: string): Promise<{ success?: boolean }> {
+export function deleteBill(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/bills/${id}`, {
     method: "DELETE",
   });
 }
 
 export function updateBill(
-  id: string,
+  id: number,
   data: UpdateBillInput
 ): Promise<Bill> {
   return apiFetch<Bill>(`/bills/${id}`, {
@@ -39,14 +39,14 @@ export function createBillPayment(data: CreateBillPaymentInput): Promise<BillPay
   });
 }
 
-export function deleteBillPayment(id: string): Promise<{ success?: boolean }> {
+export function deleteBillPayment(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/bill_payments/${id}`, {
     method: "DELETE",
   });
 }
 
 export function updateBillPayment(
-  id: string,
+  id: number,
   data: UpdateBillPaymentInput
 ): Promise<BillPayment> {
   return apiFetch<BillPayment>(`/bill_payments/${id}`, {

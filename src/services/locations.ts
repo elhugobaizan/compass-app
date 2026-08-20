@@ -21,7 +21,7 @@ export function createLocation(data: CreateLocationInput): Promise<Location> {
 }
 
 export function updateLocation(
-  id: string,
+  id: number,
   data: UpdateLocationInput,
 ): Promise<Location> {
   return apiFetch<Location>(`/locations/${id}`, {
@@ -30,7 +30,7 @@ export function updateLocation(
   });
 }
 
-export function deleteLocation(id: string): Promise<{ success?: boolean }> {
+export function deleteLocation(id: number): Promise<{ success?: boolean }> {
   return apiFetch<{ success?: boolean }>(`/locations/${id}`, {
     method: "DELETE",
   });

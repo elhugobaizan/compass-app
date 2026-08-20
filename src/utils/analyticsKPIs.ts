@@ -25,7 +25,7 @@ export type NetWorthBlock = {
 };
 
 export type ForeignAccountDetail = {
-  id: string;
+  id: number;
   name: string;
   currency: string;
   nativeBalance: number;

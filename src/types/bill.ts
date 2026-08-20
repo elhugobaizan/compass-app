@@ -3,8 +3,8 @@ import { Category } from "./category";
 import { Transaction } from "./transaction";
 
 export type BillPayment = {
-  id: string;
-  bill_id: string;
+  id: number;
+  bill_id: number;
   year: number;
   month: number;
   due_date: string | null;
@@ -12,7 +12,7 @@ export type BillPayment = {
   paid_amount: number | null;
   paid_at: string | null;
   status: "paid" | "pending" | "overdue";
-  transaction_id: string | null;
+  transaction_id: number | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -23,17 +23,17 @@ export type BillPayment = {
 };
 
 export type Bill = {
-  id: string;
+  id: number;
   name: string;
   due_day: number | null;
-  account_id: string | null;
+  account_id: number | null;
   notes: string | null;
   logo: string | null;
   url: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
-  category_id: string | null;
+  category_id: number | null;
   customer_number: string | null;
   default_amount: number;
   is_active: boolean;

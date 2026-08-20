@@ -8,6 +8,7 @@ import {
 } from "@/types/accountGroup";
 import { Account } from "@/types/account";
 import { useUpdateAccount } from "@/hooks/mutations/useUpdateAccount";
+import { toIdValue } from "@/utils/ids";
 
 type AccountFormValues = Pick<Account,
   'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method' | 'interest_rate'
@@ -15,7 +16,7 @@ type AccountFormValues = Pick<Account,
 
 type AccountFormProps = {
   readonly mode?: "create" | "edit";
-  readonly accountId?: string;
+  readonly accountId?: number;
   readonly initialValues?: AccountFormValues
   /** Saldo actual real (inicial + movimientos + interés devengado). */
   readonly currentBalance?: number;
@@ -64,7 +65,7 @@ export default function AccountForm({
   const [name, setName] = useState(initialValues?.name || "");
   const [accountType, setAccountType] = useState(initialValues?.account_type || "WALLET");
   const [accountGroupId, setAccountGroupId] = useState(
-    initialValues?.account_group_id || ACCOUNT_GROUP_OPTIONS[0]?.id || "",
+    toIdValue(initialValues?.account_group_id ?? ACCOUNT_GROUP_OPTIONS[0]?.id),
   );
   const [currency, setCurrency] = useState(initialValues?.currency || "ARS");
   const [institution, setInstitution] = useState(initialValues?.institution || "");
@@ -106,7 +107,7 @@ export default function AccountForm({
     const payload = {
       name: name.trim(),
       account_type: accountType,
-      account_group_id: accountGroupId,
+      account_group_id: Number(accountGroupId),
       currency,
       institution: institution.trim() || undefined,
       opening_balance: shouldFreezeInterest ? currentBalance : safeOpeningBalance,
@@ -130,7 +131,7 @@ export default function AccountForm({
 
         setName("");
         setAccountType("WALLET");
-        setAccountGroupId(ACCOUNT_GROUP_OPTIONS[0]?.id || "");
+        setAccountGroupId(toIdValue(ACCOUNT_GROUP_OPTIONS[0]?.id));
         setCurrency("ARS");
         setInstitution("");
         setOpeningBalance(0);
