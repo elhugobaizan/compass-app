@@ -1,4 +1,5 @@
 import { useMemo, useState, JSX } from "react";
+import { getErrorMessage } from "@/services/api";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
 import type { Category } from "@/types/category";
@@ -177,9 +178,10 @@ export default function TransactionForm({
 
       onSuccess?.();
     } catch (error) {
-      const message = error instanceof Error ? error.message :
-        mode === "edit" ? "No pudimos actualizar el movimiento." : "No pudimos guardar el movimiento.";
-      console.log(error);
+      const message = getErrorMessage(
+        error,
+        mode === "edit" ? "No pudimos actualizar el movimiento." : "No pudimos guardar el movimiento.",
+      );
       setSubmitError(message);
     }
   }

@@ -9,6 +9,7 @@ import {
 import { Account } from "@/types/account";
 import { useUpdateAccount } from "@/hooks/mutations/useUpdateAccount";
 import { toIdValue } from "@/utils/ids";
+import { getErrorMessage } from "@/services/api";
 
 type AccountFormValues = Pick<Account,
   'name' | 'account_type' | 'account_group_id' | 'currency' | 'institution' | 'opening_balance' | 'opening_date' | 'is_payment_method' | 'interest_rate'
@@ -25,29 +26,6 @@ type AccountFormProps = {
 
 function todayDate(): string {
   return new Date().toISOString().slice(0, 10);
-}
-
-function formatErrorMessage(input: unknown, mode: "create" | "edit"): string {
-  if (typeof input !== "string") {
-    return String("No pudimos guardar la cuenta.");
-  }
-
-  const trimmed = input.trim();
-
-  // Solo intenta parsear si parece HTML
-  if (
-    trimmed.includes("<!DOCTYPE html>") ||
-    trimmed.includes("<html")
-  ) {
-    const match = trimmed.match(/<pre>([\s\S]*?)<\/pre>/i);
-    if (match?.[1]) {
-      return match[1].trim();
-    } else {
-      return mode === "edit" ? "No pudimos actualizar la cuenta." : "No pudimos guardar la cuenta.";
-    }
-  }
-
-  return trimmed;
 }
 
 export default function AccountForm({
@@ -142,7 +120,10 @@ export default function AccountForm({
 
       onSuccess?.();
     } catch (error) {
-      const message = formatErrorMessage(error, mode);
+      const message = getErrorMessage(
+        error,
+        mode === "edit" ? "No pudimos actualizar la cuenta." : "No pudimos guardar la cuenta.",
+      );
 
       setSubmitError(message);
     }

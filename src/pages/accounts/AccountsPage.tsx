@@ -1,4 +1,5 @@
 import { JSX, useMemo, useState } from "react";
+import { getErrorMessage } from "@/services/api";
 
 import PageHeader from "@/components/ui/PageHeader";
 import Button from "@/components/ui/Button";
@@ -133,15 +134,7 @@ export default function AccountsPage(): JSX.Element {
       await deleteAccount(accountToDelete.id);
       setAccountToDelete(null);
     } catch (error) {
-      if (error instanceof Error) {
-        try {
-          setSubmitError(JSON.parse(error.message));
-        } catch {
-          setSubmitError(error.message);
-        }
-      } else {
-        setSubmitError("Error inesperado.");
-      }
+      setSubmitError(getErrorMessage(error, "No pudimos eliminar la cuenta."));
     }
   }
 

@@ -1,4 +1,5 @@
 import { useMemo, useState, JSX } from "react";
+import { getErrorMessage } from "@/services/api";
 import { toId } from "@/utils/ids";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
@@ -84,9 +85,7 @@ export default function TransferForm({
       onSuccess?.();
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "No pudimos registrar la transferencia.";
+        getErrorMessage(error, "No pudimos registrar la transferencia.");
 
       setSubmitError(message);
     }

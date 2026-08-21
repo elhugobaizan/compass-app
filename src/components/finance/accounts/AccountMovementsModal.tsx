@@ -1,4 +1,5 @@
 import { JSX, useMemo, useState, useEffect } from "react";
+import { getErrorMessage } from "@/services/api";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import type { Account } from "@/types/account";
@@ -86,7 +87,7 @@ export default function AccountMovementsModal({
       setIsAdjusting(false);
       setRealBalance("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "No pudimos registrar el ajuste.");
+      setError(getErrorMessage(e, "No pudimos registrar el ajuste."));
     }
   }
 

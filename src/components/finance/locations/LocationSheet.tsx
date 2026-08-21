@@ -1,4 +1,5 @@
 import { JSX, useEffect, useState } from "react";
+import { getErrorMessage } from "@/services/api";
 import { MapPin } from "lucide-react";
 
 import Modal from "@/components/ui/Modal";
@@ -78,7 +79,7 @@ export default function LocationSheet({
 
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "No pudimos guardar el lugar.");
+      setError(getErrorMessage(e, "No pudimos guardar el lugar."));
     }
   }
 

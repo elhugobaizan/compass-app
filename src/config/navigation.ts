@@ -7,7 +7,6 @@ import {
   Landmark,
   Settings,
   BanknoteArrowUp,
-  MapPin,
   Wrench,
 } from "lucide-react";
 
@@ -73,15 +72,6 @@ export const navigationItems: NavigationItem[] = [
     label: "Analítica",
     title: "Analítica",
     icon: BarChart3,
-    mobile: "secondary",
-    showInWeb: true,
-  },
-  {
-    id: "locations",
-    route: "/locations",
-    label: "Lugares",
-    title: "Lugares",
-    icon: MapPin,
     mobile: "secondary",
     showInWeb: true,
   },

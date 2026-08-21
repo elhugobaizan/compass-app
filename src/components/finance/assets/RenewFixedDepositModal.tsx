@@ -1,4 +1,5 @@
 import { useState, JSX } from "react";
+import { getErrorMessage } from "@/services/api";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import type { Asset } from "@/types/asset";
@@ -76,7 +77,7 @@ export default function RenewFixedDepositModal({
 
       onClose();
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "No pudimos renovar el plazo fijo.");
+      setSubmitError(getErrorMessage(error, "No pudimos renovar el plazo fijo."));
     }
   }
 

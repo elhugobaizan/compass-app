@@ -8,6 +8,7 @@ import { ASSET_TYPES, getAssetTypeConfig } from "@/utils/assetTypes";
 import { useCreateTransaction } from "@/hooks/mutations/useCreateTransaction";
 import { TRANSACTION_TYPE_IDS } from "@/utils/transactionTypes";
 import { toIdValue } from "@/utils/ids";
+import { getErrorMessage } from "@/services/api";
 
 type AssetFormValues = Pick<Asset,
   'name' | 'symbol' | 'asset_type' | 'quantity' | 'price' | 'capital' | 'interest' | 'start_date' | 'maturity' | 'account_id'>;
@@ -120,8 +121,10 @@ export default function AssetForm({
 
       onSuccess?.();
     } catch (error) {
-      const message = error instanceof Error ? error.message :
-        mode === "edit" ? "No pudimos actualizar el activo." : "No pudimos guardar el activo.";
+      const message = getErrorMessage(
+        error,
+        mode === "edit" ? "No pudimos actualizar el activo." : "No pudimos guardar el activo.",
+      );
 
       setSubmitError(message);
     }

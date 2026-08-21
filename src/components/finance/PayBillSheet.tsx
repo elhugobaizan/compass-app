@@ -1,4 +1,5 @@
 import { JSX, useEffect, useMemo, useState } from "react";
+import { getErrorMessage } from "@/services/api";
 
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -170,9 +171,7 @@ export default function PayBillSheet({
       onClose();
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "No pudimos registrar el pago del impuesto.";
+        getErrorMessage(error, "No pudimos registrar el pago del impuesto.");
 
       setSubmitError(message);
     }

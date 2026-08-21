@@ -1,4 +1,5 @@
 import { JSX, useState } from "react";
+import { getErrorMessage } from "@/services/api";
 import { toIdValue, toId } from "@/utils/ids";
 
 import Button from "@/components/ui/Button";
@@ -121,11 +122,12 @@ export default function BillForm({
       onSuccess?.();
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : mode === "edit"
+        getErrorMessage(
+          error,
+          mode === "edit"
             ? "No pudimos actualizar el impuesto."
-            : "No pudimos guardar el impuesto.";
+            : "No pudimos guardar el impuesto.",
+        );
 
       setSubmitError(message);
     }

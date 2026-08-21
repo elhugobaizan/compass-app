@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, JSX } from "react";
+import { getErrorMessage } from "@/services/api";
 
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -62,7 +63,7 @@ export default function BulkBalanceSheet({
       onClose();
     } catch (error) {
       setSubmitError(
-        error instanceof Error ? error.message : "No pudimos actualizar los saldos.",
+        getErrorMessage(error, "No pudimos actualizar los saldos."),
       );
     } finally {
       setIsSaving(false);
