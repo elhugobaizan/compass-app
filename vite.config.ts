@@ -8,7 +8,16 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src")
-    }
+    },
+    // Una sola copia de React: sin esto, react-leaflet puede resolver la suya
+    // y todo hook tira "Invalid hook call"
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    // El mapa entra por un import dinámico. Si Vite lo descubre recién en
+    // runtime, re-optimiza en caliente y deja dos instancias de React dando
+    // vueltas; declarándolo acá se pre-bundlea desde el arranque.
+    include: ['leaflet', 'react-leaflet'],
   },
   server: {
     port: 5173,
